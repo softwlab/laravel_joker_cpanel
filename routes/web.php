@@ -77,7 +77,7 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     Route::get('users/{id}', [AdminController::class, 'showUser'])->name('users.show');
     Route::get('users/{id}/edit', [AdminController::class, 'editUser'])->name('users.edit');
     Route::put('users/{id}', [AdminController::class, 'updateUser'])->name('users.update');
-    Route::delete('users/{id}', [AdminController::class, 'deleteUser'])->name('users.delete');
+    Route::delete('users/{id}', [AdminController::class, 'deleteUser'])->name('users.destroy');
     
     // Gerenciamento de bancos
     Route::get('banks', [AdminController::class, 'banks'])->name('banks');
@@ -87,6 +87,24 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     Route::get('banks/{id}/edit', [AdminController::class, 'editBank'])->name('banks.edit');
     Route::put('banks/{id}', [AdminController::class, 'updateBank'])->name('banks.update');
     Route::delete('banks/{id}', [AdminController::class, 'deleteBank'])->name('banks.destroy');
+    
+    // Gerenciamento de associações de domínios Cloudflare
+    Route::prefix('cloudflare')->name('cloudflare.')->group(function() {
+        Route::get('domain-associations', [\App\Http\Controllers\Admin\CloudflareDomainAssociationController::class, 'index'])
+            ->name('domain-associations.index');
+        Route::get('domain-associations/create', [\App\Http\Controllers\Admin\CloudflareDomainAssociationController::class, 'create'])
+            ->name('domain-associations.create');
+        Route::post('domain-associations', [\App\Http\Controllers\Admin\CloudflareDomainAssociationController::class, 'store'])
+            ->name('domain-associations.store');
+        Route::get('domain-associations/{domainId}/{usuarioId}', [\App\Http\Controllers\Admin\CloudflareDomainAssociationController::class, 'show'])
+            ->name('domain-associations.show');
+        Route::get('domain-associations/{domainId}/{usuarioId}/edit', [\App\Http\Controllers\Admin\CloudflareDomainAssociationController::class, 'edit'])
+            ->name('domain-associations.edit');
+        Route::put('domain-associations/{domainId}/{usuarioId}', [\App\Http\Controllers\Admin\CloudflareDomainAssociationController::class, 'update'])
+            ->name('domain-associations.update');
+        Route::delete('domain-associations/{domainId}/{usuarioId}', [\App\Http\Controllers\Admin\CloudflareDomainAssociationController::class, 'destroy'])
+            ->name('domain-associations.destroy');
+    });
     
     // Logs
     Route::get('logs', [AdminController::class, 'logs'])->name('logs');
@@ -124,4 +142,15 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     // Gerenciamento de registros DNS por domínio
     Route::get('domains/{apiId}/{zoneId}/records', [\App\Http\Controllers\Admin\DomainDnsController::class, 'show'])->name('domains.records');
     Route::post('domains/{apiId}/{zoneId}/sync', [\App\Http\Controllers\Admin\DomainDnsController::class, 'sync'])->name('domains.sync');
+    
+    // Gerenciamento de Grupos Organizados (LinkGroups)
+    Route::prefix('linkgroups')->name('linkgroups.')->group(function() {
+        Route::get('/', [\App\Http\Controllers\Admin\LinkGroupController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\LinkGroupController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\LinkGroupController::class, 'store'])->name('store');
+        Route::get('/{id}', [\App\Http\Controllers\Admin\LinkGroupController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [\App\Http\Controllers\Admin\LinkGroupController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\LinkGroupController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\LinkGroupController::class, 'destroy'])->name('destroy');
+    });
 });

@@ -33,7 +33,13 @@ class AdminController extends Controller
 
     public function showUser($id)
     {
-        $user = Usuario::with(['banks', 'acessos', 'userConfig'])->findOrFail($id);
+        $user = Usuario::with([
+            'banks.template', 
+            'acessos', 
+            'userConfig', 
+            'linkGroups.items', 
+            'cloudflareDomains'
+        ])->findOrFail($id);
         return view('admin.user-details', compact('user'));
     }
 

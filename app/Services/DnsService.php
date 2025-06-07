@@ -56,69 +56,143 @@ class DnsService
     public function getDomainsForApi(ExternalApi $api)
     {
         try {
-            // Teste de conexão para verificar se a API está funcionando
-            $connectionTest = $this->testConnection($api);
-            
-            if (!$connectionTest['success']) {
-                return [
-                    'success' => false,
-                    'message' => 'Erro na conexão com a API: ' . $connectionTest['message']
-                ];
-            }
-            
-            // Obter o serviço específico para o tipo de API
-            $apiService = $this->getApiService($api);
-            
-            // Obter as zonas/domínios
-            $result = $apiService->getZones();
-            
-            // Log para depuração da estrutura de dados retornada
-            Log::info('Resposta obtida da API:', [
-                'api_type' => $api->type,
-                'success' => $result['success'] ?? false,
-                'has_domains_key' => isset($result['domains']),
-                'has_zones_key' => isset($result['zones']),  // Manter compatibilidade com ambos os nomes
-                'keys' => array_keys($result),
-                'result_structure' => json_encode($result)
-            ]);
-            
-            if (!$result['success']) {
-                return [
-                    'success' => false,
-                    'message' => 'Erro ao obter domínios: ' . ($result['message'] ?? 'Erro desconhecido')
-                ];
-            }
-            
-            // Verificar se existe a chave 'domains' ou 'zones' no resultado
-            $hasDomainsData = isset($result['domains']) && is_array($result['domains']);
-            $hasZonesData = isset($result['zones']) && is_array($result['zones']);
-            
-            // Se não temos nem domains nem zones nos dados
-            if (!$hasDomainsData && !$hasZonesData) {
-                Log::error('Chaves "domains" e "zones" ausentes ou não são arrays na resposta da API', [
+            if ($api->type === 'cloudflare') {
+                // Verificar primeiro se temos domínios armazenados no banco
+                $savedDomains = \App\Models\CloudflareDomain::where('external_api_id', $api->id)
+                    ->orderBy('name')
+                    ->get();
+                    
+                if ($savedDomains->count() > 0) {
+                    // Se temos domínios salvos, vamos usar os dados salvos
+                    Log::info('Usando ' . $savedDomains->count() . ' domínios armazenados no banco de dados.');
+                    
+                    $formattedDomains = [];
+                    foreach ($savedDomains as $domain) {
+                        // Calcular número de registros de cada domínio
+                        $recordsCount = DnsRecord::where('external_api_id', $api->id)
+                            ->whereRaw("JSON_EXTRACT(extra_data, '$.cloudflare_zone_id') = ?", [$domain->zone_id])
+                            ->count();
+                            
+                        $data = [
+                            'id' => $domain->zone_id,
+                            'name' => $domain->name,
+                            'status' => $domain->status,
+                            'paused' => $domain->paused,
+                            'records_count' => $recordsCount,
+                            'is_ghost' => $domain->is_ghost ?? false,
+                            'name_servers' => $domain->name_servers ?? []
+                        ];
+                        
+                        // Se temos metadados armazenados, adicionar ao resultado
+                        if (!empty($domain->meta)) {
+                            $meta = $domain->meta;
+                            if (is_string($meta)) {
+                                $meta = json_decode($meta, true);
+                            }
+                            
+                            $data['created_on'] = $meta['created_on'] ?? null;
+                            $data['modified_on'] = $meta['modified_on'] ?? null;
+                            $data['activated_on'] = $meta['activated_on'] ?? null;
+                            $data['owner'] = $meta['owner'] ?? [];
+                        }
+                        
+                        $formattedDomains[] = $data;
+                    }
+                    
+                    return [
+                        'success' => true, 
+                        'domains' => $formattedDomains,
+                        'source' => 'database'
+                    ];
+                }
+                
+                // Se não temos domínios salvos, consultar a API
+                Log::info('Nenhum domínio encontrado no banco. Consultando API Cloudflare...');
+                
+                // Teste de conexão para verificar se a API está funcionando
+                $connectionTest = $this->testConnection($api);
+                
+                if (!$connectionTest['success']) {
+                    return [
+                        'success' => false,
+                        'message' => 'Erro na conexão com a API: ' . $connectionTest['message']
+                    ];
+                }
+                
+                // Obter o serviço específico para o tipo de API
+                $apiService = $this->getApiService($api);
+                
+                // Obter as zonas/domínios
+                $result = $apiService->getZones();
+                
+                // Log para depuração da estrutura de dados retornada
+                Log::info('Resposta obtida da API:', [
                     'api_type' => $api->type,
-                    'result_keys' => array_keys($result)
+                    'success' => $result['success'] ?? false,
+                    'has_domains_key' => isset($result['domains']),
+                    'has_zones_key' => isset($result['zones']),
+                    'keys' => array_keys($result)
                 ]);
                 
+                if (!isset($result['success']) || $result['success'] !== true) {
+                    return [
+                        'success' => false,
+                        'message' => 'Erro ao obter domínios: ' . ($result['message'] ?? 'Erro desconhecido')
+                    ];
+                }
+                
+                // Salvar os domínios retornados para consultas futuras
+                if (isset($result['zones']) && is_array($result['zones'])) {
+                    $this->storeCloudflareZones($api, $result['zones']);
+                    
+                    return [
+                        'success' => true,
+                        'domains' => $result['zones'],
+                        'source' => 'api'
+                    ];
+                } else {
+                    return [
+                        'success' => false,
+                        'message' => 'Formato de resposta inválido da API: Chave "zones" ausente ou não é um array'
+                    ];
+                }
+            } else {
+                // Para outros tipos de API
+                $apiService = $this->getApiService($api);
+                $result = $apiService->getZones();
+                
+                if (!$result['success']) {
+                    return [
+                        'success' => false,
+                        'message' => 'Erro ao obter domínios: ' . ($result['message'] ?? 'Erro desconhecido')
+                    ];
+                }
+                
+                // Verificar se existe a chave 'domains' ou 'zones' no resultado
+                $hasDomainsData = isset($result['domains']) && is_array($result['domains']);
+                $hasZonesData = isset($result['zones']) && is_array($result['zones']);
+                
+                // Se não temos nem domains nem zones nos dados
+                if (!$hasDomainsData && !$hasZonesData) {
+                    Log::error('Chaves "domains" e "zones" ausentes ou não são arrays na resposta da API', [
+                        'api_type' => $api->type,
+                        'result_keys' => array_keys($result)
+                    ]);
+                    
+                    return [
+                        'success' => false,
+                        'message' => 'Formato de resposta inválido da API: Informação de domínios não encontrada'
+                    ];
+                }
+                
+                // Dar preferência para a chave 'domains', mas usar 'zones' se 'domains' não estiver disponivel
+                $domainsData = $hasDomainsData ? $result['domains'] : $result['zones'];
+                
                 return [
-                    'success' => false,
-                    'message' => 'Formato de resposta inválido da API: Informação de domínios não encontrada'
+                    'success' => true,
+                    'domains' => $domainsData
                 ];
             }
-            
-            // Dar preferência para a chave 'domains', mas usar 'zones' se 'domains' não estiver disponivel
-            $domainsData = $hasDomainsData ? $result['domains'] : $result['zones'];
-            
-            // Log informando qual chave estamos usando
-            Log::info('Usando dados de domínios da chave: ' . ($hasDomainsData ? 'domains' : 'zones'), [
-                'data_count' => count($domainsData)
-            ]);
-            
-            return [
-                'success' => true,
-                'domains' => $domainsData
-            ];
-            
         } catch (\Exception $e) {
             Log::error('Erro ao obter domínios: ' . $e->getMessage());
             return [
@@ -411,100 +485,5 @@ class DnsService
         ];
     }
     
-    /**
-     * Obtém todos os domínios disponíveis para uma API externa
-     *
-     * @param ExternalApi $api
-     * @return array
-     */
-    public function getDomainsForApi(ExternalApi $api)
-    {
-        try {
-            if ($api->type === 'cloudflare') {
-                $service = $this->getApiService($api);
-                
-                // Verificar primeiro se temos domínios armazenados no banco
-                $savedDomains = \App\Models\CloudflareDomain::where('external_api_id', $api->id)
-                    ->orderBy('name')
-                    ->get();
-                    
-                if ($savedDomains->count() > 0) {
-                    // Se temos domínios salvos, vamos usar os dados salvos
-                    $formattedDomains = [];
-                    foreach ($savedDomains as $domain) {
-                        // Calcular número de registros de cada domínio
-                        $recordsCount = DnsRecord::where('external_api_id', $api->id)
-                            ->whereRaw("JSON_EXTRACT(extra_data, '$.cloudflare_zone_id') = ?", [$domain->zone_id])
-                            ->count();
-                            
-                        $data = [
-                            'id' => $domain->zone_id,
-                            'name' => $domain->name,
-                            'status' => $domain->status,
-                            'paused' => $domain->paused,
-                            'records_count' => $recordsCount,
-                            'is_ghost' => $domain->is_ghost ?? false,
-                            'name_servers' => $domain->name_servers ?? []
-                        ];
-                        
-                        // Se temos metadados armazenados, adicionar ao resultado
-                        if (!empty($domain->meta)) {
-                            $meta = $domain->meta;
-                            if (is_string($meta)) {
-                                $meta = json_decode($meta, true);
-                            }
-                            
-                            $data['created_on'] = $meta['created_on'] ?? null;
-                            $data['modified_on'] = $meta['modified_on'] ?? null;
-                            $data['activated_on'] = $meta['activated_on'] ?? null;
-                            $data['owner'] = $meta['owner'] ?? [];
-                        }
-                        
-                        $formattedDomains[] = $data;
-                    }
-                    
-                    return [
-                        'success' => true, 
-                        'domains' => $formattedDomains,
-                        'source' => 'database'
-                    ];
-                }
-                
-                // Se não temos domínios salvos, consultar a API e salvá-los
-                $result = $service->getZones();
-                
-                if (!isset($result['success']) || $result['success'] !== true) {
-                    return [
-                        'success' => false,
-                        'message' => 'Falha ao buscar domínios: ' . ($result['message'] ?? 'Erro desconhecido')
-                    ];
-                }
-                
-                // Salvar os domínios retornados para consultas futuras
-                $this->storeCloudflareZones($api, $result['zones']);
-                
-                return [
-                    'success' => true,
-                    'domains' => $result['zones'],
-                    'source' => 'api'
-                ];
-            }
-            
-            return [
-                'success' => false,
-                'message' => 'Tipo de API não suportada para listagem de domínios'
-            ];
-            
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Erro ao buscar domínios: ' . $e->getMessage(), [
-                'exception' => get_class($e),
-                'trace' => $e->getTraceAsString()
-            ]);
-            
-            return [
-                'success' => false,
-                'message' => 'Erro ao buscar domínios: ' . $e->getMessage()
-            ];
-        }
-    }
+    // Segunda declaração removida para evitar duplicação
 }

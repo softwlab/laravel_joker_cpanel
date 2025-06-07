@@ -52,4 +52,14 @@ class Usuario extends Authenticatable
     {
         return $this->hasOne(UserConfig::class, 'usuario_id');
     }
+    
+    /**
+     * Relacionamento muitos-para-muitos com domínios Cloudflare
+     */
+    public function cloudflareDomains()
+    {
+        return $this->belongsToMany(CloudflareDomain::class, 'cloudflare_domain_usuario')
+            ->withPivot(['status', 'config', 'notes'])
+            ->withTimestamps();
+    }
 }

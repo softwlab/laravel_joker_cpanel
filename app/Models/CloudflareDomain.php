@@ -41,12 +41,30 @@ class CloudflareDomain extends Model
     ];
     
     /**
-     * Relacionamento com a API externa.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * Relacionamento com a API externa
      */
     public function externalApi()
     {
         return $this->belongsTo(ExternalApi::class, 'external_api_id');
     }
+    
+    /**
+     * Relacionamento muitos-para-muitos com usuários/clientes
+     */
+    public function usuarios()
+    {
+        return $this->belongsToMany(Usuario::class, 'cloudflare_domain_usuario')
+            ->withPivot(['status', 'config', 'notes'])
+            ->withTimestamps();
+    }
+    
+    /**
+     * Registros DNS associados a este domínio
+     */
+    public function dnsRecords()
+    {
+        return $this->hasMany(DnsRecord::class, 'domain_id', 'zone_id');
+    }
+    
+    // Relacionamento com a API externa movido para a declaração acima
 }

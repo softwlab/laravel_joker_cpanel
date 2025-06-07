@@ -536,7 +536,7 @@ class CloudflareService
                     // Usar combinação de tipo e nome como chave única
                     return [$record->record_type . ':' . $record->name => $record];
                 });
-            
+                
             foreach ($recordsFromCloudflare as $cfRecord) {
                 // Criar uma chave única para buscar registros existentes
                 $recordKey = $cfRecord['type'] . ':' . $cfRecord['name'];
@@ -581,12 +581,21 @@ class CloudflareService
                 $recordsSynced++;
             }
             
+            // Atualizar a contagem de registros do domínio
+            $domain = \App\Models\CloudflareDomain::where('external_api_id', $this->api->id)
+                ->where('zone_id', $zoneId)
+                ->first();
+                
+            if ($domain) {
+                $domain->records_count = count($recordsFromCloudflare);
+                $domain->save();
+            }
+            
             return [
                 'success' => true,
                 'message' => "Sincronizado com sucesso {$recordsSynced} registros DNS",
                 'records_synced' => $recordsSynced
             ];
-            
         } catch (\Exception $e) {
             Log::error('Erro ao sincronizar registros DNS do Cloudflare', [
                 'zone_id' => $zoneId,

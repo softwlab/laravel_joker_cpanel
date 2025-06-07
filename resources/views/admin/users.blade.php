@@ -63,7 +63,7 @@
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 @if($user->id !== auth()->id())
-                                <form method="POST" action="{{ route('admin.users.delete', $user->id) }}" 
+                                <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" 
                                       class="d-inline" onsubmit="return confirm('Tem certeza que deseja deletar este usuário?')">
                                     @csrf
                                     @method('DELETE')
