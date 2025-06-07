@@ -1,0 +1,41 @@
+/* Estilos para o drag and drop dos campos de templates bancários */
+
+/* Estilo para o cursor ao passar sobre o manipulador de arrastar */
+.handle {
+    cursor: grab !important;
+}
+
+/* Estilo para o cursor durante o arraste */
+.sortable-ghost {
+    background-color: #f8f9fa !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
+    opacity: 0.8 !important;
+}
+
+/* Destacar a linha quando estiver sendo arrastada */
+.sortable-row.dragging {
+    background-color: #e9ecef !important;
+    border: 1px dashed #adb5bd !important;
+}
+
+/* Espaço para indicar onde a linha será colocada */
+.sortable-fallback {
+    opacity: 0.4;
+    transform: scale(0.98);
+}
+
+/* Estilo para a tabela durante o drag and drop */
+#sortable-fields {
+    min-height: 100px; /* Garantir altura mínima mesmo quando vazia */
+}
+
+/* Garantir que o ícone de arrastar seja óbvio */
+.handle i.fas.fa-grip-vertical {
+    color: #6c757d;
+    transition: color 0.2s;
+}
+
+/* Ao passar o mouse, destacar o ícone */
+.handle:hover i.fas.fa-grip-vertical {
+    color: #0d6efd;
+}

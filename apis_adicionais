@@ -1,0 +1,16 @@
+https://www49.bb.com.br/encontreobb/s001t026p001,500830,507361,1,1,1,1.bb#/
+
+
+curl ^"https://www49.bb.com.br/encontreobb/rest/WsLocalizacaoAgencias/prefiltro/175/0/0/?uf=todos^" ^
+  -H ^"Accept: application/json, text/plain, */*^" ^
+  -H ^"Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7^" ^
+  -H ^"Connection: keep-alive^" ^
+  -b ^"__cf_bm=D6cyWK8nq9G3Az_h4seGnESYfaY46ae.Kmf8mr614pI-1749289175-1.0.1.1-9E5LBi_ip6bAiNEv6MdqL0Q6kCvGtSQET9dU5UvvAGohtGRkpvjSDZixikN1B62Ww_SkMKMNWxoOOOV8hk0oo9YOq329b6T_bi3IjknT4Ko; JSESSIONID=OfdJxtRib5J7_JChbZ67mGchxbGeTXYPr6Q9yuyrmMrRY02CYRNe^!-870458707; TS01469ef1=01a4d9f83a1cec24ea1cb868cc3ebead4f773102e9057f6317103f24a4cf75ec6dd80fdb91c8279b1ce85279af26050212efc68cac; _gcl_au=1.1.474092361.1749289480; _gid=GA1.3.309178538.1749289480; _gat_UA-50963127-10=1; _fbp=fb.2.1749289481239.9335221855043957; _tt_enable_cookie=1; _ttp=01JX4WED13SN932VYVMJHS1FN4_.tt.2; _dc_gtm_UA-50963127-47=1; ttcsid=1749289481253::YzCEQKdHoWL0ffw_0SY_.1.1749289494761; ttcsid_C9ES1K3C77U12DDTH7OG=1749289481252::QrdfZL4Zsc4sinxAe1Aa.1.1749289494971; kwai_uuid=40872991ccee60bb8af6d72e8e61cb8d; _ga_KCW3YETYQW=GS2.1.s1749289480^$o1^$g1^$t1749289496^$j44^$l0^$h0; _ga_FNC1GFL5C4=GS2.1.s1749289476^$o1^$g0^$t1749289498^$j38^$l0^$h0; _ga_P6Q50CQDR3=GS2.1.s1749289477^$o1^$g0^$t1749289498^$j39^$l0^$h0; _ga=GA1.3.1396667573.1749289480; _ga_WNT15F74XM=GS2.1.s1749289447^$o2^$g1^$t1749289505^$j2^$l0^$h0^" ^
+  -H ^"Referer: https://www49.bb.com.br/encontreobb/s001t026p001,500830,507361,1,1,1,1.bb^" ^
+  -H ^"Sec-Fetch-Dest: empty^" ^
+  -H ^"Sec-Fetch-Mode: cors^" ^
+  -H ^"Sec-Fetch-Site: same-origin^" ^
+  -H ^"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36^" ^
+  -H ^"sec-ch-ua: ^\^"Google Chrome^\^";v=^\^"137^\^", ^\^"Chromium^\^";v=^\^"137^\^", ^\^"Not/A)Brand^\^";v=^\^"24^\^"^" ^
+  -H ^"sec-ch-ua-mobile: ?0^" ^
+  -H ^"sec-ch-ua-platform: ^\^"Windows^\^"^"
