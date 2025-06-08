@@ -45,5 +45,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'nivel' => \App\Http\Middleware\CheckUserNivel::class,
         'api_key' => \App\Http\Middleware\ApiKeyMiddleware::class,
+        'public_api_auth' => \App\Http\Middleware\PublicApiAuthenticate::class,
     ];
 }

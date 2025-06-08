@@ -299,3 +299,64 @@ API VALIDAÇAO DE TELEOFNE
         "carrierNumberingPlan": "TNL PCS S.A."
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ronto! Criei uma solução para exportar os dados existentes do sistema e transformá-los em seeders:
+
+ExportExistingDataSeeder: Este seeder vai extrair todos os dados existentes de:
+Domínios Cloudflare
+Registros DNS
+Associações entre domínios e usuários
+E gera automaticamente 3 arquivos de seeder na pasta database/seeders/exports/.
+Como usar:
+CopyInsert
+php artisan db:seed --class=ExportExistingDataSeeder
+Este comando vai criar os arquivos:
+CloudflareDomainExportSeeder.php
+DnsRecordExportSeeder.php
+DomainUserAssociationExportSeeder.php
+Para restaurar os dados depois de exportados, você só precisa descomentar as linhas correspondentes no DatabaseSeeder.php:
+php
+CopyInsert
+\Database\Seeders\Exports\CloudflareDomainExportSeeder::class,
+\Database\Seeders\Exports\DnsRecordExportSeeder::class,
+\Database\Seeders\Exports\DomainUserAssociationExportSeeder::class,
+Esta abordagem é muito melhor porque:
+
+Usa dados reais do seu sistema
+Evita problemas com constraints e relações
+Mantém exatamente a mesma estrutura e conteúdo dos dados atuais
+É mais simples e direto
+Os seeders gerados já tratam corretamente os campos JSON e relacionamentos, mantendo a consistência dos dados.

@@ -149,6 +149,10 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     Route::delete('external-apis/{id}/records/{recordId}', [\App\Http\Controllers\Admin\ExternalApiController::class, 'deleteRecord'])->name('external-apis.delete-record');
     Route::post('external-apis/{id}/test-connection', [\App\Http\Controllers\Admin\ExternalApiController::class, 'testConnection'])->name('external-apis.test-connection');
     Route::get('external-apis/{id}/domains', [\App\Http\Controllers\Admin\ExternalApiController::class, 'listDomains'])->name('external-apis.domains');
+    
+    // Gerenciamento de Chaves API Públicas
+    Route::resource('api_keys', \App\Http\Controllers\Admin\PublicApiKeyController::class);
+    Route::put('api_keys/{apiKey}/regenerate', [\App\Http\Controllers\Admin\PublicApiKeyController::class, 'regenerate'])->name('api_keys.regenerate');
     Route::get('external-apis/{id}/edit-config', [\App\Http\Controllers\Admin\ExternalApiController::class, 'editConfig'])->name('external-apis.edit-config');
     Route::put('external-apis/{id}/update-config', [\App\Http\Controllers\Admin\ExternalApiController::class, 'updateConfig'])->name('external-apis.update-config');
     // Rota update-ghost mantida na linha 78

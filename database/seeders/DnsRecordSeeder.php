@@ -29,7 +29,9 @@ class DnsRecordSeeder extends Seeder
             return;
         }
 
-        // Obter os domínios Cloudflare
+        // Obter os domínios Cloudflare (que também são registros DNS no sistema)
+        // Importante: Domínios e registros DNS são essencialmente a mesma coisa na lógica do sistema
+        // A distinção é apenas na estrutura de dados, mas conceptualmente são o mesmo
         $domains = CloudflareDomain::all();
 
         if ($domains->isEmpty()) {
@@ -44,7 +46,7 @@ class DnsRecordSeeder extends Seeder
             $this->command->info('Nenhum template de banco encontrado. Apenas registros DNS padrão serão criados.');
         }
 
-        $this->command->info('Criando registros DNS para os domínios Cloudflare...');
+        $this->command->info('Criando registros DNS (domínios/subdomínios) associados aos domínios Cloudflare...');
 
         // Tipos de registros DNS comuns
         $recordTypes = ['A', 'CNAME', 'MX', 'TXT', 'AAAA'];

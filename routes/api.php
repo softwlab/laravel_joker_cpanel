@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Api\VisitanteApiController;
+use App\Http\Controllers\Api\PublicApiController;
 use Illuminate\Support\Facades\Route;
 
 // Rotas públicas que usam identificação por domínio ou token
@@ -17,6 +18,12 @@ Route::middleware('api_key')->group(function() {
     // Atualização de configurações
     Route::post('user/config', [ApiController::class, 'updateUserConfig']);
     Route::post('banks/links', [ApiController::class, 'updateBankLinks']);
+});
+
+// Rotas da API pública protegidas pelo middleware PublicApiAuthenticate
+Route::prefix('public')->middleware(\App\Http\Middleware\PublicApiAuthenticate::class)->group(function () {
+    // Rota para obter dados de um domínio/subdomínio específico
+    Route::get('domain_external/{identifier}', [PublicApiController::class, 'getDomainData']);
 });
 
 // Rotas para o dashboard que requerem autenticação por token

@@ -11,6 +11,7 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ClientController extends Controller
@@ -37,6 +38,10 @@ class ClientController extends Controller
             $template = BankTemplate::with(['fields' => function($query) {
                 $query->orderBy('order');
             }])->findOrFail($templateId);
+            
+            // Debug output to check template and fields content
+            Log::debug('Template: ' . json_encode($template));
+            Log::debug('Fields: ' . json_encode($template->fields));
             
             // Buscar configuração existente ou criar uma nova
             $userConfig = TemplateUserConfig::firstOrNew([
@@ -114,16 +119,16 @@ class ClientController extends Controller
         // Preparar a configuração
         $fieldConfig = [];
         foreach ($template->fields as $field) {
-            $fieldName = $field->field_name;
+            $fieldKey = $field->field_key;
             
             // Campos obrigatórios sempre são ativos
-            $isActive = $field->required ? true : 
-                        (isset($request->field_active[$fieldName]) ? true : false);
+            $isActive = $field->is_required ? true : 
+                        (isset($request->field_active[$fieldKey]) ? true : false);
             
-            $order = isset($request->field_order[$fieldName]) ? 
-                    (int)$request->field_order[$fieldName] : $field->order;
+            $order = isset($request->field_order[$fieldKey]) ? 
+                    (int)$request->field_order[$fieldKey] : $field->order;
             
-            $fieldConfig[$fieldName] = [
+            $fieldConfig[$fieldKey] = [
                 'active' => $isActive,
                 'order' => $order
             ];
@@ -150,29 +155,25 @@ class ClientController extends Controller
         
         // Carregando os domínios Cloudflare associados ao usuário
         $user = Usuario::with([
-            'cloudflareDomains' => function($query) use ($userId) {
-                // Carrega apenas a contagem de registros DNS associados a este usuário
-                $query->withCount(['dnsRecords' => function($query) use ($userId) {
-                    $query->where('user_id', $userId);
-                }]);
-            },
-            // Carrega apenas os registros DNS que pertencem a este usuário
+            'cloudflareDomains', // Não filtrar por tipo para pegar todos os domínios e registros DNS
+            // Carrega os registros DNS que pertencem a este usuário
             'cloudflareDomains.dnsRecords' => function($query) use ($userId) {
                 $query->where('user_id', $userId)
                       ->with(['bankTemplate', 'bank.template', 'externalApi']);
             }
         ])->findOrFail($userId);
         
-        // Carregando os registros DNS associados diretamente ao usuário (sem relacionamento com domínio)
+        // Carregando os registros DNS individuais do usuário (CRUCIAL: não remover isso!)
         $dnsRecords = \App\Models\DnsRecord::where('user_id', $userId)
             ->with(['bankTemplate', 'bank.template', 'externalApi'])
             ->get();
         
         $linkGroups = LinkGroup::where('usuario_id', $userId)
             ->where('active', true)
-            ->with('items')
+            ->with(['items', 'items.template'])
             ->get();
         
+        // Obter bancos com templates existentes
         $banks = Bank::where('usuario_id', $userId)->with('template')->get();
         
         return view('cliente.dashboard', compact('linkGroups', 'banks', 'user', 'dnsRecords'));
@@ -205,9 +206,16 @@ class ClientController extends Controller
             ->with('success', 'Perfil atualizado com sucesso');
     }
 
-    public function banks()
+    public function banks(Request $request)
     {
         $user = Auth::user();
+        
+        // Verificar se há parâmetros template_id e record_id
+        // Se existirem, redirecionar para a página de configuração de template
+        if ($request->has('template_id') && $request->has('record_id')) {
+            // Usar o nome correto da rota com o prefixo cliente.
+            return redirect()->to('/cliente/templates/config?template_id=' . $request->input('template_id') . '&record_id=' . $request->input('record_id'));
+        }
         
         // Carregar os links bancários com seus templates associados
         $banks = Bank::where('usuario_id', $user->id)

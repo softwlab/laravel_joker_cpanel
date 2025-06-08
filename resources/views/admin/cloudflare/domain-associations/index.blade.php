@@ -43,54 +43,56 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($associations as $association)
-                        <tr>
-                            <td>{{ $association->domain->name }}</td>
-                            <td>
-                                <a href="{{ route('admin.users.show', $association->usuario->id) }}">
-                                    {{ $association->usuario->nome }}
-                                </a>
-                            </td>
-                            <td>
-                                @if($association->pivot->status === 'active')
-                                    <span class="badge bg-success">Ativo</span>
-                                @elseif($association->pivot->status === 'paused')
-                                    <span class="badge bg-warning">Pausado</span>
-                                @else
-                                    <span class="badge bg-secondary">{{ ucfirst($association->pivot->status) }}</span>
-                                @endif
-                            </td>
-                            <td>{{ $association->pivot->created_at->format('d/m/Y H:i') }}</td>
-                            <td class="text-nowrap">
-                                <a href="{{ route('admin.cloudflare.domain-associations.show', [$association->domain->id, $association->usuario->id]) }}" class="btn btn-sm btn-info" title="Detalhes">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{{ route('admin.cloudflare.domain-associations.edit', [$association->domain->id, $association->usuario->id]) }}" class="btn btn-sm btn-primary" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('admin.cloudflare.domain-associations.destroy', [$association->domain->id, $association->usuario->id]) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Tem certeza que deseja remover esta associação?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
+                        @php $associationsFound = false; @endphp
+                        @foreach($domains as $domain)
+                            @foreach($domain->usuarios as $usuario)
+                                @php $associationsFound = true; @endphp
+                                <tr>
+                                    <td>{{ $domain->name }}</td>
+                                    <td>
+                                        <a href="{{ route('admin.users.show', $usuario->id) }}">
+                                            {{ $usuario->nome }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @if($usuario->pivot->status === 'active')
+                                            <span class="badge bg-success">Ativo</span>
+                                        @elseif($usuario->pivot->status === 'paused')
+                                            <span class="badge bg-warning">Pausado</span>
+                                        @else
+                                            <span class="badge bg-secondary">{{ ucfirst($usuario->pivot->status) }}</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $usuario->pivot->created_at->format('d/m/Y H:i') }}</td>
+                                    <td class="text-nowrap">
+                                        <a href="{{ route('admin.cloudflare.domain-associations.show', [$domain->id, $usuario->id]) }}" class="btn btn-sm btn-info" title="Detalhes">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('admin.cloudflare.domain-associations.edit', [$domain->id, $usuario->id]) }}" class="btn btn-sm btn-primary" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('admin.cloudflare.domain-associations.destroy', [$domain->id, $usuario->id]) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Tem certeza que deseja remover esta associação?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endforeach
+                        
+                        @if(!$associationsFound)
                         <tr>
                             <td colspan="5" class="text-center">Nenhuma associação encontrada.</td>
                         </tr>
-                        @endforelse
+                        @endif
                     </tbody>
                 </table>
             </div>
             
-            @if(isset($associations) && $associations->hasPages())
-            <div class="d-flex justify-content-center mt-4">
-                {{ $associations->links() }}
-            </div>
-            @endif
+            <!-- A paginação não é necessária aqui pois trazemos todos os domínios de uma vez -->
         </div>
     </div>
 </div>

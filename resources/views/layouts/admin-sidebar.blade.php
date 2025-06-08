@@ -43,6 +43,12 @@
                     <i class="fas fa-list-alt"></i> Logs
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.api_keys*') ? 'active' : '' }}" 
+                   href="{{ route('admin.api_keys.index') }}">
+                    <i class="fas fa-key"></i> API Pública
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

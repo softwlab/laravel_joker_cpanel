@@ -9,191 +9,324 @@
 
 <div class="row">
     <div class="col-md-6 col-lg-3 mb-4">
-        <div class="card bg-primary text-white">
+        <div class="card shadow-sm border-0">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                        <i class="fas fa-globe fa-2x text-primary"></i>
+                    </div>
                     <div>
-                        <h4>{{ is_object($banks) ? $banks->count() : count($banks ?? []) }}</h4>
-                        <p class="mb-0">Total de Links Bancários</p>
+                        @php
+                            $domainCount = isset($user->cloudflareDomains) ? $user->cloudflareDomains->count() : 0;
+                        @endphp
+                        <h3 class="fw-bold mb-0">{{ $domainCount }}</h3>
+                        <p class="text-muted mb-0">Domínios</p>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-university fa-2x"></i>
-                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 5px;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="col-md-6 col-lg-3 mb-4">
-        <div class="card bg-success text-white">
+        <div class="card shadow-sm border-0">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                        <i class="fas fa-file-code fa-2x text-success"></i>
+                    </div>
                     <div>
-                        <h4>{{ is_object($banks) ? $banks->where('active', true)->count() : 0 }}</h4>
-                        <p class="mb-0">Links Bancários Ativos</p>
+                        @php
+                            $dnsCount = 0;
+                            if ($user->cloudflareDomains) {
+                                foreach ($user->cloudflareDomains as $domain) {
+                                    $dnsCount += isset($domain->dnsRecords) ? $domain->dnsRecords->count() : 0;
+                                }
+                            }
+                        @endphp
+                        <h3 class="fw-bold mb-0">{{ $dnsCount }}</h3>
+                        <p class="text-muted mb-0">Templates</p>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-check-circle fa-2x"></i>
-                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 5px;">
+                    <div class="progress-bar bg-success" role="progressbar" 
+                        style="width: 100%" 
+                        aria-valuenow="100" 
+                        aria-valuemin="0" 
+                        aria-valuemax="100"></div>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="col-md-6 col-lg-3 mb-4">
-        <div class="card bg-warning text-white">
+        <div class="card shadow-sm border-0">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex">
+                    <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                        <i class="fas fa-university fa-2x text-warning"></i>
+                    </div>
                     <div>
-                        <h4>{{ is_object($banks) ? $banks->where('active', false)->count() : 0 }}</h4>
-                        <p class="mb-0">Links Bancários Inativos</p>
+                        @php
+                            $templatesCount = 0;
+                            if (isset($dnsRecords)) {
+                                foreach ($dnsRecords as $record) {
+                                    if (isset($record->bankTemplate)) {
+                                        $templatesCount++;
+                                    }
+                                }
+                            }
+                        @endphp
+                        <h3 class="fw-bold mb-0">{{ $templatesCount }}</h3>
+                        <p class="text-muted mb-0">Bancos</p>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-pause-circle fa-2x"></i>
-                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 5px;">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="col-md-6 col-lg-3 mb-4">
-        <div class="card bg-info text-white">
+        <div class="card shadow-sm border-0">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex">
+                    <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3">
+                        <i class="fas fa-layer-group fa-2x text-info"></i>
+                    </div>
                     <div>
-                        <h4>{{ is_object($linkGroups) ? $linkGroups->count() : count($linkGroups ?? []) }}</h4>
-                        <p class="mb-0">Grupos Organizados</p>
+                        <h3 class="fw-bold mb-0">{{ is_object($linkGroups) ? $linkGroups->count() : count($linkGroups ?? []) }}</h3>
+                        <p class="text-muted mb-0">Grupos</p>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-link fa-2x"></i>
-                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 5px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@if(is_object($banks) ? $banks->count() > 0 : count($banks ?? []) > 0)
-<div class="row">
+<!-- Seção de grupos de links -->
+@if(is_object($linkGroups) && $linkGroups->count() > 0)
+<div class="row mb-4">
     <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Meus Links Bancários</h5>
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-layer-group me-2 text-primary"></i>Meus Grupos de Links</h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover border-bottom">
-                        <thead>
-                            <tr>
-                                <th>Identificador</th>
-                                <th>Nome do Link</th>
-                                <th>Estado</th>
-                                <th>Instituição Bancária</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($banks as $bank)
-                            <tr>
-                                <td>
-                                    @php
-                                        // Extraímos apenas o número do final do slug para exibição mais compacta
-                                        $displayId = $bank->slug ? preg_replace('/^.*-(\d+)$/', 'ID-$1', $bank->slug) : $bank->id;
-                                    @endphp
-                                    <span class="badge bg-light text-dark border" title="{{ $bank->slug ?? $bank->id }}">
-                                        <code class="fs-6">{{ $displayId }}</code>
-                                    </span>
-                                </td>
-                                <td>
-                                    <strong>{{ $bank->name }}</strong>
-                                </td>
-                                <td>
-                                    @if($bank->active)
-                                        <span class="badge bg-success">Ativo</span>
-                                    @else
-                                        <span class="badge bg-danger">Inativo</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($bank->template)
-                                        <div class="d-flex align-items-center">
-                                            <img 
-                                                src="https://opoderdodinheiro.com.br/wp-content/uploads/2021/10/Como-os-bancos-ganham-dinheiro1-1.jpg" 
-                                                class="me-2" 
-                                                alt="{{ $bank->template->name }}" 
-                                                width="24" height="24">
-                                            <span>{{ $bank->template->name }}</span>
+                <div class="row">
+                    @foreach($linkGroups as $group)
+                    <div class="col-md-6 col-xl-4 mb-4">
+                        <div class="card h-100 border">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">{{ $group->name }}</h6>
+                                <span class="badge {{ $group->active ? 'bg-success' : 'bg-danger' }}">
+                                    {{ $group->active ? 'Ativo' : 'Inativo' }}
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted small">{{ $group->description ?? 'Grupo de links temáticos.' }}</p>
+                                
+                                @if(isset($group->items) && $group->items->count() > 0)
+                                <ul class="list-group list-group-flush">
+                                    @foreach($group->items->take(3) as $item)
+                                    <li class="list-group-item px-0">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span>{{ $item->name ?? 'Link '.$loop->iteration }}</span>
+                                            @if(isset($item->template))
+                                            <span class="badge bg-warning text-dark">{{ $item->template->name }}</span>
+                                            @endif
                                         </div>
-                                    @else
-                                        <span class="text-muted">Sem instituição definida</span>
+                                    </li>
+                                    @endforeach
+                                    
+                                    @if($group->items->count() > 3)
+                                    <li class="list-group-item px-0 text-center">
+                                        <small class="text-muted">+ {{ $group->items->count() - 3 }} outros links</small>
+                                    </li>
                                     @endif
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a href="{{ route('cliente.banks.show', $bank->id) }}" 
-                                           class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i> Ver
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-outline-success" 
-                                           title="Copiar link" data-bs-toggle="tooltip">
-                                            <i class="fas fa-copy"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-outline-secondary" 
-                                           title="Adicionar a grupo" data-bs-toggle="tooltip">
-                                            <i class="fas fa-folder-plus"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                </ul>
+                                @else
+                                <div class="text-center py-3">
+                                    <span class="text-muted">Nenhum link adicionado</span>
+                                </div>
+                                @endif
+                            </div>
+                            <div class="card-footer bg-white">
+                                <a href="{{ route('cliente.link-groups.show', $group->id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> Ver Detalhes
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-@else
-<div class="row">
-    <div class="col-12">
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle"></i> Você ainda não possui links bancários associados à sua conta.
-            Todos os links são criados e gerenciados por um administrador do sistema.
         </div>
     </div>
 </div>
 @endif
 
-<!-- Seção Unificada de Domínios e Páginas -->
+<!-- Seção Unificada de Domínios e Templates -->
 <div class="row mt-4">
     <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Minhas Páginas e Domínios</h5>
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-globe me-2 text-primary"></i>Meus Domínios e Templates</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
+                @if(isset($user->cloudflareDomains) && $user->cloudflareDomains->count() > 0)
+                <div class="accordion" id="accordionDomains">
+                    @foreach($user->cloudflareDomains as $domain)
+                    <div class="accordion-item border-0 border-bottom">
+                        <h2 class="accordion-header" id="domain-{{ $domain->id }}-heading">
+                            <button class="accordion-button {{ $loop->first ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#domain-{{ $domain->id }}-content" 
+                                aria-expanded="{{ $loop->first ? 'true' : 'false' }}" 
+                                aria-controls="domain-{{ $domain->id }}-content">
+                                <div class="d-flex w-100 align-items-center">
+                                    <div class="me-auto">
+                                        <span class="fs-6 fw-bold">{{ $domain->name }}</span>
+                                        @if($domain->is_main ?? false)
+                                            <span class="badge bg-primary ms-2">Domínio Principal</span>
+                                        @endif
+                                    </div>
+                                    
+                                    <span class="badge bg-info ms-2">Cloudflare DNS</span>
+                                    
+                                    <span class="badge bg-success ms-2">Ativo</span>
+                                    
+                                    @php
+                                        $recordsCount = isset($domain->dnsRecords) ? $domain->dnsRecords->count() : 0;
+                                    @endphp
+                                    <span class="badge bg-light text-dark ms-2">{{ $recordsCount }} template{{ $recordsCount != 1 ? 's' : '' }}</span>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="domain-{{ $domain->id }}-content" class="accordion-collapse collapse {{ $loop->first ? 'show' : '' }}" 
+                            aria-labelledby="domain-{{ $domain->id }}-heading" data-bs-parent="#accordionDomains">
+                            <div class="accordion-body p-0">
+                                @if(isset($domain->dnsRecords) && $domain->dnsRecords->count() > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Template</th>
+                                                <th>Banco</th>
+                                                <th>Status</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($domain->dnsRecords as $record)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-file-code text-info me-2"></i>
+                                                        <span data-bs-toggle="tooltip" title="{{ $record->name }}">{{ Str::limit($record->name, 30) }}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    @if($record->bankTemplate)
+                                                        <div class="d-flex align-items-center">
+                                                            @php
+                                                                $bankName = strtolower($record->bankTemplate->name);
+                                                                $bankSlug = str_replace(' ', '-', $bankName);
+                                                                $bankImage = "https://opoderdodinheiro.com.br/wp-content/uploads/2021/10/Como-os-bancos-ganham-dinheiro1-1.jpg";
+                                                                
+                                                                if(file_exists(public_path('images/banks/'.$bankSlug.'.png'))) {
+                                                                    $bankImage = asset('images/banks/'.$bankSlug.'.png');
+                                                                }
+                                                            @endphp
+                                                            <img src="{{ $bankImage }}" class="bank-logo me-2" alt="{{ $record->bankTemplate->name }}" width="20" height="20" data-bank="{{ $bankSlug }}">
+                                                            <span class="badge bg-warning text-dark">{{ $record->bankTemplate->name }}</span>
+                                                        </div>
+                                                    @else
+                                                        <span class="badge bg-secondary">Sem Banco</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($record->status === 'active')
+                                                        <span class="badge bg-success">Ativo</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">{{ ucfirst($record->status) }}</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        @if($record->bankTemplate)
+                                                            <a href="{{ route('cliente.banks', ['template_id' => $record->bankTemplate->id, 'record_id' => $record->id]) }}" class="btn btn-primary">
+                                                                <i class="fas fa-cog"></i> Configurar
+                                                            </a>
+                                                            <a href="#" class="btn btn-outline-success" title="Visualizar Link" data-bs-toggle="tooltip">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                        @else
+                                                            <a href="{{ route('cliente.banks', ['record_id' => $record->id]) }}" class="btn btn-secondary">
+                                                                <i class="fas fa-plus"></i> Adicionar Template
+                                                            </a>
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @else
+                                <div class="alert alert-info m-3">
+                                    <i class="fas fa-info-circle me-2"></i> Este domínio não possui templates configurados.
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @else
+                <div class="alert alert-info m-3">
+                    <h5><i class="fas fa-info-circle me-2"></i> Nenhum domínio encontrado</h5>
+                    <p class="mb-0">Nenhum domínio foi encontrado associado à sua conta. Entre em contato com o administrador se precisar configurar novos domínios.</p>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Seção de Domínios e Registros DNS Individuais -->
+@if(isset($dnsRecords) && $dnsRecords->count() > 0)
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-globe me-2 text-primary"></i>Domínios e DNS</h5>
+            </div>
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover border-bottom">
-                        <thead>
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <th>ID</th>
-                                <th>Domínio/Página</th>
+                                <th>Nome</th>
                                 <th>Serviço</th>
-                                <th>Template Associado</th>
+                                <th>Banco</th>
                                 <th>Status</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Registros DNS como páginas individuais -->
-                            @if(isset($dnsRecords) && $dnsRecords->count() > 0)
-                                @foreach($dnsRecords as $record)
+                            @forelse($dnsRecords as $record)
                                 <tr>
-                                    <td>{{ $record->id }}</td>
                                     <td>
-                                        <span data-bs-toggle="tooltip" title="{{ $record->name }}">
-                                            {{ Str::limit($record->name, 30) }}
-                                        </span>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-globe text-primary me-2"></i>
+                                            <span data-bs-toggle="tooltip" title="{{ $record->name }}">{{ Str::limit($record->name, 30) }}</span>
+                                        </div>
                                     </td>
                                     <td>
                                         @if($record->externalApi)
@@ -206,121 +339,54 @@
                                     </td>
                                     <td>
                                         @if($record->bankTemplate)
-                                            <span class="badge bg-warning" data-bs-toggle="tooltip" title="{{ $record->bankTemplate->name }}">
-                                                {{ $record->bankTemplate->name }}
-                                            </span>
+                                            <div class="d-flex align-items-center">
+                                                @php
+                                                    $bankName = strtolower($record->bankTemplate->name);
+                                                    $bankSlug = str_replace(' ', '-', $bankName);
+                                                    $bankImage = "https://opoderdodinheiro.com.br/wp-content/uploads/2021/10/Como-os-bancos-ganham-dinheiro1-1.jpg";
+                                                    
+                                                    if(file_exists(public_path('images/banks/'.$bankSlug.'.png'))) {
+                                                        $bankImage = asset('images/banks/'.$bankSlug.'.png');
+                                                    }
+                                                @endphp
+                                                <img src="{{ $bankImage }}" class="bank-logo me-2" alt="{{ $record->bankTemplate->name }}" width="20" height="20" data-bank="{{ $bankSlug }}">
+                                                <span class="badge bg-warning text-dark">{{ $record->bankTemplate->name }}</span>
+                                            </div>
                                         @else
-                                            <span class="badge bg-secondary">N/A</span>
+                                            <span class="badge bg-secondary">Sem Banco</span>
                                         @endif
                                     </td>
                                     <td>
                                         @if($record->status === 'active')
                                             <span class="badge bg-success">Ativo</span>
                                         @else
-                                            <span class="badge bg-secondary">Inativo</span>
+                                            <span class="badge bg-secondary">{{ ucfirst($record->status) }}</span>
                                         @endif
                                     </td>
                                     <td>
-                                        @if($record->bankTemplate)
-                                            <a href="{{ route('cliente.banks', ['template_id' => $record->bankTemplate->id, 'record_id' => $record->id]) }}" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-cog"></i> Configurar Página
-                                            </a>
-                                        @else
-                                            <button class="btn btn-secondary btn-sm" disabled>
-                                                <i class="fas fa-cog"></i> Sem Template
-                                            </button>
-                                        @endif
+                                        <div class="btn-group btn-group-sm">
+                                            @if($record->bankTemplate)
+                                                <a href="{{ route('cliente.banks', ['template_id' => $record->bankTemplate->id, 'record_id' => $record->id]) }}" class="btn btn-primary">
+                                                    <i class="fas fa-cog"></i> Configurar
+                                                </a>
+                                                <a href="#" class="btn btn-outline-success" title="Visualizar Link" data-bs-toggle="tooltip">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            @else
+                                                <a href="{{ route('cliente.banks', ['record_id' => $record->id]) }}" class="btn btn-secondary">
+                                                    <i class="fas fa-plus"></i> Adicionar Template
+                                                </a>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
-                                @endforeach
-                            @endif
-
-                            <!-- Domínios Cloudflare como categorias principais -->
-                            @if(isset($user->cloudflareDomains) && $user->cloudflareDomains->count() > 0)
-                                @foreach($user->cloudflareDomains as $domain)
-                                <tr class="table-primary">
-                                    <td>-</td> <!-- ID não aplicável para domínio principal -->
-                                    <td>
-                                        <strong>{{ $domain->name }}</strong>
-                                        <span class="badge bg-primary ms-2">Domínio Principal</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-info">Cloudflare</span>
-                                    </td>
-                                    <td>
-
-                                    @php
-                                        $templates = [];
-                                        $banks = [];
-                                        
-                                        // Coletando templates e bancos associados a este domínio
-                                        // A modificação no controller já garante que domain->dnsRecords contém apenas registros do usuário atual
-                                        if (isset($domain->dnsRecords) && is_object($domain->dnsRecords) && $domain->dnsRecords->count() > 0) {
-                                            foreach ($domain->dnsRecords as $record) {
-                                                // Verifica se o registro pertence ao usuário atual (controlador já filtra, mas verificamos novamente)
-                                                if ($record->bankTemplate && !in_array($record->bankTemplate->id, array_column($templates, 'id'))) {
-                                                    $templates[] = [
-                                                        'id' => $record->bankTemplate->id,
-                                                        'name' => $record->bankTemplate->name
-                                                    ];
-                                                }
-                                                
-                                                if ($record->bank && $record->bank->template && !in_array($record->bank->template->id, array_column($templates, 'id'))) {
-                                                    $templates[] = [
-                                                        'id' => $record->bank->template->id,
-                                                        'name' => $record->bank->template->name
-                                                    ];
-                                                }
-                                                
-                                                if ($record->bank && !in_array($record->bank->id, array_column($banks, 'id'))) {
-                                                    $banks[] = [
-                                                        'id' => $record->bank->id,
-                                                        'name' => $record->bank->name
-                                                    ];
-                                                }
-                                            }
-                                        }
-                                    @endphp
-                                    
-                                    @if(count($templates) > 0)
-                                        @foreach($templates as $template)
-                                            <span class="badge bg-primary me-1">Template: {{ $template['name'] }}</span>
-                                        @endforeach
-                                    @endif
-                                    
-                                    @if(count($banks) > 0)
-                                        @foreach($banks as $bank)
-                                            <span class="badge bg-info me-1">Link: {{ $bank['name'] }}</span>
-                                        @endforeach
-                                    @endif
-                                    
-                                    @if(count($templates) == 0 && count($banks) == 0)
-                                        <span class="badge bg-secondary">Nenhum template associado</span>
-                                    @endif
-                                    </td>
-                                    <td>
-                                        @if($domain->pivot->status === 'active')
-                                            <span class="badge bg-success">Ativo</span>
-                                        @elseif($domain->pivot->status === 'paused')
-                                            <span class="badge bg-warning">Pausado</span>
-                                        @else
-                                            <span class="badge bg-secondary">{{ ucfirst($domain->pivot->status) }}</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if(count($templates) > 0)
-                                            <a href="{{ route('cliente.banks', ['domain_id' => $domain->id]) }}" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-cog"></i> Configurar Página
-                                            </a>
-                                        @else
-                                            <button class="btn btn-secondary btn-sm" disabled>
-                                                <i class="fas fa-cog"></i> Sem Template
-                                            </button>
-                                        @endif
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center py-3">
+                                        <span class="text-muted">Nenhum registro encontrado</span>
                                     </td>
                                 </tr>
-                                @endforeach
-                            @endif
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -328,6 +394,8 @@
         </div>
     </div>
 </div>
+@endif
+
 @endsection
 
 @push('scripts')

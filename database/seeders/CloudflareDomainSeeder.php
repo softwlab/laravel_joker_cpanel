@@ -36,12 +36,12 @@ class CloudflareDomainSeeder extends Seeder
             return;
         }
 
-        $this->command->info('Criando domínios Cloudflare para os usuários...');
+        $this->command->info('Criando domínios Cloudflare e seus registros DNS para os usuários...');
 
         // Lista de TLDs comuns para criar domínios variados
         $tlds = ['.com', '.com.br', '.net', '.org', '.io', '.app', '.site', '.online', '.digital', '.tech'];
 
-        // Criar domínios fictícios do Cloudflare
+        // Criar domínios fictícios do Cloudflare (que também são registros DNS)
         $domainCount = 15; // Total de domínios a serem criados
         
         for ($i = 1; $i <= $domainCount; $i++) {

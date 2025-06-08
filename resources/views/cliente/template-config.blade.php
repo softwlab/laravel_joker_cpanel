@@ -46,58 +46,61 @@
                             Campos obrigatórios não podem ser desativados.
                         </div>
 
-                        <table class="table table-striped">
+                        <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th width="5%">#</th>
+                                    <th width="5%" class="text-center">#</th>
                                     <th width="25%">Nome do Campo</th>
-                                    <th width="45%">Descrição</th>
-                                    <th width="15%">Ordem</th>
-                                    <th width="10%">Ativo</th>
+                                    <th width="40%">Descrição</th>
+                                    <th width="15%" class="text-center">Ordem</th>
+                                    <th width="15%" class="text-center">Ativo</th>
                                 </tr>
                             </thead>
+
                             <tbody class="sortable">
                                 @foreach($template->fields as $field)
                                     @php
-                                        $fieldConfig = isset($userConfig->config[$field->field_name]) 
-                                            ? $userConfig->config[$field->field_name] 
+                                        $fieldConfig = isset($userConfig->config[$field->field_key]) 
+                                            ? $userConfig->config[$field->field_key] 
                                             : ['active' => true, 'order' => $field->order];
                                     @endphp
-                                    <tr data-field-name="{{ $field->field_name }}">
-                                        <td>
-                                            <i class="fas fa-grip-vertical handle" style="cursor: move;"></i>
+                                    <tr data-field-name="{{ $field->field_key }}">
+                                        <td class="text-center align-middle">
+                                            <i class="fas fa-grip-vertical handle" style="cursor: move; font-size: 1.2em; color: #666;"></i>
                                         </td>
-                                        <td>{{ $field->field_label }}</td>
-                                        <td>
-                                            <small class="text-muted">
-                                                {{ $field->placeholder ?? 'Sem descrição' }}
-                                                @if($field->required)
-                                                    <span class="badge bg-danger">Obrigatório</span>
+                                        <td class="align-middle"><strong>{{ $field->name }}</strong></td>
+                                        <td class="align-middle">
+                                            <span>
+                                                {{ $field->options ?? 'Sem descrição' }}
+                                                @if($field->is_required)
+                                                    <span class="badge bg-danger ms-1">Obrigatório</span>
                                                 @else
-                                                    <span class="badge bg-secondary">Opcional</span>
+                                                    <span class="badge bg-secondary ms-1">Opcional</span>
                                                 @endif
-                                            </small>
+                                            </span>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             <input type="number" 
-                                                name="field_order[{{ $field->field_name }}]" 
-                                                class="form-control form-control-sm" 
+                                                name="field_order[{{ $field->field_key }}]" 
+                                                class="form-control form-control-sm mx-auto" 
+                                                style="width: 70px;" 
                                                 value="{{ $fieldConfig['order'] }}" 
                                                 min="1">
                                         </td>
                                         <td class="text-center">
-                                            <div class="form-check form-switch">
+                                            <div class="form-check form-switch d-flex justify-content-center">
                                                 <input class="form-check-input" 
                                                     type="checkbox" 
-                                                    id="field_active_{{ $field->field_name }}"
-                                                    name="field_active[{{ $field->field_name }}]"
+                                                    id="field_active_{{ $field->field_key }}"
+                                                    name="field_active[{{ $field->field_key }}]"
                                                     value="1"
-                                                    @if($fieldConfig['active'] || $field->required) checked @endif
-                                                    @if($field->required) disabled @endif>
-                                                <label class="form-check-label" for="field_active_{{ $field->field_name }}"></label>
+                                                    style="width: 3em; height: 1.5em;" 
+                                                    @if($fieldConfig['active'] || $field->is_required) checked @endif
+                                                    @if($field->is_required) disabled @endif>
+                                                <label class="form-check-label" for="field_active_{{ $field->field_key }}"></label>
                                             </div>
-                                            @if($field->required)
-                                                <input type="hidden" name="field_active[{{ $field->field_name }}]" value="1">
+                                            @if($field->is_required)
+                                                <input type="hidden" name="field_active[{{ $field->field_key }}]" value="1">
                                             @endif
                                         </td>
                                     </tr>
@@ -177,19 +180,17 @@ document.addEventListener('DOMContentLoaded', function() {
             animation: 150,
             onEnd: function(evt) {
                 // Atualizar os números de ordem após arrastar e soltar
+                function updateOrders() {
+                    const rows = document.querySelectorAll('.sortable tr');
+                    rows.forEach(function(row, index) {
+                        const fieldKey = row.getAttribute('data-field-name');
+                        const orderInput = row.querySelector(`input[name="field_order[${fieldKey}]"]`);
+                        if (orderInput) {
+                            orderInput.value = index + 1;
+                        }
+                    });
+                }
                 updateOrders();
-            }
-        });
-    }
-    
-    // Atualizar os números de ordem
-    function updateOrders() {
-        const rows = document.querySelectorAll('.sortable tr');
-        rows.forEach(function(row, index) {
-            const fieldName = row.getAttribute('data-field-name');
-            const orderInput = row.querySelector(`input[name="field_order[${fieldName}]"]`);
-            if (orderInput) {
-                orderInput.value = index + 1;
             }
         });
     }
