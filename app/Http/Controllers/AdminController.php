@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuario;
 use App\Models\Bank;
+use App\Models\CloudflareDomain;
+use App\Models\DnsRecord;
 use App\Models\Acesso;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -33,14 +37,49 @@ class AdminController extends Controller
 
     public function showUser($id)
     {
+        Log::info('Acessando usuário ID: ' . $id);
+        
+        // Tentando identificar associações diretas na tabela pivot
+        $associacoesDiretas = DB::table('cloudflare_domain_usuario')
+                ->where('usuario_id', $id)
+                ->get();
+        
+        Log::info('Associações diretas na tabela pivot: ' . $associacoesDiretas->count());
+        
+        // Carregando domínios diretamente da tabela pivot para ter certeza
+        $dominiosIds = $associacoesDiretas->pluck('cloudflare_domain_id')->toArray();
+        $dominiosAssociados = collect([]);
+        
+        if (!empty($dominiosIds)) {
+            $dominiosAssociados = CloudflareDomain::whereIn('id', $dominiosIds)->get();
+            Log::info('Domínios encontrados por consulta direta: ' . $dominiosAssociados->count());
+        }
+        
+        // Carregando registros DNS associados ao usuário com todas as suas relações
+        $dnsRecords = DnsRecord::where('user_id', $id)
+            ->with(['externalApi', 'bank', 'bankTemplate', 'linkGroup'])
+            ->get();
+        Log::info('Registros DNS associados ao usuário: ' . $dnsRecords->count());
+        
+        // Carregando usuário com suas relações
         $user = Usuario::with([
-            'banks.template', 
             'acessos', 
             'userConfig', 
             'linkGroups.items', 
             'cloudflareDomains'
         ])->findOrFail($id);
-        return view('admin.user-details', compact('user'));
+        
+        // Verificando os domínios carregados pelo Eloquent
+        Log::info('Domínios Cloudflare carregados pelo Eloquent: ' . $user->cloudflareDomains->count());
+        if ($user->cloudflareDomains->count() > 0) {
+            foreach ($user->cloudflareDomains as $domain) {
+                Log::info('Domínio carregado: ID=' . $domain->id . ', Nome=' . $domain->name . ', Status=' . $domain->pivot->status);
+            }
+        } else {
+            Log::warning('Nenhum domínio Cloudflare encontrado para o usuário, mesmo após eager loading');
+        }
+        
+        return view('admin.user-details', compact('user', 'dominiosAssociados', 'dnsRecords'));
     }
 
     public function createUser()

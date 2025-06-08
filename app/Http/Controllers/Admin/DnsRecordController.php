@@ -8,7 +8,7 @@ use App\Models\ExternalApi;
 use App\Models\Bank;
 use App\Models\BankTemplate;
 use App\Models\LinkGroup;
-use App\Models\User;
+use App\Models\Usuario;
 use App\Services\DnsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -54,7 +54,7 @@ class DnsRecordController extends Controller
         $banks = Bank::all();
         $templates = BankTemplate::all();
         $groups = LinkGroup::all();
-        $users = User::all();
+        $users = \App\Models\Usuario::all();
         $clientIpAddress = Config::get('app.client_page_ip', '127.0.0.1');
         
         $recordTypes = [
@@ -87,7 +87,7 @@ class DnsRecordController extends Controller
             'bank_id' => 'nullable|exists:banks,id',
             'bank_template_id' => 'nullable|exists:bank_templates,id',
             'link_group_id' => 'nullable|exists:link_groups,id',
-            'user_id' => 'nullable|exists:users,id',
+            'user_id' => 'nullable|exists:usuarios,id',
         ]);
 
         if ($validator->fails()) {
@@ -166,7 +166,7 @@ class DnsRecordController extends Controller
         $banks = Bank::all();
         $templates = BankTemplate::all();
         $groups = LinkGroup::all();
-        $users = User::all();
+        $users = \App\Models\Usuario::all();
         $clientIpAddress = Config::get('app.client_page_ip', '127.0.0.1');
         
         $recordTypes = [
@@ -202,7 +202,7 @@ class DnsRecordController extends Controller
             'bank_id' => 'nullable|exists:banks,id',
             'bank_template_id' => 'nullable|exists:bank_templates,id',
             'link_group_id' => 'nullable|exists:link_groups,id',
-            'user_id' => 'nullable|exists:users,id',
+            'user_id' => 'nullable|exists:usuarios,id',
             'status' => 'required|in:active,inactive',
         ]);
 
@@ -229,9 +229,18 @@ class DnsRecordController extends Controller
         
         // Se a API for do tipo Cloudflare, atualizar dados extras
         if ($api->type === 'cloudflare') {
-            $extraData = $record->extra_data ?? [];
-            $extraData['zone_id'] = $request->input('zone_id', $extraData['zone_id'] ?? $api->config['cloudflare_zone_id'] ?? '');
+            // Garantir que extra_data seja um array
+            $extraData = is_array($record->extra_data) ? $record->extra_data : [];
+            
+            // Obter o zone_id do request, do registro existente, ou do config da API
+            $currentZoneId = is_array($extraData) && isset($extraData['zone_id']) ? $extraData['zone_id'] : '';
+            $configZoneId = is_array($api->config) && isset($api->config['cloudflare_zone_id']) ? $api->config['cloudflare_zone_id'] : '';
+            $extraData['zone_id'] = $request->input('zone_id') ?: $currentZoneId ?: $configZoneId ?: '';
+            
+            // Definir se o registro está sob proxy
             $extraData['proxied'] = $request->has('proxied');
+            
+            // Salvar os dados extras atualizados
             $record->extra_data = $extraData;
             $record->save();
         }

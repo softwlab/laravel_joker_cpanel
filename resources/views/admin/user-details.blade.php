@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+    use Illuminate\Support\Facades\DB;
+@endphp
+
 @section('title', 'Detalhes do Usuário')
 
 @section('content')
@@ -206,9 +210,10 @@
         <div class="card shadow-sm mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Domínios Cloudflare</h5>
-                <span class="badge bg-primary">{{ $user->cloudflareDomains->count() ?? 0 }}</span>
+                <span class="badge bg-primary">{{ (isset($user->cloudflareDomains) ? $user->cloudflareDomains->count() : 0) + (isset($dominiosAssociados) ? count($dominiosAssociados) : 0) }}</span>
             </div>
             <div class="card-body">
+                <!-- Domínios via Eloquent -->
                 @if(isset($user->cloudflareDomains) && $user->cloudflareDomains->count() > 0)
                     <div class="table-responsive">
                         <table class="table table-sm">
@@ -217,6 +222,7 @@
                                     <th>Nome</th>
                                     <th>Status</th>
                                     <th>Registros</th>
+                                    <th>Fonte</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -233,7 +239,68 @@
                                             <span class="badge bg-secondary">{{ ucfirst($domain->pivot->status) }}</span>
                                         @endif
                                     </td>
-                                    <td>{{ $domain->records_count }}</td>
+                                    <td>{{ $domain->records_count ?? 'N/A' }}</td>
+                                    <td><span class="badge bg-info">Eloquent</span></td>
+                                    <td>
+                                        <a href="{{ route('admin.cloudflare.domain-associations.show', [$domain->id, $user->id]) }}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                
+                                <!-- Domínios carregados diretamente -->
+                                @if(isset($dominiosAssociados) && $dominiosAssociados->count() > 0)
+                                    @foreach($dominiosAssociados as $domain)
+                                    <tr>
+                                        <td>{{ $domain->name }}</td>
+                                        <td>
+                                            <span class="badge bg-success">Ativo</span>
+                                        </td>
+                                        <td>
+                                            @php
+                                                $recordCount = isset($dnsRecords) ? $dnsRecords->where('external_api_id', $domain->external_api_id)->count() : 0;
+                                            @endphp
+                                            {{ $recordCount }}
+                                        </td>
+                                        <td><span class="badge bg-warning">Consulta Direta</span></td>
+                                        <td>
+                                            <a href="{{ route('admin.cloudflare.domain-associations.show', [$domain->id, $user->id]) }}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                @elseif(isset($dominiosAssociados) && $dominiosAssociados->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Status</th>
+                                    <th>Registros</th>
+                                    <th>Fonte</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($dominiosAssociados as $domain)
+                                <tr>
+                                    <td>{{ $domain->name }}</td>
+                                    <td>
+                                        <span class="badge bg-success">Ativo</span>
+                                    </td>
+                                    <td>
+                                        @php
+                                            $recordCount = isset($dnsRecords) ? $dnsRecords->where('external_api_id', $domain->external_api_id)->count() : 0;
+                                        @endphp
+                                        {{ $recordCount }}
+                                    </td>
+                                    <td><span class="badge bg-warning">Consulta Direta</span></td>
                                     <td>
                                         <a href="{{ route('admin.cloudflare.domain-associations.show', [$domain->id, $user->id]) }}" class="btn btn-sm btn-info">
                                             <i class="fas fa-eye"></i>
@@ -247,6 +314,110 @@
                 @else
                     <div class="alert alert-info mb-0">
                         Este usuário não possui domínios Cloudflare associados.
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <!-- Seção para Registros DNS associados diretamente ao usuário -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Registros DNS Associados</h5>
+                <span class="badge bg-primary">{{ isset($dnsRecords) ? $dnsRecords->count() : 0 }}</span>
+            </div>
+            <div class="card-body">
+                @if(isset($dnsRecords) && $dnsRecords->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo</th>
+                                    <th>Nome</th>
+                                    <th>Conteúdo</th>
+                                    <th>Domínio</th>
+                                    <th>Template</th>
+                                    <th>Link/Grupo</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($dnsRecords as $record)
+                                <tr>
+                                    <td>{{ $record->id }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary" data-bs-toggle="tooltip" title="{{ $record->record_type }}">
+                                            <i class="{{ $record->icon }}"></i>
+                                            {{ $record->record_type }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-bs-toggle="tooltip" title="{{ $record->name }}">
+                                            {{ Str::limit($record->name, 20) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span data-bs-toggle="tooltip" title="{{ $record->content }}">
+                                            {{ Str::limit($record->content, 20) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if($record->externalApi)
+                                            <span class="badge bg-info" data-bs-toggle="tooltip" title="{{ $record->externalApi->name }}">
+                                                {{ Str::limit($record->externalApi->name, 15) }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary">N/A</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($record->bankTemplate)
+                                            <span class="badge bg-warning" data-bs-toggle="tooltip" title="{{ $record->bankTemplate->name }}">
+                                                {{ Str::limit($record->bankTemplate->name, 15) }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary">N/A</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($record->bank)
+                                            <span class="badge bg-success" data-bs-toggle="tooltip" title="Link: {{ $record->bank->name }}">
+                                                <i class="fas fa-link"></i> {{ Str::limit($record->bank->name, 15) }}
+                                            </span>
+                                        @elseif($record->linkGroup)
+                                            <span class="badge bg-primary" data-bs-toggle="tooltip" title="Grupo: {{ $record->linkGroup->name }}">
+                                                <i class="fas fa-layer-group"></i> {{ Str::limit($record->linkGroup->name, 15) }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary">N/A</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($record->status === 'active')
+                                            <span class="badge bg-success">Ativo</span>
+                                        @else
+                                            <span class="badge bg-secondary">Inativo</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{{ route('admin.dns-records.edit', $record->id) }}" class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{{ route('admin.dns-records.show', $record->id) }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Visualizar">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="alert alert-info mb-0">
+                        Este usuário não possui registros DNS associados diretamente.
                     </div>
                 @endif
             </div>
@@ -294,3 +465,17 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar todos os tooltips na página
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                boundary: document.body
+            });
+        });
+    });
+</script>
+@endpush

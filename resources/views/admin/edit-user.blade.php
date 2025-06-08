@@ -63,3 +63,30 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    
+                    <div class="mb-3">
+                        <label for="ativo" class="form-label">Status</label>
+                        <select class="form-select @error('ativo') is-invalid @enderror" 
+                                id="ativo" name="ativo" required>
+                            <option value="1" {{ old('ativo', $user->ativo) == 1 ? 'selected' : '' }}>Ativo</option>
+                            <option value="0" {{ old('ativo', $user->ativo) == 0 ? 'selected' : '' }}>Inativo</option>
+                        </select>
+                        @error('ativo')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar Alterações
+                        </button>
+                        <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

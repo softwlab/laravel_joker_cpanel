@@ -14,24 +14,18 @@ class UsuarioSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user
-        Usuario::create([
-            'nome' => 'Administrador',
-            'email' => 'admin@example.com',
-            'senha' => Hash::make('password'),
-            'ativo' => true,
-            'nivel' => 'admin',
-            'api_token' => Str::random(60),
-        ]);
-
-        // Create client user
-        Usuario::create([
-            'nome' => 'Cliente Demo',
-            'email' => 'cliente@example.com',
-            'senha' => Hash::make('password'),
-            'ativo' => true,
-            'nivel' => 'cliente',
-            'api_token' => Str::random(60),
-        ]);
+        // Create 5 client users
+        for ($i = 1; $i <= 5; $i++) {
+            Usuario::create([
+                'nome' => 'Cliente ' . $i,
+                'email' => 'cliente' . $i . '@example.com',
+                'senha' => Hash::make('cliente' . $i),
+                'ativo' => true,
+                'nivel' => 'cliente',
+                'api_token' => Str::random(60),
+            ]);
+            
+            $this->command->info('Cliente ' . $i . ' criado com sucesso');
+        }
     }
 }

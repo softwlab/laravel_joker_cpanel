@@ -27,7 +27,7 @@ try {
     
     // Definir um novo token de API (método preferido pela Cloudflare)
     // Exemplo de token - substitua por um token real e válido
-    $apiToken = 'vFJCW3cAIeDwvlQT4YgaesGmq5_3BWYzerFAbeFf';
+    $apiToken = 'Kh5WAoAhNYn1-abfpY9CQAauVQCJ5kmXmjUxA94t';
     
     // Atualizar a configuração
     $api->config = [

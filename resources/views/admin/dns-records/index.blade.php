@@ -135,7 +135,16 @@
                                             if ($record->bank) $associations[] = '<span class="badge bg-primary">Link</span>';
                                             if ($record->bankTemplate) $associations[] = '<span class="badge bg-info">Template</span>';
                                             if ($record->linkGroup) $associations[] = '<span class="badge bg-warning">Grupo</span>';
-                                            if ($record->user) $associations[] = '<span class="badge bg-dark">Usuário</span>';
+                                            if ($record->user_id) {
+                                                // Buscar o usuário diretamente e imprimir o nome explicitamente
+                                                $user = \App\Models\Usuario::find($record->user_id);
+                                                if ($user && isset($user->name)) {
+                                                    $userName = $user->name;
+                                                    $associations[] = '<span class="badge bg-dark">Usuário: ' . e($userName) . '</span>';
+                                                } else {
+                                                    $associations[] = '<span class="badge bg-dark">Usuário ID: ' . $record->user_id . '</span>';
+                                                }
+                                            }
                                         @endphp
                                         {!! implode(' ', $associations) ?: '<i class="text-muted">Nenhuma</i>' !!}
                                     </td>

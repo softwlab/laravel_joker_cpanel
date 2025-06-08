@@ -60,10 +60,11 @@ class CloudflareDomain extends Model
     
     /**
      * Registros DNS associados a este domínio
+     * Nota: A relação é feita pelo external_api_id já que não temos uma coluna zone_id na tabela dns_records
      */
     public function dnsRecords()
     {
-        return $this->hasMany(DnsRecord::class, 'domain_id', 'zone_id');
+        return $this->hasMany(DnsRecord::class, 'external_api_id', 'external_api_id');
     }
     
     // Relacionamento com a API externa movido para a declaração acima

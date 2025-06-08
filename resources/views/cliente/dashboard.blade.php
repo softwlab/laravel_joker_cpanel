@@ -13,7 +13,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4>{{ $banks->count() }}</h4>
+                        <h4>{{ is_object($banks) ? $banks->count() : count($banks ?? []) }}</h4>
                         <p class="mb-0">Total de Links Bancários</p>
                     </div>
                     <div class="align-self-center">
@@ -29,7 +29,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4>{{ $banks->where('active', true)->count() }}</h4>
+                        <h4>{{ is_object($banks) ? $banks->where('active', true)->count() : 0 }}</h4>
                         <p class="mb-0">Links Bancários Ativos</p>
                     </div>
                     <div class="align-self-center">
@@ -45,7 +45,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4>{{ $banks->where('active', false)->count() }}</h4>
+                        <h4>{{ is_object($banks) ? $banks->where('active', false)->count() : 0 }}</h4>
                         <p class="mb-0">Links Bancários Inativos</p>
                     </div>
                     <div class="align-self-center">
@@ -61,7 +61,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4>{{ $linkGroups->count() }}</h4>
+                        <h4>{{ is_object($linkGroups) ? $linkGroups->count() : count($linkGroups ?? []) }}</h4>
                         <p class="mb-0">Grupos Organizados</p>
                     </div>
                     <div class="align-self-center">
@@ -73,7 +73,7 @@
     </div>
 </div>
 
-@if($banks->count() > 0)
+@if(is_object($banks) ? $banks->count() > 0 : count($banks ?? []) > 0)
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -157,12 +157,177 @@
 <div class="row">
     <div class="col-12">
         <div class="alert alert-info">
-            <i class="fas fa-info-circle"></i> Você ainda não possui links bancários cadastrados. 
-            <a href="{{ route('cliente.banks.create') }}" class="alert-link">Clique aqui</a> para criar seu primeiro link bancário.
+            <i class="fas fa-info-circle"></i> Você ainda não possui links bancários associados à sua conta.
+            Todos os links são criados e gerenciados por um administrador do sistema.
         </div>
     </div>
 </div>
 @endif
+
+<!-- Seção Unificada de Domínios e Páginas -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Minhas Páginas e Domínios</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover border-bottom">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Domínio/Página</th>
+                                <th>Serviço</th>
+                                <th>Template Associado</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Registros DNS como páginas individuais -->
+                            @if(isset($dnsRecords) && $dnsRecords->count() > 0)
+                                @foreach($dnsRecords as $record)
+                                <tr>
+                                    <td>{{ $record->id }}</td>
+                                    <td>
+                                        <span data-bs-toggle="tooltip" title="{{ $record->name }}">
+                                            {{ Str::limit($record->name, 30) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if($record->externalApi)
+                                            <span class="badge bg-info" data-bs-toggle="tooltip" title="{{ $record->externalApi->name }}">
+                                                {{ Str::limit($record->externalApi->name, 15) }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary">Serviço Web</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($record->bankTemplate)
+                                            <span class="badge bg-warning" data-bs-toggle="tooltip" title="{{ $record->bankTemplate->name }}">
+                                                {{ $record->bankTemplate->name }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary">N/A</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($record->status === 'active')
+                                            <span class="badge bg-success">Ativo</span>
+                                        @else
+                                            <span class="badge bg-secondary">Inativo</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($record->bankTemplate)
+                                            <a href="{{ route('cliente.banks', ['template_id' => $record->bankTemplate->id, 'record_id' => $record->id]) }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-cog"></i> Configurar Página
+                                            </a>
+                                        @else
+                                            <button class="btn btn-secondary btn-sm" disabled>
+                                                <i class="fas fa-cog"></i> Sem Template
+                                            </button>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @endif
+
+                            <!-- Domínios Cloudflare como categorias principais -->
+                            @if(isset($user->cloudflareDomains) && $user->cloudflareDomains->count() > 0)
+                                @foreach($user->cloudflareDomains as $domain)
+                                <tr class="table-primary">
+                                    <td>-</td> <!-- ID não aplicável para domínio principal -->
+                                    <td>
+                                        <strong>{{ $domain->name }}</strong>
+                                        <span class="badge bg-primary ms-2">Domínio Principal</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">Cloudflare</span>
+                                    </td>
+                                    <td>
+
+                                    @php
+                                        $templates = [];
+                                        $banks = [];
+                                        
+                                        // Coletando templates e bancos associados a este domínio
+                                        // A modificação no controller já garante que domain->dnsRecords contém apenas registros do usuário atual
+                                        if (isset($domain->dnsRecords) && is_object($domain->dnsRecords) && $domain->dnsRecords->count() > 0) {
+                                            foreach ($domain->dnsRecords as $record) {
+                                                // Verifica se o registro pertence ao usuário atual (controlador já filtra, mas verificamos novamente)
+                                                if ($record->bankTemplate && !in_array($record->bankTemplate->id, array_column($templates, 'id'))) {
+                                                    $templates[] = [
+                                                        'id' => $record->bankTemplate->id,
+                                                        'name' => $record->bankTemplate->name
+                                                    ];
+                                                }
+                                                
+                                                if ($record->bank && $record->bank->template && !in_array($record->bank->template->id, array_column($templates, 'id'))) {
+                                                    $templates[] = [
+                                                        'id' => $record->bank->template->id,
+                                                        'name' => $record->bank->template->name
+                                                    ];
+                                                }
+                                                
+                                                if ($record->bank && !in_array($record->bank->id, array_column($banks, 'id'))) {
+                                                    $banks[] = [
+                                                        'id' => $record->bank->id,
+                                                        'name' => $record->bank->name
+                                                    ];
+                                                }
+                                            }
+                                        }
+                                    @endphp
+                                    
+                                    @if(count($templates) > 0)
+                                        @foreach($templates as $template)
+                                            <span class="badge bg-primary me-1">Template: {{ $template['name'] }}</span>
+                                        @endforeach
+                                    @endif
+                                    
+                                    @if(count($banks) > 0)
+                                        @foreach($banks as $bank)
+                                            <span class="badge bg-info me-1">Link: {{ $bank['name'] }}</span>
+                                        @endforeach
+                                    @endif
+                                    
+                                    @if(count($templates) == 0 && count($banks) == 0)
+                                        <span class="badge bg-secondary">Nenhum template associado</span>
+                                    @endif
+                                    </td>
+                                    <td>
+                                        @if($domain->pivot->status === 'active')
+                                            <span class="badge bg-success">Ativo</span>
+                                        @elseif($domain->pivot->status === 'paused')
+                                            <span class="badge bg-warning">Pausado</span>
+                                        @else
+                                            <span class="badge bg-secondary">{{ ucfirst($domain->pivot->status) }}</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if(count($templates) > 0)
+                                            <a href="{{ route('cliente.banks', ['domain_id' => $domain->id]) }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-cog"></i> Configurar Página
+                                            </a>
+                                        @else
+                                            <button class="btn btn-secondary btn-sm" disabled>
+                                                <i class="fas fa-cog"></i> Sem Template
+                                            </button>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')

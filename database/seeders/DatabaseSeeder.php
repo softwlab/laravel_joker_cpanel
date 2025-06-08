@@ -13,13 +13,14 @@ class DatabaseSeeder extends Seeder
     {
         // Call our custom seeders in the correct order
         $this->call([
-            ClearDataSeeder::class, // Limpar dados antigos antes de recriar
-            AdminUserSeeder::class, // Admin user com username login
-            UsuarioSeeder::class,   // Usuários regulares
-            BankTemplateSeeder::class, // Templates de bancos (devem vir antes dos links bancários)
-            BankSeeder::class,     // Links bancários baseados nos templates
-            LinkGroupSeeder::class, // Grupos de links e associação com links bancários
-            VisitanteSeeder::class, // Deve ser executado depois dos links e bancos
+            ClearDataSeeder::class,        // Limpar dados antigos antes de recriar
+            AdminUserSeeder::class,        // Admin user com username login
+            UsuarioSeeder::class,          // Usuários regulares (clientes)
+            BankTemplateSeeder::class,     // Templates de bancos (necessários para associar aos registros DNS)
+            ExternalApiSeeder::class,      // API do Cloudflare
+            CloudflareDomainSeeder::class, // Domínios do Cloudflare
+            DnsRecordSeeder::class,        // Registros DNS para os domínios
+            VisitanteSeeder::class,        // Visitantes do sistema
         ]);
     }
 }

@@ -164,6 +164,32 @@ class LinkGroupController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
+        
+        // Extrair o domínio da URL fornecida
+        $url = $request->input('url');
+        $parsedUrl = parse_url($url);
+        $domain = isset($parsedUrl['host']) ? $parsedUrl['host'] : '';
+        
+        if ($domain) {
+            // Verificar se o domínio exato já está em uso por outro usuário
+            $existingItem = LinkGroupItem::whereHas('group', function ($query) use ($user) {
+                $query->where('usuario_id', '!=', $user->id);
+            })->where('url', 'like', '%'.$domain.'%')->first();
+            
+            if ($existingItem) {
+                // Extrair o domínio do item existente para comparação precisa
+                $existingUrl = $existingItem->url;
+                $existingParsedUrl = parse_url($existingUrl);
+                $existingDomain = isset($existingParsedUrl['host']) ? $existingParsedUrl['host'] : '';
+                
+                // Verificar se os domínios são exatamente iguais
+                if ($existingDomain === $domain) {
+                    return redirect()->back()
+                        ->withErrors(['url' => 'Este domínio já está em uso por outro usuário. Não é permitido usar o mesmo domínio.'])
+                        ->withInput();
+                }
+            }
+        }
 
         // Get the last order value if not provided
         $order = $request->input('order');
@@ -200,7 +226,7 @@ class LinkGroupController extends Controller
         $item = LinkGroupItem::where('id', $itemId)
             ->where('group_id', $groupId)
             ->firstOrFail();
-
+            
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'url' => 'required|string|max:1000',
@@ -213,6 +239,34 @@ class LinkGroupController extends Controller
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
+        }
+        
+        // Extrair o domínio da URL fornecida
+        $url = $request->input('url');
+        $parsedUrl = parse_url($url);
+        $domain = isset($parsedUrl['host']) ? $parsedUrl['host'] : '';
+        
+        if ($domain) {
+            // Verificar se o domínio exato já está em uso por outro usuário
+            $existingItem = LinkGroupItem::whereHas('group', function ($query) use ($user) {
+                $query->where('usuario_id', '!=', $user->id);
+            })->where('url', 'like', '%'.$domain.'%')
+              ->where('id', '!=', $itemId)
+              ->first();
+            
+            if ($existingItem) {
+                // Extrair o domínio do item existente para comparação precisa
+                $existingUrl = $existingItem->url;
+                $existingParsedUrl = parse_url($existingUrl);
+                $existingDomain = isset($existingParsedUrl['host']) ? $existingParsedUrl['host'] : '';
+                
+                // Verificar se os domínios são exatamente iguais
+                if ($existingDomain === $domain) {
+                    return redirect()->back()
+                        ->withErrors(['url' => 'Este domínio já está em uso por outro usuário. Não é permitido usar o mesmo domínio.'])
+                        ->withInput();
+                }
+            }
         }
 
         $item->title = $request->input('title');

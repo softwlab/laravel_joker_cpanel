@@ -26,7 +26,9 @@ class ClearDataSeeder extends Seeder
             'link_groups',      // Grupos de links
             'banks',            // Links bancários
             'bank_template_fields', // Campos dos templates
-            'bank_templates'    // Templates de bancos
+            'bank_templates',   // Templates de bancos
+            'usuarios',         // Usuários do sistema
+            'users'             // Tabela de usuários do Laravel
         ];
         
         // Limpa cada tabela se existir

@@ -47,31 +47,31 @@
                     <div class="row mb-3">
                         <div class="col-md-3 fw-bold">Status:</div>
                         <div class="col-md-9">
-                            @if($association->status === 'active')
+                            @if($usuario->pivot->status === 'active')
                                 <span class="badge bg-success">Ativo</span>
-                            @elseif($association->status === 'paused')
+                            @elseif($usuario->pivot->status === 'paused')
                                 <span class="badge bg-warning">Pausado</span>
                             @else
-                                <span class="badge bg-secondary">{{ ucfirst($association->status) }}</span>
+                                <span class="badge bg-secondary">{{ ucfirst($usuario->pivot->status) }}</span>
                             @endif
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-3 fw-bold">Data de criação:</div>
-                        <div class="col-md-9">{{ $association->created_at->format('d/m/Y H:i:s') }}</div>
+                        <div class="col-md-9">{{ $usuario->pivot->created_at->format('d/m/Y H:i:s') }}</div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-3 fw-bold">Última atualização:</div>
-                        <div class="col-md-9">{{ $association->updated_at->format('d/m/Y H:i:s') }}</div>
+                        <div class="col-md-9">{{ $usuario->pivot->updated_at->format('d/m/Y H:i:s') }}</div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-3 fw-bold">Observações:</div>
-                        <div class="col-md-9">{{ $association->notes ?? 'Sem observações' }}</div>
+                        <div class="col-md-9">{{ $usuario->pivot->notes ?? 'Sem observações' }}</div>
                     </div>
                     <div class="row">
                         <div class="col-md-3 fw-bold">Configurações:</div>
                         <div class="col-md-9">
-                            <pre class="mb-0 bg-light p-2 rounded"><code>{{ json_encode($association->config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</code></pre>
+                            <pre class="mb-0 bg-light p-2 rounded"><code>{{ json_encode($usuario->pivot->config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</code></pre>
                         </div>
                     </div>
                 </div>
@@ -80,12 +80,12 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Registros DNS ({{ $domain->records_count }})</h5>
-                    <a href="{{ route('admin.cloudflare.dns-records.index', $domain->id) }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('admin.domains.records', [$domain->external_api_id, $domain->zone_id]) }}" class="btn btn-sm btn-outline-primary">
                         Ver Todos
                     </a>
                 </div>
                 <div class="card-body">
-                    @if($domain->records->count() > 0)
+                    @if($domain->records && $domain->records->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-sm">
                                 <thead>
@@ -150,14 +150,14 @@
                 <div class="card-body">
                     <p class="card-text">
                         <strong>Status atual:</strong>
-                        @if($association->status === 'active')
+                        @if($usuario->pivot->status === 'active')
                             <span class="badge bg-success">Ativo</span>
                             <br><small class="text-muted">O usuário pode visualizar e editar registros DNS.</small>
-                        @elseif($association->status === 'paused')
+                        @elseif($usuario->pivot->status === 'paused')
                             <span class="badge bg-warning">Pausado</span>
                             <br><small class="text-muted">O usuário pode apenas visualizar registros DNS.</small>
                         @else
-                            <span class="badge bg-secondary">{{ ucfirst($association->status) }}</span>
+                            <span class="badge bg-secondary">{{ ucfirst($usuario->pivot->status) }}</span>
                             <br><small class="text-muted">O usuário não tem acesso aos registros DNS.</small>
                         @endif
                     </p>

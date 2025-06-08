@@ -18,7 +18,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h4 class="mb-0">{{ count(array_filter($domains, function($d) { return $d['status'] == 'active'; })) }}</h4>
+                            <h4 class="mb-0">{{ $activeDomainsCount }}</h4>
                             <div>Domínios Ativos</div>
                         </div>
                         <div>
@@ -33,7 +33,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h4 class="mb-0">{{ count(array_filter($domains, function($d) { return $d['status'] != 'active'; })) }}</h4>
+                            <h4 class="mb-0">{{ $inactiveDomainsCount }}</h4>
                             <div>Domínios Inativos</div>
                         </div>
                         <div>
@@ -51,7 +51,16 @@
                 <i class="fas fa-globe me-1"></i>
                 Domínios disponíveis
             </div>
-            <div>
+            <div class="d-flex gap-2">
+                @if(!isset($showingSeedDomains) || !$showingSeedDomains)
+                    <a href="{{ route('admin.external-apis.domains', ['id' => $api->id, 'show_all' => 1]) }}" class="btn btn-info btn-sm">
+                        <i class="fas fa-eye me-1"></i> Mostrar Domínios de Teste
+                    </a>
+                @else
+                    <a href="{{ route('admin.external-apis.domains', ['id' => $api->id]) }}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-eye-slash me-1"></i> Ocultar Domínios de Teste
+                    </a>
+                @endif
                 <a href="{{ route('admin.external-apis.show', $api->id) }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-arrow-left me-1"></i> Voltar
                 </a>
@@ -70,7 +79,7 @@
                 </div>
             @endif
             
-            @if($error)
+            @if(isset($error) && $error)
                 <div class="alert alert-danger">
                     <strong>Erro ao listar domínios:</strong> {{ $error }}
                 </div>
@@ -95,52 +104,70 @@
                         <tbody>
                             @foreach($domains as $domain)
                                 <tr>
-                                    <td>{{ $domain['id'] }}</td>
-                                    <td>{{ $domain['name'] }}</td>
+                                    <td>{{ $domain['id'] ?? 'N/A' }}</td>
+                                    <td>{{ $domain['name'] ?? 'N/A' }}</td>
                                     <td>
-                                        @if($domain['status'] == 'active')
-                                            <span class="badge bg-success">Ativo</span>
+                                        @if(isset($domain['status']))
+                                            @if($domain['status'] == 'active')
+                                                <span class="badge bg-success">Ativo</span>
+                                            @else
+                                                <span class="badge bg-warning">{{ ucfirst($domain['status']) }}</span>
+                                            @endif
                                         @else
-                                            <span class="badge bg-warning">{{ $domain['status'] }}</span>
+                                            <span class="badge bg-secondary">N/A</span>
                                         @endif
                                     </td>
                                     <td>
-                                        @if(!empty($domain['nameservers']))
-                                            <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#nameservers-{{ $loop->index }}" aria-expanded="false">
-                                                Mostrar ({{ count($domain['nameservers']) }})
-                                            </button>
-                                            <div class="collapse mt-2" id="nameservers-{{ $loop->index }}">
-                                                <div class="card card-body">
-                                                    <ul class="list-unstyled mb-0">
-                                                        @foreach($domain['nameservers'] as $ns)
-                                                            <li>{{ $ns }}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
-                                            </div>
+                                        @if(isset($domain['nameservers']) && is_array($domain['nameservers']))
+                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ implode(', ', $domain['nameservers']) }}">
+                                                {{ count($domain['nameservers']) }} nameservers
+                                            </span>
+                                        @elseif(is_string($domain['nameservers'] ?? ''))
+                                            {{ $domain['nameservers'] }}
                                         @else
-                                            <span class="text-muted">Não disponível</span>
+                                            N/A
                                         @endif
                                     </td>
                                     <td>
-                                        {{ $domain['records_count'] ?? 'N/A' }}
+                                        @php
+                                            // Contagem correta de registros DNS por domínio
+                                            $domainName = $domain['name'];
+                                            $recordCount = \App\Models\DnsRecord::where('external_api_id', $api->id)
+                                                ->where(function($query) use ($domainName) {
+                                                    // Filtra registros que pertencem a este domínio
+                                                    $query->where('name', $domainName)
+                                                          ->orWhere('name', 'like', '%.' . $domainName)
+                                                          ->orWhere('name', 'like', '%' . $domainName);
+                                                })
+                                                ->count();
+                                        @endphp
+                                        <span class="badge bg-info">{{ $recordCount }}</span>
                                     </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-switch d-flex justify-content-center align-items-center">
-                                            <input class="form-check-input ghost-toggle" type="checkbox" role="switch" 
-                                                id="ghost-{{ $domain['id'] }}" 
-                                                data-domain-id="{{ $domain['id'] }}" 
-                                                {{ isset($domain['is_ghost']) && $domain['is_ghost'] ? 'checked' : '' }}>
-                                            <label class="form-check-label ms-2" for="ghost-{{ $domain['id'] }}">
-                                                <i class="fas fa-ghost {{ isset($domain['is_ghost']) && $domain['is_ghost'] ? 'text-danger' : 'text-secondary' }}"></i>
-                                            </label>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @php
+                                                $isGhost = isset($domain['is_ghost']) && $domain['is_ghost'];
+                                                $newGhostValue = $isGhost ? 0 : 1;
+                                                $btnClass = $isGhost ? 'btn-danger' : 'btn-secondary';
+                                                $statusText = $isGhost ? 'Ativo' : 'Inativo';
+                                                $formId = "ghost-form-{$domain['id']}";
+                                            @endphp
+                                            <form id="{{ $formId }}" action="{{ route('admin.external-apis.update-ghost') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="domain_id" value="{{ $domain['id'] }}">
+                                                <input type="hidden" name="is_ghost" value="{{ $newGhostValue }}">
+                                                <button type="submit" class="btn {{ $btnClass }} btn-sm">
+                                                    <i class="fas fa-ghost"></i>
+                                                    <span class="ghost-status-text">{{ $statusText }}</span>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                     <td>
-                                        {{ isset($domain['created_at']) ? date('d/m/Y H:i', strtotime($domain['created_at'])) : date('d/m/Y H:i') }}
+                                        {{ isset($domain['created_at']) ? date('d/m/Y H:i', strtotime($domain['created_at'])) : 'N/A' }}
                                     </td>
                                     <td>
-                                        {{ isset($domain['updated_at']) ? date('d/m/Y H:i', strtotime($domain['updated_at'])) : date('d/m/Y H:i') }}
+                                        {{ isset($domain['updated_at']) ? date('d/m/Y H:i', strtotime($domain['updated_at'])) : 'N/A' }}
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
@@ -208,54 +235,133 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Documento carregado. Inicializando scripts...');
+        
         // Sincronização de domínio
-        $('.sync-domain-btn').on('click', function() {
-            var domainId = $(this).data('domain-id');
-            var domainName = $(this).data('domain-name');
-            
-            $('#syncDomainName').text(domainName);
-            $('#syncZoneId').val(domainId);
+        document.querySelectorAll('.sync-domain-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var domainId = this.getAttribute('data-domain-id');
+                var domainName = this.getAttribute('data-domain-name');
+                
+                document.getElementById('syncDomainName').textContent = domainName;
+                document.getElementById('syncZoneId').value = domainId;
+                document.getElementById('syncDomainNameInput').value = domainName;
+            });
         });
         
-        // Toggle de status Ghost/Phishing
-        $('.ghost-toggle').on('change', function() {
-            const domainId = $(this).data('domain-id');
-            const isGhost = $(this).prop('checked');
-            const iconElement = $(this).siblings('label').find('i.fa-ghost');
-            
-            // Efeito visual imediato
-            if (isGhost) {
-                iconElement.removeClass('text-secondary').addClass('text-danger');
-            } else {
-                iconElement.removeClass('text-danger').addClass('text-secondary');
-            }
-            
-            // Enviar status para o backend via AJAX
-            $.ajax({
-                url: '{{ route("admin.external-apis.update-ghost-status") }}',
-                method: 'POST',
-                data: {
-                    domain_id: domainId,
-                    is_ghost: isGhost ? 1 : 0,
-                    api_id: '{{ $api->id }}',
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (response.success) {
-                        // Mostrar notificação de sucesso
-                        toastr.success('Status Ghost atualizado com sucesso!');
-                    } else {
-                        toastr.error('Erro ao atualizar status Ghost: ' + response.message);
-                        // Reverter o toggle em caso de erro
-                        $('#ghost-' + domainId).prop('checked', !isGhost).trigger('change');
-                    }
-                },
-                error: function() {
-                    toastr.error('Erro na comunicação com o servidor');
-                    // Reverter o toggle em caso de erro
-                    $('#ghost-' + domainId).prop('checked', !isGhost).trigger('change');
+        // Inicializa tooltips Bootstrap (se Bootstrap estiver disponível)
+        if (typeof bootstrap !== 'undefined') {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        }
+        
+        // ===== FORMULÁRIOS GHOST =====
+        // Configuração de submissão de formulários via AJAX
+        var ghostForms = document.querySelectorAll('form[id^="ghost-form-"]');
+        console.log('Formulários Ghost encontrados:', ghostForms.length);
+        
+        // Adicionamos evento de submit para cada formulário Ghost
+        ghostForms.forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                // Previne o comportamento padrão de submissão
+                event.preventDefault();
+                
+                var formElement = this;
+                var domainId = formElement.querySelector('input[name="domain_id"]').value;
+                var newGhostValue = formElement.querySelector('input[name="is_ghost"]').value;
+                var buttonElement = formElement.querySelector('button[type="submit"]');
+                var iconElement = buttonElement.querySelector('i.fa-ghost');
+                var statusTextElement = buttonElement.querySelector('.ghost-status-text');
+                
+                console.log('Formulário Ghost submetido para domínio:', domainId);
+                console.log('Novo estado:', newGhostValue);
+                
+                // Mostramos indicação visual de processamento
+                buttonElement.disabled = true;
+                if (iconElement) {
+                    iconElement.classList.add('fa-spin');
                 }
+                
+                // Preparamos os dados do formulário
+                var formData = new FormData(formElement);
+                
+                // Enviamos o formulário usando fetch API
+                fetch(formElement.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('Erro na resposta: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function(data) {
+                    console.log('Resposta do servidor:', data);
+                    
+                    // Removemos indicação visual de processamento
+                    buttonElement.disabled = false;
+                    if (iconElement) {
+                        iconElement.classList.remove('fa-spin');
+                    }
+                    
+                    if (data.success) {
+                        // Obtemos o valor atual e o novo valor
+                        var isNowGhost = data.status ? true : false;
+                        
+                        // Atualizamos a classe do botão e o texto de status
+                        if (isNowGhost) {
+                            buttonElement.classList.remove('btn-secondary');
+                            buttonElement.classList.add('btn-danger');
+                            statusTextElement.textContent = 'Ativo';
+                        } else {
+                            buttonElement.classList.remove('btn-danger');
+                            buttonElement.classList.add('btn-secondary');
+                            statusTextElement.textContent = 'Inativo';
+                        }
+                        
+                        // Atualizamos o campo hidden no formulário para o próximo clique
+                        formElement.querySelector('input[name="is_ghost"]').value = isNowGhost ? '0' : '1';
+                        
+                        // Mensagem de sucesso
+                        if (typeof toastr !== 'undefined') {
+                            toastr.success('Status Ghost atualizado com sucesso!');
+                        } else {
+                            alert('Status Ghost atualizado com sucesso!');
+                        }
+                    } else {
+                        // Mensagem de erro
+                        var errorMsg = data.message || 'Erro desconhecido';
+                        console.error('Erro ao atualizar status:', errorMsg);
+                        
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error('Erro: ' + errorMsg);
+                        } else {
+                            alert('Erro: ' + errorMsg);
+                        }
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Erro na requisição:', error);
+                    
+                    // Removemos indicação visual de processamento
+                    buttonElement.disabled = false;
+                    if (iconElement) {
+                        iconElement.classList.remove('fa-spin');
+                    }
+                    
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error('Erro na comunicação com o servidor: ' + error.message);
+                    } else {
+                        alert('Erro na comunicação com o servidor: ' + error.message);
+                    }
+                });
             });
         });
     });

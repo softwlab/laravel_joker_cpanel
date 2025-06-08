@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Usuario;
 
 class DnsRecord extends Model
 {
@@ -75,7 +76,7 @@ class DnsRecord extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(\App\Models\Usuario::class);
     }
     
     /**

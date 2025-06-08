@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\LinkGroup;
 use App\Models\Bank;
 use App\Models\BankTemplate;
+use App\Models\TemplateUserConfig;
 use App\Models\UserConfig;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,17 +15,167 @@ use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
+    /**
+     * Exibe a página de configuração de templates para o cliente
+     */
+    public function configTemplates(Request $request)
+    {
+        $user = Auth::user();
+        $userId = $user->id;
+        
+        // Verificar se foi fornecido um template_id e record_id específico
+        if ($request->has('template_id') && $request->has('record_id')) {
+            $templateId = $request->input('template_id');
+            $recordId = $request->input('record_id');
+            
+            // Carregar o registro DNS específico que pertence ao usuário
+            $record = \App\Models\DnsRecord::where('id', $recordId)
+                ->where('user_id', $userId)
+                ->with('bankTemplate')
+                ->firstOrFail();
+            
+            $template = BankTemplate::with(['fields' => function($query) {
+                $query->orderBy('order');
+            }])->findOrFail($templateId);
+            
+            // Buscar configuração existente ou criar uma nova
+            $userConfig = TemplateUserConfig::firstOrNew([
+                'user_id' => $userId,
+                'template_id' => $templateId,
+                'record_id' => $recordId
+            ]);
+            
+            // Se não existir configuração, inicializar com os valores padrão
+            if (!$userConfig->exists) {
+                $fieldConfig = [];
+                foreach ($template->fields as $field) {
+                    $fieldConfig[$field->field_name] = [
+                        'active' => $field->required ? true : true, // Campos obrigatórios sempre ativos
+                        'order' => $field->order
+                    ];
+                }
+                $userConfig->config = $fieldConfig;
+            }
+            
+            return view('cliente.template-config', compact('template', 'record', 'userConfig'));
+        }
+        
+        // Verificar se foi fornecido apenas um domain_id
+        elseif ($request->has('domain_id')) {
+            $domainId = $request->input('domain_id');
+            
+            // Verificar se o domínio está associado ao usuário
+            $domain = \App\Models\CloudflareDomain::whereHas('users', function($query) use ($userId) {
+                $query->where('usuario_id', $userId);
+            })->findOrFail($domainId);
+            
+            // Carregar todos os templates disponíveis
+            $templates = BankTemplate::with(['fields' => function($query) {
+                $query->orderBy('order');
+            }])->where('active', true)->get();
+            
+            return view('cliente.domain-templates', compact('domain', 'templates'));
+        }
+        
+        // Caso não tenha parâmetros, mostrar todos os templates configuráveis
+        else {
+            $templates = BankTemplate::with(['fields' => function($query) {
+                $query->orderBy('order');
+            }])->where('active', true)->get();
+            
+            return view('cliente.all-templates', compact('templates'));
+        }
+    }
+    
+    /**
+     * Atualiza a configuração de um template para o cliente
+     */
+    public function updateTemplateConfig(Request $request, $templateId)
+    {
+        $user = Auth::user();
+        $userId = $user->id;
+        
+        $request->validate([
+            'record_id' => 'required|exists:dns_records,id',
+            'field_active' => 'required|array',
+            'field_order' => 'required|array'
+        ]);
+        
+        $recordId = $request->input('record_id');
+        
+        // Verificar se o registro pertence ao usuário
+        $record = \App\Models\DnsRecord::where('id', $recordId)
+            ->where('user_id', $userId)
+            ->firstOrFail();
+        
+        // Obter o template com seus campos
+        $template = BankTemplate::with('fields')->findOrFail($templateId);
+        
+        // Preparar a configuração
+        $fieldConfig = [];
+        foreach ($template->fields as $field) {
+            $fieldName = $field->field_name;
+            
+            // Campos obrigatórios sempre são ativos
+            $isActive = $field->required ? true : 
+                        (isset($request->field_active[$fieldName]) ? true : false);
+            
+            $order = isset($request->field_order[$fieldName]) ? 
+                    (int)$request->field_order[$fieldName] : $field->order;
+            
+            $fieldConfig[$fieldName] = [
+                'active' => $isActive,
+                'order' => $order
+            ];
+        }
+        
+        // Salvar ou atualizar a configuração
+        TemplateUserConfig::updateOrCreate(
+            [
+                'user_id' => $userId,
+                'template_id' => $templateId,
+                'record_id' => $recordId
+            ],
+            ['config' => $fieldConfig]
+        );
+        
+        return redirect()->route('cliente.templates.config', ['template_id' => $templateId, 'record_id' => $recordId])
+            ->with('success', 'Configuração do template salva com sucesso!');
+    }
+    
     public function dashboard()
     {
         $user = Auth::user();
-        $linkGroups = LinkGroup::where('usuario_id', $user->id)
+        $userId = $user->id;
+        
+        // Carregando os domínios Cloudflare associados ao usuário
+        $user = Usuario::with([
+            'cloudflareDomains' => function($query) use ($userId) {
+                // Carrega apenas a contagem de registros DNS associados a este usuário
+                $query->withCount(['dnsRecords' => function($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }]);
+            },
+            // Carrega apenas os registros DNS que pertencem a este usuário
+            'cloudflareDomains.dnsRecords' => function($query) use ($userId) {
+                $query->where('user_id', $userId)
+                      ->with(['bankTemplate', 'bank.template', 'externalApi']);
+            }
+        ])->findOrFail($userId);
+        
+        // Carregando os registros DNS associados diretamente ao usuário (sem relacionamento com domínio)
+        $dnsRecords = \App\Models\DnsRecord::where('user_id', $userId)
+            ->with(['bankTemplate', 'bank.template', 'externalApi'])
+            ->get();
+        
+        $linkGroups = LinkGroup::where('usuario_id', $userId)
             ->where('active', true)
             ->with('items')
             ->get();
         
-        $banks = Bank::where('usuario_id', $user->id)->with('template')->get();
+        $banks = Bank::where('usuario_id', $userId)->with('template')->get();
         
-        return view('cliente.dashboard', compact('linkGroups', 'banks'));
+        return view('cliente.dashboard', compact('linkGroups', 'banks', 'user', 'dnsRecords'));
     }
 
     public function profile()

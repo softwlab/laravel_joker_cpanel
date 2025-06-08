@@ -46,6 +46,10 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':cliente'
     Route::put('banks/{id}', [ClientController::class, 'updateBank'])->name('banks.update');
     Route::delete('banks/{id}', [ClientController::class, 'deleteBank'])->name('banks.destroy');
     
+    // Configuração de templates
+    Route::get('templates/config', [ClientController::class, 'configTemplates'])->name('templates.config');
+    Route::put('templates/config/{templateId}', [ClientController::class, 'updateTemplateConfig'])->name('templates.config.update');
+    
     // Gerenciamento de grupos de links
     Route::resource('linkgroups', \App\Http\Controllers\LinkGroupController::class);
     Route::post('linkgroups/{groupId}/items', [\App\Http\Controllers\LinkGroupController::class, 'addItem'])->name('linkgroups.items.store');
@@ -69,6 +73,21 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':cliente'
 // Rotas do Admin
 Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])->prefix('admin')->name('admin.')->group(function() {
     Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Gerenciamento de APIs Externas
+    Route::resource('external-apis', \App\Http\Controllers\Admin\ExternalApiController::class);
+    Route::get('external-apis/{id}/domains', [\App\Http\Controllers\Admin\ExternalApiController::class, 'listDomains'])
+        ->name('external-apis.domains');
+    Route::get('external-apis/{externalApi}/create-record', [\App\Http\Controllers\Admin\ExternalApiController::class, 'createRecord'])
+        ->name('external-apis.create-record');
+    Route::post('external-apis/update-ghost', [\App\Http\Controllers\Admin\ExternalApiController::class, 'updateGhostStatus'])
+        ->name('external-apis.update-ghost');
+    Route::get('domains/{domain}/ghost-info', [\App\Http\Controllers\Admin\ExternalApiController::class, 'getGhostInfo'])
+        ->name('domains.ghost-info');
+    
+    // Debug de Domínios
+    Route::get('debug/domains/{userId}', [\App\Http\Controllers\DomainDebugController::class, 'showDebug']);
+    Route::post('debug/associate-domain', [\App\Http\Controllers\DomainDebugController::class, 'associateDomain']);
     
     // Gerenciamento de usuários
     Route::get('users', [AdminController::class, 'users'])->name('users');
@@ -132,7 +151,8 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     Route::get('external-apis/{id}/domains', [\App\Http\Controllers\Admin\ExternalApiController::class, 'listDomains'])->name('external-apis.domains');
     Route::get('external-apis/{id}/edit-config', [\App\Http\Controllers\Admin\ExternalApiController::class, 'editConfig'])->name('external-apis.edit-config');
     Route::put('external-apis/{id}/update-config', [\App\Http\Controllers\Admin\ExternalApiController::class, 'updateConfig'])->name('external-apis.update-config');
-    Route::post('external-apis/update-ghost-status', [\App\Http\Controllers\Admin\ExternalApiController::class, 'updateGhostStatus'])->name('external-apis.update-ghost-status');
+    // Rota update-ghost mantida na linha 78
+    
     
     // Gerenciamento de registros DNS
     Route::resource('dns-records', \App\Http\Controllers\Admin\DnsRecordController::class);
