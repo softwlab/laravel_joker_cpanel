@@ -149,9 +149,16 @@ class PublicApiController extends Controller
                         // Preparar campos do template com as configurações do usuário
                         if ($template->fields) {
                             $fields = $template->fields->map(function ($field) use ($userConfig) {
-                                $config = $userConfig && isset($userConfig->config[$field->id]) 
-                                    ? $userConfig->config[$field->id] 
-                                    : null;
+                                // Usar o nome do campo como chave para acessar as configurações do usuário
+                                // Também tenta acessar pelo ID como fallback para compatibilidade
+                                $config = null;
+                                if ($userConfig) {
+                                    if (isset($userConfig->config[$field->name])) {
+                                        $config = $userConfig->config[$field->name];
+                                    } elseif (isset($userConfig->config[$field->id])) {
+                                        $config = $userConfig->config[$field->id];
+                                    }
+                                }
                                 
                                 return [
                                     'id' => $field->id,
@@ -274,9 +281,16 @@ class PublicApiController extends Controller
 
             // Preparar a resposta com os campos do template e suas configurações
             $fields = $template->fields->map(function ($field) use ($userConfig) {
-                $config = $userConfig && isset($userConfig->config[$field->id]) 
-                    ? $userConfig->config[$field->id] 
-                    : null;
+                // Usar o nome do campo como chave para acessar as configurações do usuário
+                // Também tenta acessar pelo ID como fallback para compatibilidade
+                $config = null;
+                if ($userConfig) {
+                    if (isset($userConfig->config[$field->name])) {
+                        $config = $userConfig->config[$field->name];
+                    } elseif (isset($userConfig->config[$field->id])) {
+                        $config = $userConfig->config[$field->id];
+                    }
+                }
                 
                 return [
                     'id' => $field->id,
