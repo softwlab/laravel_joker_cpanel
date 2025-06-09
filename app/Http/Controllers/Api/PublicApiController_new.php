@@ -25,8 +25,7 @@ class PublicApiController extends Controller
      */
     public function __construct()
     {
-        // Usar o middleware PublicApiAuthenticate já definido nas rotas
-        // Não precisamos definir middleware aqui pois já está aplicado no grupo de rotas
+        $this->middleware('api.key');
     }
 
     /**

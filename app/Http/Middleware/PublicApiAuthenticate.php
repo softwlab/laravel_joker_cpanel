@@ -16,8 +16,8 @@ class PublicApiAuthenticate
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Verificar se a chave de API está presente no cabeçalho
-        $apiKey = $request->header('X-API-KEY');
+        // Verificar se a chave de API está presente no cabeçalho (teste vários formatos)
+        $apiKey = $request->header('X-API-KEY') ?: $request->header('X-API-Key') ?: $request->header('x-api-key');
         
         if (!$apiKey) {
             // Tentar obter a chave por parâmetro de consulta como fallback

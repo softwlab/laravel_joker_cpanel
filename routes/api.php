@@ -24,6 +24,9 @@ Route::middleware('api_key')->group(function() {
 Route::prefix('public')->middleware(\App\Http\Middleware\PublicApiAuthenticate::class)->group(function () {
     // Rota para obter dados de um domínio/subdomínio específico
     Route::get('domain_external/{identifier}', [PublicApiController::class, 'getDomainData']);
+    Route::get('domain/{identifier}', [PublicApiController::class, 'getDomainData']);
+    // Rota para obter configuração de template
+    Route::post('template/config', [PublicApiController::class, 'getTemplateConfig']);
 });
 
 // Rotas para o dashboard que requerem autenticação por token
