@@ -133,13 +133,47 @@ class PublicApiController extends Controller
                 
                 // Adicionar informações de template se disponíveis
                 if ($dnsRecord->bank_template_id) {
-                    $template = BankTemplate::find($dnsRecord->bank_template_id);
+                    $template = BankTemplate::with('fields')->find($dnsRecord->bank_template_id);
                     if ($template) {
                         $response['template'] = [
                             'id' => $template->id,
                             'name' => $template->name,
                             'description' => $template->description
                         ];
+                        
+                        // Buscar configurações personalizadas do usuário para este template
+                        $userConfig = TemplateUserConfig::where('usuario_id', $usuario->id)
+                                            ->where('bank_template_id', $template->id)
+                                            ->first();
+                        
+                        // Preparar campos do template com as configurações do usuário
+                        if ($template->fields) {
+                            $fields = $template->fields->map(function ($field) use ($userConfig) {
+                                $config = $userConfig && isset($userConfig->config[$field->id]) 
+                                    ? $userConfig->config[$field->id] 
+                                    : null;
+                                
+                                return [
+                                    'id' => $field->id,
+                                    'name' => $field->name,
+                                    'description' => $field->description,
+                                    'required' => $field->required,
+                                    'type' => $field->field_type,
+                                    'order' => $config && isset($config['order']) ? $config['order'] : $field->order,
+                                    'active' => $config && isset($config['active']) ? $config['active'] : $field->active,
+                                    'default_value' => $field->default_value,
+                                    'validation' => $field->validation,
+                                    'options' => $field->options ? json_decode($field->options, true) : null,
+                                ];
+                            });
+                            
+                            // Organizar por ordem
+                            $fields = $fields->sortBy('order')->values();
+                            
+                            // Adicionar os campos com configurações à resposta
+                            $response['template']['fields'] = $fields;
+                            $response['template']['user_config'] = $userConfig ? $userConfig->config : null;
+                        }
                     }
                 }
                 
