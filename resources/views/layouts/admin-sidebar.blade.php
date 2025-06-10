@@ -19,12 +19,7 @@
                     <i class="fas fa-landmark"></i> Instituições Bancárias
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.banks*') ? 'active' : '' }}" 
-                   href="{{ route('admin.banks') }}">
-                    <i class="fas fa-link"></i> Links Bancários
-                </a>
-            </li>
+
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.external-apis*') ? 'active' : '' }}" 
                    href="{{ route('admin.external-apis.index') }}">
@@ -43,6 +38,7 @@
                     <i class="fas fa-list-alt"></i> Logs
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.api_keys*') ? 'active' : '' }}" 
                    href="{{ route('admin.api_keys.index') }}">

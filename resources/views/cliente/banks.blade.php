@@ -1,14 +1,13 @@
 @extends('layouts.cliente')
 
-@section('title', 'Meus Links Bancários')
+@section('title', 'Templates Bancários')
 
 @section('content')
-<div class="container-fluid">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Meus Links Bancários</h1>
+        <h1 class="h2">Templates Bancários</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="{{ route('cliente.banks.create') }}" class="btn btn-sm btn-primary">
-                <i class="fas fa-plus"></i> Criar Novo Link
+            <a href="{{ route('cliente.dashboard') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar ao Dashboard
             </a>
         </div>
     </div>
@@ -25,92 +24,104 @@
         </div>
     @endif
     
+
+    <!-- Banner informativo com estilo moderno -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Meus Grupos Organizados</h5>
+            <div class="card bg-light border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-primary p-3 me-4 text-white">
+                            <i class="fas fa-info-circle fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Templates Bancários</h5>
+                            <p class="mb-0 text-muted">Escolha entre os modelos disponíveis para criar seus registros DNS personalizados.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p class="text-muted">Organize seus links bancários em grupos para facilitar o acesso e gerenciamento. Cada grupo pode conter vários links de diferentes bancos.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de templates com design moderno -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+    @if($templates->count() > 0)
+        @foreach($templates as $template)
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm hover-shadow">
+                <div class="card-header bg-white border-bottom-0 py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold text-primary mb-0">{{ $template->name }}</h5>
+                        <span class="badge rounded-pill bg-primary px-3 py-2">{{ $template->banks_count }} uso(s)</span>
+                    </div>
+                </div>
+                <div class="card-body pb-0">
+                    <p class="card-text text-muted mb-3">{{ $template->description ?? 'Sem descrição disponível' }}</p>
                     
-                    @if($linkGroups && $linkGroups->count() > 0)
-                        <div class="row">
-                            @foreach($linkGroups as $group)
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100">
-                                        <div class="card-header">
-                                            <h6 class="mb-0">{{ $group->title }}</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <p class="small">{{ Str::limit($group->description, 100) }}</p>
-                                            <p class="mb-1"><strong>Links associados:</strong> {{ $group->banks->count() }}</p>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="{{ route('cliente.linkgroups.show', $group->id) }}" class="btn btn-sm btn-outline-primary">Gerenciar Grupo</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                    @if($template->fields->count() > 0)
+                    <h6 class="fw-bold mb-3">Campos do Template</h6>
+                    <div class="mb-4">
+                        @foreach($template->fields->take(4) as $field)
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="me-2">
+                                <i class="fas fa-circle-check text-success"></i>
+                            </div>
+                            <div class="d-flex justify-content-between w-100 align-items-center">
+                                <span>{{ $field->label }}</span>
+                                @if($field->required) 
+                                    <span class="badge bg-danger rounded-pill ms-2">Obrigatório</span> 
+                                @endif
+                            </div>
                         </div>
-                    @else
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i> Você ainda não possui grupos de links cadastrados.
+                        @endforeach
+                        
+                        @if($template->fields->count() > 4)
+                        <div class="d-flex align-items-center text-muted">
+                            <div class="me-2">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </div>
+                            <span>mais {{ $template->fields->count() - 4 }} campo(s)...</span>
                         </div>
+                        @endif
+                    </div>
                     @endif
                 </div>
+                <div class="card-footer bg-white border-top-0 text-center p-4">
+                    <a href="{{ route('cliente.dashboard') }}" class="btn btn-primary rounded-pill px-4">
+                        <i class="fas fa-plus-circle me-2"></i> Usar Template
+                    </a>
+                </div>
             </div>
         </div>
+        @endforeach
+    @else
+        <div class="col-12">
+            <div class="alert alert-info p-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-info-circle fa-2x me-3"></i>
+                    <p class="mb-0">Não há templates bancários disponíveis no momento.</p>
+                </div>
+            </div>
+        </div>
+    @endif
     </div>
     
-    <h4 class="mb-3">Meus Links Bancários Ativos</h4>
+    <!-- Estilos adicionais para melhorar a aparência -->
+    <style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        transition: all .3s ease;
+    }
+    .card {
+        border-radius: 10px;
+        transition: all .3s ease;
+    }
+    .badge {
+        font-weight: 500;
+    }
+    </style>
 
-@if($banks->count() > 0)
-<div class="row">
-    @foreach($banks as $bank)
-    <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">{{ $bank->name ?: 'Link Bancário ' . $bank->id }}</h6>
-                @if($bank->active)
-                    <span class="badge bg-success text-white">Ativo</span>
-                @else
-                    <span class="badge bg-danger text-white">Inativo</span>
-                @endif
-            </div>
-            <div class="card-body">
-                <p class="card-text">
-                    <strong>Template:</strong> {{ $bank->template->name ?? 'Não definido' }}<br>
-                    <strong>Descrição:</strong> {{ $bank->description ? \Illuminate\Support\Str::limit($bank->description, 50) : 'Não informada' }}<br>
-                    <strong>URL do Link:</strong> {{ $bank->url ? \Illuminate\Support\Str::limit($bank->url, 30) : 'Não informada' }}
-                </p>
-                
-                @if(isset($bank->links['atual']))
-                <div class="mb-2">
-                    <small class="text-muted">Endereço do Link:</small><br>
-                    <code class="small">{{ \Illuminate\Support\Str::limit($bank->links['atual'], 40) }}</code>
-                </div>
-                @endif
-                
-                <div class="d-flex justify-content-around mt-3">
-                    <a href="{{ route('cliente.banks.show', $bank->id) }}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-eye"></i> Gerenciar Link
-                    </a>
-                    <a href="{{ $bank->url }}" class="btn btn-sm btn-success" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Acessar
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endforeach
-</div>
-@else
-<div class="alert alert-info">
-    <i class="fas fa-info-circle"></i> Você ainda não possui links bancários cadastrados.
-    <a href="{{ route('cliente.banks.create') }}" class="alert-link">Clique aqui</a> para criar seu primeiro link bancário.
-</div>
-@endif
 
-</div> <!-- Fechamento do container-fluid -->
 @endsection

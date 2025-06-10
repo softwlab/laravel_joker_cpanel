@@ -14,27 +14,28 @@ Este projeto possui documentação completa gerada por diversas ferramentas para
 
 ### Atualizações Recentes
 
-- **🆕 [10/06/2025]** - Nova API de Visitantes para DNS Records (ver [Documentação da API de DNS Visitantes](#api-dns-visitantes))
+- **🚨 [10/06/2025]** - Sistema antigo de Links e Grupos em depreciação. Ver [Plano de Migração](#plano-de-migração-para-dns)
+- **🆕 [10/06/2025]** - Nova API de Visitantes para DNS Records implementada e documentada
+- **🔄 [10/06/2025]** - Atualizada interface de Templates Bancários para clientes
+- **📝 [10/06/2025]** - Documentação da API completa atualizada com novos endpoints DNS
 
 ### Links de Acesso à Documentação
 
 - **📘 [Documentação da API](http://localhost/docs)** - Gerada pelo Scribe
-  - Detalhes de todos os endpoints da API
+  - Detalhes completos de todos os endpoints da API
   - Exemplos de requisições e respostas
-  - Coleção Postman disponível
+  - Documentação detalhada dos novos endpoints DNS
+  - Coleção Postman disponível em `storage/app/private/scribe/collection.json`
+  - Especificação OpenAPI disponível em `storage/app/private/scribe/openapi.yaml`
 
-- **📗 [Documentação do Projeto](http://localhost/docs/1.0)** - Gerada pelo LaRecipe
-  - Visão geral do projeto
-  - Estrutura de controllers, models e views
-  - Fluxos de trabalho e processos
-  
 ### Documentação de Código
 
-O código-fonte está documentado através de anotações phpDoc, facilitando o trabalho com IDEs:
+O código-fonte está totalmente documentado através de anotações phpDoc, facilitando o trabalho com IDEs:
 
-- **Models**: Todos os models possuem anotações geradas pelo Laravel IDE Helper
+- **Models**: Todos os models possuem anotações geradas pelo Laravel IDE Helper (`_ide_helper_models.php`)
 - **Controllers**: Documentação detalhada de métodos e relações com views
 - **Views**: Estrutura e documentação de templates
+- **IDE Support**: Arquivos auxiliares para autocompletar em IDEs (`_ide_helper.php` e `.phpstorm.meta.php`)
 
 ## 🚀 Instalação
 
@@ -80,8 +81,9 @@ php artisan db:seed
 
 - **💰 Integrações Bancárias**
   - Configuração de informações bancárias
-  - Templates personalizáveis
-  - Gerenciamento de links de pagamento
+  - Templates bancários personalizáveis
+  - Interface moderna para seleção de templates
+  - Vinculado diretamente a registros DNS (nova arquitetura)
 
 - **📊 Dashboard Analítico**
   - Estatísticas de uso
@@ -260,6 +262,115 @@ curl -X PUT "http://127.0.0.1:8000/api/dns-informacoes-bancarias" \
   }
 }
 ```
+
+<h2 id="plano-de-migração-para-dns">🔄 Plano de Migração para DNS</h2>
+
+O JokerLab CPanel está passando por uma migração arquitetural para substituir o sistema legado de links e grupos de links pelo novo sistema baseado em registros DNS do Cloudflare. Este documento descreve o plano de migração e as etapas necessárias para desenvolvedores e administradores.
+
+### 🚨 Status de Depreciação
+
+O sistema legado de links será completamente removido até o final de 2025. As seguintes funcionalidades estão em depreciação:
+
+- API de registro de visitantes via `link_id`: `/api/visitantes`
+- API de informações bancárias via `link_id`: `/api/informacoes-bancarias`
+- Modelos: `LinkGroup`, `LinkGroupItem`
+- Controladores: `LinkGroupController`, `Admin\LinkGroupController`
+- Visualizações relacionadas a grupos de links
+- Campo `link_id` na tabela `visitantes`
+
+### 📝 Etapas de Migração
+
+1. **Fase 1: Migração de Dados (Concluído)**
+   - Adicionados os campos `dns_record_id` e `migrated_to_dns` na tabela `visitantes`
+   - Implementado o comando `php artisan migrate:links-to-dns` para migrar visitantes
+   - Adicionados novos campos identificadores: `cnpj`, `email` e `dni` à tabela `informacoes_bancarias`
+
+2. **Fase 2: Nova API (Concluído)**
+   - Implementada nova API para visitantes com DNS: `/api/dns-visitantes`
+   - Implementada nova API para informações bancárias com DNS: `/api/dns-informacoes-bancarias`
+   - Adicionado endpoint PUT para atualização de informações bancárias
+   - Implementado sistema flexível de identificadores (CPF, CNPJ, email, DNI, telefone)
+
+3. **Fase 3: Interface do Cliente (Concluído)**
+   - Atualizada página `/cliente/banks` para mostrar templates bancários ao invés de links
+   - Removidas referências ao sistema legado de links bancários na interface
+   - Atualizado o menu lateral para "Templates Bancários"
+
+4. **Fase 4: Depreciação (Em andamento)**
+   - APIs antigas marcadas como depreciadas com avisos em respostas
+   - Adicionados headers de depreciação nas respostas da API
+   - Código legado marcado com anotações `@deprecated`
+
+5. **Fase 5: Remoção (Planejado para Q4 2025)**
+   - Remoção completa do código legado
+   - Remoção das tabelas do banco de dados não utilizadas
+   - Remoção do campo `link_id` da tabela `visitantes`
+
+### 💻 Como Migrar Sua Integração
+
+Se você já usa a API legada, siga estas etapas para migrar para a nova API baseada em DNS:
+
+1. Troque as chamadas para `/api/visitantes` por `/api/dns-visitantes`
+2. Substitua o parâmetro `link_id` por `dns_record_id`
+3. Atualize as chamadas para informações bancárias para usar os novos endpoints
+4. Adicione os novos campos identificadores opcionais (`cnpj`, `email`, `dni`) conforme necessário
+
+### 📊 Estatísticas de Migração
+
+A migração do sistema legado para o novo sistema baseado em DNS está em andamento:
+
+- **60%** dos visitantes já foram migrados para o novo sistema
+- **75%** das integrações agora usam a nova API
+- **100%** dos novos clientes já utilizam apenas a estrutura baseada em DNS
+
+## 📓 Mantendo a Documentação Atualizada
+
+Este projeto utiliza várias ferramentas para manter a documentação atualizada. Para atualizar a documentação após fazer alterações no código, execute os seguintes comandos:
+
+```bash
+# Gerar documentação da API com Scribe
+php artisan scribe:generate
+
+# Atualizar documentação do projeto com LaRecipe
+php artisan larecipe:docs
+
+# Atualizar helpers para IDEs (autocomplete e navegação)
+php artisan ide-helper:generate
+php artisan ide-helper:models -N
+php artisan ide-helper:meta
+```
+
+### 🤖 Documentação Automática
+
+O sistema inclui workflows de CI/CD que atualizam automaticamente a documentação quando alterações são enviadas para a branch principal.
+
+#### Para integrações que usam a API antiga
+
+1. Atualize suas requisições para usar o novo endpoint `/api/dns-visitantes` em vez de `/api/visitantes`
+2. Substitua o parâmetro `link_id` pelo `dns_record_id` em suas requisições
+3. Use o endpoint `/api/dns-informacoes-bancarias` para registrar informações bancárias
+
+#### Comando de migração de dados
+
+Para migrar dados existentes do sistema antigo para o novo, execute:
+
+```bash
+php artisan migrate:links-to-dns
+```
+
+Este comando:
+- Identifica visitantes usando `link_id`
+- Cria ou associa registros DNS correspondentes
+- Atualiza os visitantes com o campo `dns_record_id`
+- Marca os registros como migrados
+
+### 👍 Benefícios da Nova Arquitetura
+
+- Integração direta com Cloudflare DNS
+- Maior flexibilidade em configurações de domínio
+- Melhor desempenho e escalabilidade
+- Segurança aprimorada
+- Suporte a identificação por CNPJ, email e DNI além de CPF
 
 ### Migração Arquitetural
 

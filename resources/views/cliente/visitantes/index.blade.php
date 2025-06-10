@@ -32,7 +32,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Link</th>
+                                <th>DNS Record</th>
                                 <th>IP</th>
                                 <th>Data</th>
                                 <th>Informações</th>
@@ -44,12 +44,10 @@
                             <tr>
                                 <td>{{ $visitante->id }}</td>
                                 <td>
-                                    @if($visitante->linkItem)
-                                        <a href="{{ $visitante->linkItem->url }}" target="_blank">
-                                            {{ $visitante->linkItem->title }}
-                                        </a>
+                                    @if($visitante->dnsRecord)
+                                        <span>{{ $visitante->dnsRecord->name }}</span>
                                     @else
-                                        <span class="text-muted">Link removido</span>
+                                        <span class="text-muted">DNS Record removido</span>
                                     @endif
                                 </td>
                                 <td>{{ $visitante->ip }}</td>

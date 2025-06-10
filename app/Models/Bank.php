@@ -21,8 +21,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int|null $bank_template_id
  * @property array<array-key, mixed>|null $field_values
  * @property array<array-key, mixed>|null $field_active
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LinkGroup> $linkGroups
- * @property-read int|null $link_groups_count
+
  * @property-read \App\Models\BankTemplate|null $template
  * @property-read \App\Models\Usuario $usuario
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank newModelQuery()
@@ -81,13 +80,7 @@ class Bank extends Model
         return $this->belongsTo(BankTemplate::class, 'bank_template_id');
     }
 
-    /**
-     * Get the link groups this bank appears in
-     */
-    public function linkGroups()
-    {
-        return $this->belongsToMany(LinkGroup::class, 'link_group_banks', 'bank_id', 'link_group_id');
-    }
+
 
     public function getLinksAttribute($value)
     {

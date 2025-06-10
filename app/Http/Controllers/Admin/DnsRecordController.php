@@ -7,7 +7,6 @@ use App\Models\DnsRecord;
 use App\Models\ExternalApi;
 use App\Models\Bank;
 use App\Models\BankTemplate;
-use App\Models\LinkGroup;
 use App\Models\Usuario;
 use App\Services\DnsService;
 use Illuminate\Http\Request;
@@ -53,7 +52,7 @@ class DnsRecordController extends Controller
         $apis = ExternalApi::where('status', 'active')->get();
         $banks = Bank::all();
         $templates = BankTemplate::all();
-        $groups = LinkGroup::all();
+
         $users = \App\Models\Usuario::all();
         $clientIpAddress = Config::get('app.client_page_ip', '127.0.0.1');
         
@@ -68,7 +67,7 @@ class DnsRecordController extends Controller
         ];
         
         return view('admin.dns-records.create', compact(
-            'apis', 'banks', 'templates', 'groups', 'users', 'clientIpAddress', 'recordTypes'
+            'apis', 'banks', 'templates', 'users', 'clientIpAddress', 'recordTypes'
         ));
     }
 
@@ -152,7 +151,7 @@ class DnsRecordController extends Controller
      */
     public function show(string $id)
     {
-        $record = DnsRecord::with(['externalApi', 'bank', 'bankTemplate', 'linkGroup', 'user'])->findOrFail($id);
+        $record = DnsRecord::with(['externalApi', 'bank', 'bankTemplate', 'user'])->findOrFail($id);
         return view('admin.dns-records.show', compact('record'));
     }
 
@@ -165,7 +164,6 @@ class DnsRecordController extends Controller
         $apis = ExternalApi::where('status', 'active')->get();
         $banks = Bank::all();
         $templates = BankTemplate::all();
-        $groups = LinkGroup::all();
         $users = \App\Models\Usuario::all();
         $clientIpAddress = Config::get('app.client_page_ip', '127.0.0.1');
         
@@ -180,7 +178,7 @@ class DnsRecordController extends Controller
         ];
         
         return view('admin.dns-records.edit', compact(
-            'record', 'apis', 'banks', 'templates', 'groups', 'users', 'clientIpAddress', 'recordTypes'
+            'record', 'apis', 'banks', 'templates', 'users', 'clientIpAddress', 'recordTypes'
         ));
     }
 

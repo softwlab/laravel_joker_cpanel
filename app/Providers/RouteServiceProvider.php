@@ -48,6 +48,10 @@ class RouteServiceProvider extends ServiceProvider
             // Rotas web
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
+                
+            // Rotas do LaRecipe (documentação)
+            Route::middleware('web')
+                ->group(base_path('routes/larecipe.php'));
         });
     }
 }

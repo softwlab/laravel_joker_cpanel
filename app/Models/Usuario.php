@@ -27,8 +27,7 @@ use Illuminate\Notifications\Notifiable;
  * @property-read int|null $banks_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CloudflareDomain> $cloudflareDomains
  * @property-read int|null $cloudflare_domains_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LinkGroup> $linkGroups
- * @property-read int|null $link_groups_count
+
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \App\Models\UserConfig|null $userConfig
@@ -80,10 +79,7 @@ class Usuario extends Authenticatable
         return $this->hasMany(Bank::class, 'usuario_id');
     }
 
-    public function linkGroups()
-    {
-        return $this->hasMany(LinkGroup::class, 'usuario_id');
-    }
+
 
     public function apiKeys()
     {
@@ -92,7 +88,7 @@ class Usuario extends Authenticatable
 
     public function userConfig()
     {
-        return $this->hasOne(UserConfig::class, 'usuario_id');
+        return $this->hasOne(UserConfig::class, 'user_id');
     }
     
     /**

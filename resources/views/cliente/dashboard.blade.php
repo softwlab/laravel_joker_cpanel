@@ -90,87 +90,8 @@
         </div>
     </div>
     
-    <div class="col-md-6 col-lg-3 mb-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <div class="d-flex">
-                    <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3">
-                        <i class="fas fa-layer-group fa-2x text-info"></i>
-                    </div>
-                    <div>
-                        <h3 class="fw-bold mb-0">{{ is_object($linkGroups) ? $linkGroups->count() : count($linkGroups ?? []) }}</h3>
-                        <p class="text-muted mb-0">Grupos</p>
-                    </div>
-                </div>
-                <div class="progress mt-3" style="height: 5px;">
-                    <div class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Seção de grupos de links -->
-@if(is_object($linkGroups) && $linkGroups->count() > 0)
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white">
-                <h5 class="mb-0"><i class="fas fa-layer-group me-2 text-primary"></i>Meus Grupos de Links</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    @foreach($linkGroups as $group)
-                    <div class="col-md-6 col-xl-4 mb-4">
-                        <div class="card h-100 border">
-                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0">{{ $group->name }}</h6>
-                                <span class="badge {{ $group->active ? 'bg-success' : 'bg-danger' }}">
-                                    {{ $group->active ? 'Ativo' : 'Inativo' }}
-                                </span>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-muted small">{{ $group->description ?? 'Grupo de links temáticos.' }}</p>
-                                
-                                @if(isset($group->items) && $group->items->count() > 0)
-                                <ul class="list-group list-group-flush">
-                                    @foreach($group->items->take(3) as $item)
-                                    <li class="list-group-item px-0">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span>{{ $item->name ?? 'Link '.$loop->iteration }}</span>
-                                            @if(isset($item->template))
-                                            <span class="badge bg-warning text-dark">{{ $item->template->name }}</span>
-                                            @endif
-                                        </div>
-                                    </li>
-                                    @endforeach
-                                    
-                                    @if($group->items->count() > 3)
-                                    <li class="list-group-item px-0 text-center">
-                                        <small class="text-muted">+ {{ $group->items->count() - 3 }} outros links</small>
-                                    </li>
-                                    @endif
-                                </ul>
-                                @else
-                                <div class="text-center py-3">
-                                    <span class="text-muted">Nenhum link adicionado</span>
-                                </div>
-                                @endif
-                            </div>
-                            <div class="card-footer bg-white">
-                                <a href="{{ route('cliente.link-groups.show', $group->id) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye"></i> Ver Detalhes
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
-@endif
 
 <!-- Seção Unificada de Domínios e Templates -->
 <div class="row mt-4">

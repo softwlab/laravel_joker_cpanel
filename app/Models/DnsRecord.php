@@ -13,7 +13,7 @@ use App\Models\Usuario;
  * @property int|null $external_api_id
  * @property int|null $bank_id
  * @property int|null $bank_template_id
- * @property int|null $link_group_id
+
  * @property int|null $user_id
  * @property string $record_type
  * @property string $name
@@ -28,7 +28,7 @@ use App\Models\Usuario;
  * @property-read \App\Models\BankTemplate|null $bankTemplate
  * @property-read \App\Models\ExternalApi|null $externalApi
  * @property-read mixed $icon
- * @property-read \App\Models\LinkGroup|null $linkGroup
+
  * @property-read Usuario|null $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord active()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord newModelQuery()
@@ -41,7 +41,7 @@ use App\Models\Usuario;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereExternalApiId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereExtraData($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereLinkGroupId($value)
+
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord wherePriority($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereRecordType($value)
@@ -64,7 +64,6 @@ class DnsRecord extends Model
         'external_api_id',
         'bank_id',
         'bank_template_id',
-        'link_group_id',
         'user_id',
         'record_type',
         'name',
@@ -108,13 +107,7 @@ class DnsRecord extends Model
         return $this->belongsTo(BankTemplate::class);
     }
     
-    /**
-     * Relacionamento com o Grupo Organizado associado.
-     */
-    public function linkGroup()
-    {
-        return $this->belongsTo(LinkGroup::class);
-    }
+
     
     /**
      * Relacionamento com o usuário associado.

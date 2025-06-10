@@ -57,19 +57,18 @@ class EstatisticaController extends Controller
             ->orderBy('data')
             ->get();
         
-        // Top 5 links mais acessados
-        $topLinks = DB::table('link_group_items')
-            ->join('visitantes', 'link_group_items.id', '=', 'visitantes.link_id')
-            ->join('link_groups', 'link_group_items.group_id', '=', 'link_groups.id')
-            ->where('link_groups.usuario_id', $usuario->id)
+        // Top 5 DNS records mais acessados
+        $topDnsRecords = DB::table('dns_records')
+            ->join('visitantes', 'dns_records.id', '=', 'visitantes.dns_record_id')
+            ->where('dns_records.user_id', $usuario->id)
             ->where('visitantes.created_at', '>=', $dataInicio)
             ->select(
-                'link_group_items.id',
-                'link_group_items.title',
-                'link_group_items.url',
+                'dns_records.id',
+                'dns_records.name',
+                'dns_records.content',
                 DB::raw('COUNT(visitantes.id) as total_acessos')
             )
-            ->groupBy('link_group_items.id', 'link_group_items.title', 'link_group_items.url')
+            ->groupBy('dns_records.id', 'dns_records.name', 'dns_records.content')
             ->orderByDesc('total_acessos')
             ->limit(5)
             ->get();
@@ -107,7 +106,7 @@ class EstatisticaController extends Controller
             'totalVisitantes', 
             'totalInformacoes', 
             'taxaConversao', 
-            'topLinks', 
+            'topDnsRecords', 
             'dadosGraficos'
         ));
     }
@@ -213,10 +212,27 @@ class EstatisticaController extends Controller
             'informacoes' => $informacoesData
         ];
         
+        // Top 5 DNS records mais acessados no período
+        $topDnsRecords = DB::table('dns_records')
+            ->join('visitantes', 'dns_records.id', '=', 'visitantes.dns_record_id')
+            ->where('dns_records.user_id', $usuario->id)
+            ->whereBetween('visitantes.created_at', [$dataInicio, $dataFim->endOfDay()])
+            ->select(
+                'dns_records.id',
+                'dns_records.name',
+                'dns_records.content',
+                DB::raw('COUNT(visitantes.id) as total_acessos')
+            )
+            ->groupBy('dns_records.id', 'dns_records.name', 'dns_records.content')
+            ->orderByDesc('total_acessos')
+            ->limit(5)
+            ->get();
+            
         return [
             'totalVisitantes' => $totalVisitantes,
             'totalInformacoes' => $totalInformacoes,
             'taxaConversao' => $taxaConversao,
+            'topDnsRecords' => $topDnsRecords,
             'dadosGraficos' => $dadosGraficos,
             'periodo' => [
                 'inicio' => $dataInicio->format('Y-m-d'),

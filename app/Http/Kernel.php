@@ -46,5 +46,6 @@ class Kernel extends HttpKernel
         'nivel' => \App\Http\Middleware\CheckUserNivel::class,
         'api_key' => \App\Http\Middleware\ApiKeyMiddleware::class,
         'public_api_auth' => \App\Http\Middleware\PublicApiAuthenticate::class,
+        'deprecated.api' => \App\Http\Middleware\DeprecatedApiMiddleware::class,
     ];
 }

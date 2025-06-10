@@ -164,47 +164,6 @@
             </div>
         </div>
 
-        <!-- Seção de Grupos Organizados -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Grupos Organizados</h5>
-                <span class="badge bg-primary">{{ $user->linkGroups->count() }}</span>
-            </div>
-            <div class="card-body">
-                @if($user->linkGroups->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nome</th>
-                                    <th>Links</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($user->linkGroups as $group)
-                                <tr>
-                                    <td>{{ $group->id }}</td>
-                                    <td>{{ $group->name }}</td>
-                                    <td>{{ $group->items->count() }}</td>
-                                    <td>
-                                        <a href="{{ route('admin.linkgroups.show', $group->id) }}" class="btn btn-sm btn-info">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="alert alert-info mb-0">
-                        Este usuário não possui grupos organizados.
-                    </div>
-                @endif
-            </div>
-        </div>
 
         <!-- Seção de Domínios Cloudflare -->
         <div class="card shadow-sm mb-4">

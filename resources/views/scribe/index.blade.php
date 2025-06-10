@@ -77,11 +77,15 @@
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-banks">
                                 <a href="#endpoints-GETapi-banks">Retorna apenas os bancos do usuário</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-visitantes">
-                                <a href="#endpoints-POSTapi-visitantes">Registra um novo visitante a partir de uma requisição API</a>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-dns-visitantes">
+                                <a href="#endpoints-POSTapi-dns-visitantes">Registra um novo visitante associado a um registro DNS</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-informacoes-bancarias">
-                                <a href="#endpoints-POSTapi-informacoes-bancarias">Registra uma nova informação bancária associada a um visitante</a>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-dns-informacoes-bancarias">
+                                <a href="#endpoints-POSTapi-dns-informacoes-bancarias">Registra uma nova informação bancária associada a um visitante
+Requer pelo menos um campo identificador (cpf, email, dni, cnpj, etc)</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-PUTapi-dns-informacoes-bancarias">
+                                <a href="#endpoints-PUTapi-dns-informacoes-bancarias">Atualiza uma informação bancária existente associada a um visitante</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-user-config">
                                 <a href="#endpoints-POSTapi-user-config">Atualiza configurações do usuário</a>
@@ -115,7 +119,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: June 9, 2025</li>
+        <li>Last updated: June 10, 2025</li>
     </ul>
 </div>
 
@@ -386,24 +390,24 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
-                    <h2 id="endpoints-POSTapi-visitantes">Registra um novo visitante a partir de uma requisição API</h2>
+                    <h2 id="endpoints-POSTapi-dns-visitantes">Registra um novo visitante associado a um registro DNS</h2>
 
 <p>
 </p>
 
 
 
-<span id="example-requests-POSTapi-visitantes">
+<span id="example-requests-POSTapi-dns-visitantes">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/visitantes" \
+    "http://localhost/api/dns-visitantes" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"link_id\": \"consequatur\",
+    \"dns_record_id\": \"consequatur\",
     \"ip\": \"consequatur\",
     \"user_agent\": \"consequatur\",
     \"referrer\": \"consequatur\"
@@ -413,7 +417,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/visitantes"
+    "http://localhost/api/dns-visitantes"
 );
 
 const headers = {
@@ -422,7 +426,7 @@ const headers = {
 };
 
 let body = {
-    "link_id": "consequatur",
+    "dns_record_id": "consequatur",
     "ip": "consequatur",
     "user_agent": "consequatur",
     "referrer": "consequatur"
@@ -436,45 +440,45 @@ fetch(url, {
 
 </span>
 
-<span id="example-responses-POSTapi-visitantes">
+<span id="example-responses-POSTapi-dns-visitantes">
 </span>
-<span id="execution-results-POSTapi-visitantes" hidden>
+<span id="execution-results-POSTapi-dns-visitantes" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-POSTapi-visitantes"></span>:
+                id="execution-response-status-POSTapi-dns-visitantes"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-visitantes"
+    <pre class="json"><code id="execution-response-content-POSTapi-dns-visitantes"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-POSTapi-visitantes" hidden>
+<span id="execution-error-POSTapi-dns-visitantes" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-visitantes">
+    <pre><code id="execution-error-message-POSTapi-dns-visitantes">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-POSTapi-visitantes" data-method="POST"
-      data-path="api/visitantes"
+<form id="form-POSTapi-dns-visitantes" data-method="POST"
+      data-path="api/dns-visitantes"
       data-authed="0"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-visitantes', this);">
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-dns-visitantes', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-visitantes"
-                    onclick="tryItOut('POSTapi-visitantes');">Try it out ⚡
+                    id="btn-tryout-POSTapi-dns-visitantes"
+                    onclick="tryItOut('POSTapi-dns-visitantes');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-visitantes"
-                    onclick="cancelTryOut('POSTapi-visitantes');" hidden>Cancel 🛑
+                    id="btn-canceltryout-POSTapi-dns-visitantes"
+                    onclick="cancelTryOut('POSTapi-dns-visitantes');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-visitantes"
+                    id="btn-executetryout-POSTapi-dns-visitantes"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
@@ -482,7 +486,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </h3>
             <p>
             <small class="badge badge-black">POST</small>
-            <b><code>api/visitantes</code></b>
+            <b><code>api/dns-visitantes</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
@@ -490,7 +494,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="POSTapi-visitantes"
+                              name="Content-Type"                data-endpoint="POSTapi-dns-visitantes"
                value="application/json"
                data-component="header">
     <br>
@@ -501,7 +505,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="POSTapi-visitantes"
+                              name="Accept"                data-endpoint="POSTapi-dns-visitantes"
                value="application/json"
                data-component="header">
     <br>
@@ -509,22 +513,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                                 <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>link_id</code></b>&nbsp;&nbsp;
+            <b style="line-height: 2;"><code>dns_record_id</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="link_id"                data-endpoint="POSTapi-visitantes"
+                              name="dns_record_id"                data-endpoint="POSTapi-dns-visitantes"
                value="consequatur"
                data-component="body">
     <br>
-<p>The <code>id</code> of an existing record in the link_group_items table. Example: <code>consequatur</code></p>
+<p>The <code>id</code> of an existing record in the dns_records table. Example: <code>consequatur</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>ip</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-                              name="ip"                data-endpoint="POSTapi-visitantes"
+                              name="ip"                data-endpoint="POSTapi-dns-visitantes"
                value="consequatur"
                data-component="body">
     <br>
@@ -535,7 +539,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-                              name="user_agent"                data-endpoint="POSTapi-visitantes"
+                              name="user_agent"                data-endpoint="POSTapi-dns-visitantes"
                value="consequatur"
                data-component="body">
     <br>
@@ -546,7 +550,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-                              name="referrer"                data-endpoint="POSTapi-visitantes"
+                              name="referrer"                data-endpoint="POSTapi-dns-visitantes"
                value="consequatur"
                data-component="body">
     <br>
@@ -554,28 +558,32 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
-                    <h2 id="endpoints-POSTapi-informacoes-bancarias">Registra uma nova informação bancária associada a um visitante</h2>
+                    <h2 id="endpoints-POSTapi-dns-informacoes-bancarias">Registra uma nova informação bancária associada a um visitante
+Requer pelo menos um campo identificador (cpf, email, dni, cnpj, etc)</h2>
 
 <p>
 </p>
 
 
 
-<span id="example-requests-POSTapi-informacoes-bancarias">
+<span id="example-requests-POSTapi-dns-informacoes-bancarias">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/informacoes-bancarias" \
+    "http://localhost/api/dns-informacoes-bancarias" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"visitante_uuid\": \"consequatur\",
-    \"data\": \"2025-06-09T23:24:16\",
+    \"data\": \"2025-06-10T15:56:43\",
     \"agencia\": \"consequatur\",
     \"conta\": \"consequatur\",
     \"cpf\": \"consequatur\",
+    \"cnpj\": \"consequatur\",
+    \"email\": \"carolyne.luettgen@example.org\",
+    \"dni\": \"consequatur\",
     \"nome_completo\": \"consequatur\",
     \"telefone\": \"consequatur\"
 }"
@@ -584,7 +592,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/informacoes-bancarias"
+    "http://localhost/api/dns-informacoes-bancarias"
 );
 
 const headers = {
@@ -594,10 +602,13 @@ const headers = {
 
 let body = {
     "visitante_uuid": "consequatur",
-    "data": "2025-06-09T23:24:16",
+    "data": "2025-06-10T15:56:43",
     "agencia": "consequatur",
     "conta": "consequatur",
     "cpf": "consequatur",
+    "cnpj": "consequatur",
+    "email": "carolyne.luettgen@example.org",
+    "dni": "consequatur",
     "nome_completo": "consequatur",
     "telefone": "consequatur"
 };
@@ -610,45 +621,45 @@ fetch(url, {
 
 </span>
 
-<span id="example-responses-POSTapi-informacoes-bancarias">
+<span id="example-responses-POSTapi-dns-informacoes-bancarias">
 </span>
-<span id="execution-results-POSTapi-informacoes-bancarias" hidden>
+<span id="execution-results-POSTapi-dns-informacoes-bancarias" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-POSTapi-informacoes-bancarias"></span>:
+                id="execution-response-status-POSTapi-dns-informacoes-bancarias"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-informacoes-bancarias"
+    <pre class="json"><code id="execution-response-content-POSTapi-dns-informacoes-bancarias"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-POSTapi-informacoes-bancarias" hidden>
+<span id="execution-error-POSTapi-dns-informacoes-bancarias" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-informacoes-bancarias">
+    <pre><code id="execution-error-message-POSTapi-dns-informacoes-bancarias">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-POSTapi-informacoes-bancarias" data-method="POST"
-      data-path="api/informacoes-bancarias"
+<form id="form-POSTapi-dns-informacoes-bancarias" data-method="POST"
+      data-path="api/dns-informacoes-bancarias"
       data-authed="0"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-informacoes-bancarias', this);">
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-dns-informacoes-bancarias', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-informacoes-bancarias"
-                    onclick="tryItOut('POSTapi-informacoes-bancarias');">Try it out ⚡
+                    id="btn-tryout-POSTapi-dns-informacoes-bancarias"
+                    onclick="tryItOut('POSTapi-dns-informacoes-bancarias');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-informacoes-bancarias"
-                    onclick="cancelTryOut('POSTapi-informacoes-bancarias');" hidden>Cancel 🛑
+                    id="btn-canceltryout-POSTapi-dns-informacoes-bancarias"
+                    onclick="cancelTryOut('POSTapi-dns-informacoes-bancarias');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-informacoes-bancarias"
+                    id="btn-executetryout-POSTapi-dns-informacoes-bancarias"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
@@ -656,7 +667,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </h3>
             <p>
             <small class="badge badge-black">POST</small>
-            <b><code>api/informacoes-bancarias</code></b>
+            <b><code>api/dns-informacoes-bancarias</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
@@ -664,7 +675,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="POSTapi-informacoes-bancarias"
+                              name="Content-Type"                data-endpoint="POSTapi-dns-informacoes-bancarias"
                value="application/json"
                data-component="header">
     <br>
@@ -675,7 +686,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="POSTapi-informacoes-bancarias"
+                              name="Accept"                data-endpoint="POSTapi-dns-informacoes-bancarias"
                value="application/json"
                data-component="header">
     <br>
@@ -687,7 +698,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small>string</small>&nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="visitante_uuid"                data-endpoint="POSTapi-informacoes-bancarias"
+                              name="visitante_uuid"                data-endpoint="POSTapi-dns-informacoes-bancarias"
                value="consequatur"
                data-component="body">
     <br>
@@ -698,18 +709,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-                              name="data"                data-endpoint="POSTapi-informacoes-bancarias"
-               value="2025-06-09T23:24:16"
+                              name="data"                data-endpoint="POSTapi-dns-informacoes-bancarias"
+               value="2025-06-10T15:56:43"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2025-06-09T23:24:16</code></p>
+<p>Must be a valid date. Example: <code>2025-06-10T15:56:43</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>agencia</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-                              name="agencia"                data-endpoint="POSTapi-informacoes-bancarias"
+                              name="agencia"                data-endpoint="POSTapi-dns-informacoes-bancarias"
                value="consequatur"
                data-component="body">
     <br>
@@ -720,7 +731,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-                              name="conta"                data-endpoint="POSTapi-informacoes-bancarias"
+                              name="conta"                data-endpoint="POSTapi-dns-informacoes-bancarias"
                value="consequatur"
                data-component="body">
     <br>
@@ -731,7 +742,40 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-                              name="cpf"                data-endpoint="POSTapi-informacoes-bancarias"
+                              name="cpf"                data-endpoint="POSTapi-dns-informacoes-bancarias"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>cnpj</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="cnpj"                data-endpoint="POSTapi-dns-informacoes-bancarias"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="email"                data-endpoint="POSTapi-dns-informacoes-bancarias"
+               value="carolyne.luettgen@example.org"
+               data-component="body">
+    <br>
+<p>Must be a valid email address. Example: <code>carolyne.luettgen@example.org</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>dni</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="dni"                data-endpoint="POSTapi-dns-informacoes-bancarias"
                value="consequatur"
                data-component="body">
     <br>
@@ -742,7 +786,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-                              name="nome_completo"                data-endpoint="POSTapi-informacoes-bancarias"
+                              name="nome_completo"                data-endpoint="POSTapi-dns-informacoes-bancarias"
                value="consequatur"
                data-component="body">
     <br>
@@ -753,7 +797,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-                              name="telefone"                data-endpoint="POSTapi-informacoes-bancarias"
+                              name="telefone"                data-endpoint="POSTapi-dns-informacoes-bancarias"
                value="consequatur"
                data-component="body">
     <br>
@@ -764,7 +808,277 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small>object</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-                              name="informacoes_adicionais"                data-endpoint="POSTapi-informacoes-bancarias"
+                              name="informacoes_adicionais"                data-endpoint="POSTapi-dns-informacoes-bancarias"
+               value=""
+               data-component="body">
+    <br>
+
+        </div>
+        </form>
+
+                    <h2 id="endpoints-PUTapi-dns-informacoes-bancarias">Atualiza uma informação bancária existente associada a um visitante</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-PUTapi-dns-informacoes-bancarias">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PUT \
+    "http://localhost/api/dns-informacoes-bancarias" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"id\": \"consequatur\",
+    \"visitante_uuid\": \"consequatur\",
+    \"data\": \"2025-06-10T15:56:43\",
+    \"agencia\": \"consequatur\",
+    \"conta\": \"consequatur\",
+    \"cpf\": \"consequatur\",
+    \"cnpj\": \"consequatur\",
+    \"email\": \"carolyne.luettgen@example.org\",
+    \"dni\": \"consequatur\",
+    \"nome_completo\": \"consequatur\",
+    \"telefone\": \"consequatur\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/dns-informacoes-bancarias"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "id": "consequatur",
+    "visitante_uuid": "consequatur",
+    "data": "2025-06-10T15:56:43",
+    "agencia": "consequatur",
+    "conta": "consequatur",
+    "cpf": "consequatur",
+    "cnpj": "consequatur",
+    "email": "carolyne.luettgen@example.org",
+    "dni": "consequatur",
+    "nome_completo": "consequatur",
+    "telefone": "consequatur"
+};
+
+fetch(url, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-PUTapi-dns-informacoes-bancarias">
+</span>
+<span id="execution-results-PUTapi-dns-informacoes-bancarias" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTapi-dns-informacoes-bancarias"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTapi-dns-informacoes-bancarias"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PUTapi-dns-informacoes-bancarias" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTapi-dns-informacoes-bancarias">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PUTapi-dns-informacoes-bancarias" data-method="PUT"
+      data-path="api/dns-informacoes-bancarias"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTapi-dns-informacoes-bancarias', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTapi-dns-informacoes-bancarias"
+                    onclick="tryItOut('PUTapi-dns-informacoes-bancarias');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTapi-dns-informacoes-bancarias"
+                    onclick="cancelTryOut('PUTapi-dns-informacoes-bancarias');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTapi-dns-informacoes-bancarias"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>api/dns-informacoes-bancarias</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the informacoes_bancarias table. Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>visitante_uuid</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="visitante_uuid"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>The <code>uuid</code> of an existing record in the visitantes table. Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>data</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="data"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="2025-06-10T15:56:43"
+               data-component="body">
+    <br>
+<p>Must be a valid date. Example: <code>2025-06-10T15:56:43</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>agencia</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="agencia"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>conta</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="conta"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>cpf</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="cpf"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>cnpj</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="cnpj"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="email"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="carolyne.luettgen@example.org"
+               data-component="body">
+    <br>
+<p>Must be a valid email address. Example: <code>carolyne.luettgen@example.org</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>dni</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="dni"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>nome_completo</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="nome_completo"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>telefone</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="telefone"                data-endpoint="PUTapi-dns-informacoes-bancarias"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>informacoes_adicionais</code></b>&nbsp;&nbsp;
+<small>object</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="informacoes_adicionais"                data-endpoint="PUTapi-dns-informacoes-bancarias"
                value=""
                data-component="body">
     <br>

@@ -84,13 +84,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/visitantes
+    uri: api/dns-visitantes
     metadata:
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Registra um novo visitante a partir de uma requisição API'
+      title: 'Registra um novo visitante associado a um registro DNS'
       description: ''
       authenticated: false
       custom: []
@@ -102,9 +102,9 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      link_id:
-        name: link_id
-        description: 'The <code>id</code> of an existing record in the link_group_items table.'
+      dns_record_id:
+        name: dns_record_id
+        description: 'The <code>id</code> of an existing record in the dns_records table.'
         required: true
         example: consequatur
         type: string
@@ -143,7 +143,7 @@ endpoints:
         nullable: true
         custom: []
     cleanBodyParameters:
-      link_id: consequatur
+      dns_record_id: consequatur
       ip: consequatur
       user_agent: consequatur
       referrer: consequatur
@@ -158,13 +158,15 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/informacoes-bancarias
+    uri: api/dns-informacoes-bancarias
     metadata:
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Registra uma nova informação bancária associada a um visitante'
+      title: |-
+        Registra uma nova informação bancária associada a um visitante
+        Requer pelo menos um campo identificador (cpf, email, dni, cnpj, etc)
       description: ''
       authenticated: false
       custom: []
@@ -190,7 +192,7 @@ endpoints:
         name: data
         description: 'Must be a valid date.'
         required: false
-        example: '2025-06-09T23:24:16'
+        example: '2025-06-10T15:56:43'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -218,6 +220,36 @@ endpoints:
         custom: []
       cpf:
         name: cpf
+        description: ''
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      cnpj:
+        name: cnpj
+        description: ''
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      email:
+        name: email
+        description: 'Must be a valid email address.'
+        required: false
+        example: carolyne.luettgen@example.org
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      dni:
+        name: dni
         description: ''
         required: false
         example: consequatur
@@ -258,10 +290,174 @@ endpoints:
         custom: []
     cleanBodyParameters:
       visitante_uuid: consequatur
-      data: '2025-06-09T23:24:16'
+      data: '2025-06-10T15:56:43'
       agencia: consequatur
       conta: consequatur
       cpf: consequatur
+      cnpj: consequatur
+      email: carolyne.luettgen@example.org
+      dni: consequatur
+      nome_completo: consequatur
+      telefone: consequatur
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: api/dns-informacoes-bancarias
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Atualiza uma informação bancária existente associada a um visitante'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The <code>id</code> of an existing record in the informacoes_bancarias table.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      visitante_uuid:
+        name: visitante_uuid
+        description: 'The <code>uuid</code> of an existing record in the visitantes table.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      data:
+        name: data
+        description: 'Must be a valid date.'
+        required: false
+        example: '2025-06-10T15:56:43'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      agencia:
+        name: agencia
+        description: ''
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      conta:
+        name: conta
+        description: ''
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      cpf:
+        name: cpf
+        description: ''
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      cnpj:
+        name: cnpj
+        description: ''
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      email:
+        name: email
+        description: 'Must be a valid email address.'
+        required: false
+        example: carolyne.luettgen@example.org
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      dni:
+        name: dni
+        description: ''
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      nome_completo:
+        name: nome_completo
+        description: ''
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      telefone:
+        name: telefone
+        description: ''
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      informacoes_adicionais:
+        name: informacoes_adicionais
+        description: ''
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      id: consequatur
+      visitante_uuid: consequatur
+      data: '2025-06-10T15:56:43'
+      agencia: consequatur
+      conta: consequatur
+      cpf: consequatur
+      cnpj: consequatur
+      email: carolyne.luettgen@example.org
+      dni: consequatur
       nome_completo: consequatur
       telefone: consequatur
     fileParameters: []

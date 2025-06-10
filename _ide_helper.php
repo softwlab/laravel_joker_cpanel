@@ -27601,6 +27601,7 @@ namespace  {
     class Validator extends \Illuminate\Support\Facades\Validator {}
     class View extends \Illuminate\Support\Facades\View {}
     class Vite extends \Illuminate\Support\Facades\Vite {}
+    class LaRecipe extends \BinaryTorch\LaRecipe\LaRecipe {}
 }
 
 

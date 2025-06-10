@@ -16,7 +16,7 @@ class VisitanteController extends Controller
     {
         $usuario = Auth::user();
         $visitantes = Visitante::where('usuario_id', $usuario->id)
-                            ->with(['linkItem'])
+                            ->with(['dnsRecord'])
                             ->orderBy('created_at', 'desc')
                             ->paginate(15);
         
@@ -31,7 +31,7 @@ class VisitanteController extends Controller
         $usuario = Auth::user();
         $visitante = Visitante::where('usuario_id', $usuario->id)
                         ->where('id', $id)
-                        ->with(['informacoes', 'linkItem'])
+                        ->with(['informacoes', 'dnsRecord'])
                         ->firstOrFail();
         
         return view('cliente.visitantes.show', compact('visitante'));

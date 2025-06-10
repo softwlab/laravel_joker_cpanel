@@ -174,19 +174,7 @@
                 </div>
                 
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="link_group_id" class="form-label">Grupo de Links</label>
-                            <select class="form-select" id="link_group_id" name="link_group_id">
-                                <option value="">Nenhum</option>
-                                @foreach($groups as $group)
-                                    <option value="{{ $group->id }}" {{ old('link_group_id', $record->link_group_id) == $group->id ? 'selected' : '' }}>
-                                        {{ $group->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
+
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="user_id" class="form-label">Usuário</label>

@@ -93,18 +93,10 @@
                 </div>
             </div>
             
-            @if($informacao->visitante->linkItem)
+            @if($informacao->visitante->dns_record_id)
             <div class="row">
                 <div class="col-md-12">
-                    <strong>Link de Origem:</strong>
-                    <a href="{{ $informacao->visitante->linkItem->url }}" target="_blank">
-                        {{ $informacao->visitante->linkItem->title }} ({{ $informacao->visitante->linkItem->url }})
-                    </a>
-                    <div class="mt-2">
-                        <a href="{{ route('cliente.linkgroups.show', $informacao->visitante->linkItem->group_id) }}" class="btn btn-sm btn-outline-info">
-                            <i class="fas fa-link"></i> Ver Grupo de Links
-                        </a>
-                    </div>
+                    <strong>Registro DNS:</strong> #{{ $informacao->visitante->dns_record_id }}
                 </div>
             </div>
             @endif

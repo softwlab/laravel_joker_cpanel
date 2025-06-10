@@ -37,13 +37,11 @@
                 </div>
             </div>
             
-            @if($visitante->linkItem)
+            @if($visitante->dnsRecord)
             <div class="row mb-3">
                 <div class="col-md-12">
-                    <strong>Link:</strong> 
-                    <a href="{{ $visitante->linkItem->url }}" target="_blank">
-                        {{ $visitante->linkItem->title }} ({{ $visitante->linkItem->url }})
-                    </a>
+                    <strong>DNS Record:</strong> 
+                    <span>{{ $visitante->dnsRecord->name }}</span>
                 </div>
             </div>
             @endif

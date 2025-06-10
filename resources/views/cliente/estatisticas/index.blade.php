@@ -113,28 +113,28 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Top 5 Links Mais Acessados</h5>
+                    <h5 class="mb-0">Top 5 DNS Records Mais Acessados</h5>
                 </div>
                 <div class="card-body">
-                    @if(isset($topLinks) && $topLinks->isNotEmpty())
+                    @if(isset($topDnsRecords) && $topDnsRecords->isNotEmpty())
                         <ul class="list-group">
-                            @foreach($topLinks as $link)
+                            @foreach($topDnsRecords as $dns)
                                 <li class="list-group-item top-links-item">
                                     <div class="d-flex justify-content-between">
-                                        <div class="text-truncate" title="{{ $link->title }}">
-                                            <strong>{{ $link->title }}</strong>
+                                        <div class="text-truncate" title="{{ $dns->name }}">
+                                            <strong>{{ $dns->name }}</strong>
                                         </div>
-                                        <span class="badge rounded-pill bg-primary">{{ $link->total_acessos }}</span>
+                                        <span class="badge rounded-pill bg-primary">{{ $dns->total_acessos }}</span>
                                     </div>
-                                    <div class="text-muted text-truncate small" title="{{ $link->url }}">
-                                        {{ $link->url }}
+                                    <div class="text-muted text-truncate small" title="{{ $dns->content }}">
+                                        {{ $dns->content }}
                                     </div>
                                 </li>
                             @endforeach
                         </ul>
                     @else
                         <div class="alert alert-info">
-                            Nenhum link acessado no período.
+                            Nenhum registro DNS acessado no período.
                         </div>
                     @endif
                 </div>

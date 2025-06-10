@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LinkGroup;
 use App\Models\Bank;
 use App\Models\BankTemplate;
 use App\Models\TemplateUserConfig;
@@ -153,30 +152,15 @@ class ClientController extends Controller
         $user = Auth::user();
         $userId = $user->id;
         
-        // Carregando os domínios Cloudflare associados ao usuário
-        $user = Usuario::with([
-            'cloudflareDomains', // Não filtrar por tipo para pegar todos os domínios e registros DNS
-            // Carrega os registros DNS que pertencem a este usuário
-            'cloudflareDomains.dnsRecords' => function($query) use ($userId) {
-                $query->where('user_id', $userId)
-                      ->with(['bankTemplate', 'bank.template', 'externalApi']);
-            }
-        ])->findOrFail($userId);
-        
-        // Carregando os registros DNS individuais do usuário (CRUCIAL: não remover isso!)
+        // Buscar os dados relacionados ao domínio
         $dnsRecords = \App\Models\DnsRecord::where('user_id', $userId)
-            ->with(['bankTemplate', 'bank.template', 'externalApi'])
+            ->with(['externalApi', 'bankTemplate'])
             ->get();
         
-        $linkGroups = LinkGroup::where('usuario_id', $userId)
-            ->where('active', true)
-            ->with(['items', 'items.template'])
-            ->get();
+        // Buscar bancos do usuário
+        $banks = Bank::where('usuario_id', $userId)->get();
         
-        // Obter bancos com templates existentes
-        $banks = Bank::where('usuario_id', $userId)->with('template')->get();
-        
-        return view('cliente.dashboard', compact('linkGroups', 'banks', 'user', 'dnsRecords'));
+        return view('cliente.dashboard', compact('banks', 'user', 'dnsRecords'));
     }
 
     public function profile()
@@ -217,19 +201,13 @@ class ClientController extends Controller
             return redirect()->to('/cliente/templates/config?template_id=' . $request->input('template_id') . '&record_id=' . $request->input('record_id'));
         }
         
-        // Carregar os links bancários com seus templates associados
-        $banks = Bank::where('usuario_id', $user->id)
-                ->with('template')
+        // Carregar todos os templates bancários disponíveis
+        $templates = BankTemplate::where('active', true)
+                ->withCount('banks')
+                ->orderBy('name')
                 ->get();
         
-        // Carregar os grupos de links para contextualizar os links bancários
-        $linkGroups = LinkGroup::where('usuario_id', $user->id)
-                ->with(['banks' => function($query) {
-                    $query->with('template');
-                }])
-                ->get();
-        
-        return view('cliente.banks', compact('banks', 'linkGroups'));
+        return view('cliente.banks', compact('templates'));
     }
     
     public function createBank()
@@ -272,27 +250,16 @@ class ClientController extends Controller
     public function showBank($id)
     {
         $user = Auth::user();
-        $bank = Bank::where('usuario_id', $user->id)
-                ->with(['template', 'template.fields' => function($query) {
-                    $query->where('active', true)->orderBy('order');
-                }])
-                ->findOrFail($id);
         
-        // Verificar se o link bancário tem template associado e adicionar aviso se não tiver
-        if (!$bank->template) {
-            session()->flash('warning', 'Este link bancário não possui um template associado e precisa ser atualizado para a nova arquitetura.');
-            
-            // Obter todos os templates disponíveis para sugerir ao usuário
-            $availableTemplates = BankTemplate::where('active', true)->get();
-            return view('cliente.bank-details', compact('bank', 'availableTemplates'));
-        }
+        // Buscar o banco com template e externalApi, se existirem
+        $bank = Bank::where('id', $id)
+            ->where('usuario_id', $user->id)
+            ->with(['template', 'template.fields' => function($query) {
+                $query->where('active', true)->orderBy('order', 'asc');
+            }, 'externalApi'])
+            ->firstOrFail();
         
-        // Verificar a qual grupo de links este banco pertence
-        $linkGroups = LinkGroup::whereHas('banks', function($query) use ($id) {
-            $query->where('bank_id', $id);
-        })->with('items')->get();
-        
-        return view('cliente.bank-details', compact('bank', 'linkGroups'));
+        return view('cliente.bank-details', compact('bank'));
     }
 
     public function updateBank(Request $request, $id)

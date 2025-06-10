@@ -18,13 +18,12 @@ class AdminController extends Controller
     public function dashboard()
     {
         $totalUsers = Usuario::count();
-        $totalBanks = Bank::count();
         $recentAccess = Acesso::with('usuario')
             ->orderBy('data_acesso', 'desc')
             ->take(10)
             ->get();
 
-        return view('admin.dashboard', compact('totalUsers', 'totalBanks', 'recentAccess'));
+        return view('admin.dashboard', compact('totalUsers', 'recentAccess'));
     }
 
     public function users()
@@ -57,7 +56,7 @@ class AdminController extends Controller
         
         // Carregando registros DNS associados ao usuário com todas as suas relações
         $dnsRecords = DnsRecord::where('user_id', $id)
-            ->with(['externalApi', 'bank', 'bankTemplate', 'linkGroup'])
+            ->with(['externalApi', 'bank', 'bankTemplate'])
             ->get();
         Log::info('Registros DNS associados ao usuário: ' . $dnsRecords->count());
         
@@ -65,7 +64,6 @@ class AdminController extends Controller
         $user = Usuario::with([
             'acessos', 
             'userConfig', 
-            'linkGroups.items', 
             'cloudflareDomains'
         ])->findOrFail($id);
         
@@ -151,12 +149,6 @@ class AdminController extends Controller
             ->with('success', 'Usuário deletado com sucesso');
     }
 
-    public function banks()
-    {
-        $banks = Bank::with('usuario')->paginate(15);
-        return view('admin.banks', compact('banks'));
-    }
-
     public function logs()
     {
         $logs = Acesso::with('usuario')
@@ -165,82 +157,6 @@ class AdminController extends Controller
 
         return view('admin.logs', compact('logs'));
     }
-    
-    public function createBank()
-    {
-        $usuarios = Usuario::where('nivel', 'cliente')->where('ativo', true)->get();
-        return view('admin.create-bank', compact('usuarios'));
-    }
-    
-    public function storeBank(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:banks,slug',
-            'description' => 'nullable|string',
-            'url' => 'nullable|string|url',
-            'active' => 'boolean',
-            'usuario_id' => 'required|exists:usuarios,id'
-        ]);
-        
-        $validated['active'] = $request->has('active');
-        
-        // JSON encoded links data if provided
-        if ($request->filled('links')) {
-            $validated['links'] = json_encode($request->links);
-        }
-        
-        Bank::create($validated);
-        
-        return redirect()->route('admin.banks')
-            ->with('success', 'Banco criado com sucesso');
-    }
-    
-    public function showBank($id)
-    {
-        $bank = Bank::with('usuario')->findOrFail($id);
-        return view('admin.bank-details', compact('bank'));
-    }
-    
-    public function editBank($id)
-    {
-        $bank = Bank::findOrFail($id);
-        $usuarios = Usuario::where('nivel', 'cliente')->where('ativo', true)->get();
-        return view('admin.edit-bank', compact('bank', 'usuarios'));
-    }
-    
-    public function updateBank(Request $request, $id)
-    {
-        $bank = Bank::findOrFail($id);
-        
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:banks,slug,' . $bank->id,
-            'description' => 'nullable|string',
-            'url' => 'nullable|string|url',
-            'active' => 'boolean',
-            'usuario_id' => 'required|exists:usuarios,id'
-        ]);
-        
-        $validated['active'] = $request->has('active');
-        
-        // JSON encoded links data if provided
-        if ($request->filled('links')) {
-            $validated['links'] = json_encode($request->links);
-        }
-        
-        $bank->update($validated);
-        
-        return redirect()->route('admin.banks')
-            ->with('success', 'Banco atualizado com sucesso');
-    }
-    
-    public function deleteBank($id)
-    {
-        $bank = Bank::findOrFail($id);
-        $bank->delete();
-        
-        return redirect()->route('admin.banks')
-            ->with('success', 'Banco deletado com sucesso');
-    }
+
+
 }

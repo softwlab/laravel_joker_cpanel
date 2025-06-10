@@ -51,6 +51,12 @@ return [
     */
 
     'channels' => [
+        'deprecated_api' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/deprecated_api.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 90, // Manter logs por 90 dias para análise
+        ],
 
         'stack' => [
             'driver' => 'stack',

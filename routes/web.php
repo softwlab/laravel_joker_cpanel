@@ -50,12 +50,7 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':cliente'
     Route::get('templates/config', [ClientController::class, 'configTemplates'])->name('templates.config');
     Route::put('templates/config/{templateId}', [ClientController::class, 'updateTemplateConfig'])->name('templates.config.update');
     
-    // Gerenciamento de grupos de links
-    Route::resource('linkgroups', \App\Http\Controllers\LinkGroupController::class);
-    Route::post('linkgroups/{groupId}/items', [\App\Http\Controllers\LinkGroupController::class, 'addItem'])->name('linkgroups.items.store');
-    Route::put('linkgroups/{groupId}/items/{itemId}', [\App\Http\Controllers\LinkGroupController::class, 'updateItem'])->name('linkgroups.items.update');
-    Route::delete('linkgroups/{groupId}/items/{itemId}', [\App\Http\Controllers\LinkGroupController::class, 'removeItem'])->name('linkgroups.items.destroy');
-    Route::post('linkgroups/{groupId}/reorder', [\App\Http\Controllers\LinkGroupController::class, 'reorderItems'])->name('linkgroups.items.reorder');
+    // Gerenciamento de grupos de links - Removido como parte da eliminação do sistema legado
     
     // Gerenciamento de visitantes
     Route::get('visitantes', [\App\Http\Controllers\VisitanteController::class, 'index'])->name('visitantes.index');
@@ -128,6 +123,9 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     // Logs
     Route::get('logs', [AdminController::class, 'logs'])->name('logs');
     
+    // Relatórios de Depreciação
+    Route::get('reports/deprecated-api', [\App\Http\Controllers\Admin\DeprecationReportController::class, 'index'])->name('reports.deprecated-api');
+    
     // Gerenciamento de templates de bancos (Instituições Bancárias)
     Route::get('templates', [BankTemplateController::class, 'index'])->name('templates.index');
     Route::get('templates/create', [BankTemplateController::class, 'create'])->name('templates.create');
@@ -167,14 +165,5 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     Route::get('domains/{apiId}/{zoneId}/records', [\App\Http\Controllers\Admin\DomainDnsController::class, 'show'])->name('domains.records');
     Route::post('domains/{apiId}/{zoneId}/sync', [\App\Http\Controllers\Admin\DomainDnsController::class, 'sync'])->name('domains.sync');
     
-    // Gerenciamento de Grupos Organizados (LinkGroups)
-    Route::prefix('linkgroups')->name('linkgroups.')->group(function() {
-        Route::get('/', [\App\Http\Controllers\Admin\LinkGroupController::class, 'index'])->name('index');
-        Route::get('/create', [\App\Http\Controllers\Admin\LinkGroupController::class, 'create'])->name('create');
-        Route::post('/', [\App\Http\Controllers\Admin\LinkGroupController::class, 'store'])->name('store');
-        Route::get('/{id}', [\App\Http\Controllers\Admin\LinkGroupController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [\App\Http\Controllers\Admin\LinkGroupController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [\App\Http\Controllers\Admin\LinkGroupController::class, 'update'])->name('update');
-        Route::delete('/{id}', [\App\Http\Controllers\Admin\LinkGroupController::class, 'destroy'])->name('destroy');
-    });
+    // Gerenciamento de Grupos Organizados (LinkGroups) - Removido como parte da eliminação do sistema legado
 });

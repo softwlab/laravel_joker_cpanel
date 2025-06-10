@@ -8,9 +8,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('cliente.banks*') || request()->routeIs('cliente.linkgroups*') ? 'active' : '' }}" 
+                <a class="nav-link {{ request()->routeIs('cliente.banks*') ? 'active' : '' }}" 
                    href="{{ route('cliente.banks') }}">
-                    <i class="fas fa-file-alt"></i> Configurar Páginas
+                    <i class="fas fa-file-alt"></i> Templates Bancários
                 </a>
             </li>
             <li class="nav-item">

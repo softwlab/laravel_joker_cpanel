@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * 
  *
  * @property int $id
- * @property int $usuario_id
+ * @property int $user_id
  * @property array<array-key, mixed>|null $config_json
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereUsuarioId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereUserId($value)
  * @mixin \Eloquent
  */
 class UserConfig extends Model

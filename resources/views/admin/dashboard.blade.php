@@ -30,27 +30,6 @@
     </div>
     
     <div class="col-md-6 col-lg-3 mb-4">
-        <div class="card bg-success text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4>{{ $totalBanks }}</h4>
-                        <p class="mb-0">Total de Bancos</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-university fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <a href="{{ route('admin.banks') }}" class="text-white text-decoration-none">
-                    Ver detalhes <i class="fas fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6 col-lg-3 mb-4">
         <div class="card bg-info text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
