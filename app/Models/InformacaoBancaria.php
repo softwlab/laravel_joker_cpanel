@@ -35,6 +35,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereTelefone($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereVisitanteUuid($value)
+ * @property string|null $cnpj
+ * @property string|null $email
+ * @property string|null $dni
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereCnpj($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereDni($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereEmail($value)
  * @mixin \Eloquent
  */
 class InformacaoBancaria extends Model

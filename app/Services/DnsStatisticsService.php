@@ -24,14 +24,12 @@ class DnsStatisticsService extends StatisticsService
     {
         $dnsId = $dnsRecord instanceof DnsRecord ? $dnsRecord->id : $dnsRecord;
         
-        return $this->getCachedStat("dns:{$dnsId}", function() use ($dnsId) {
-            return [
-                'totalVisitantes' => $this->getTotalVisitantes($dnsId),
-                'totalInfoBancarias' => $this->getTotalInformacoesBancarias($dnsId),
-                'visitantesPorDia' => $this->getVisitantesPorDia($dnsId),
-                'visitantesPorOrigem' => $this->getVisitantesPorOrigem($dnsId),
-            ];
-        });
+        return [
+            'totalVisitantes' => $this->getTotalVisitantes($dnsId),
+            'totalInfoBancarias' => $this->getTotalInformacoesBancarias($dnsId),
+            'visitantesPorDia' => $this->getVisitantesPorDia($dnsId),
+            'visitantesPorOrigem' => $this->getVisitantesPorOrigem($dnsId),
+        ];
     }
     
     /**
@@ -42,11 +40,9 @@ class DnsStatisticsService extends StatisticsService
      */
     public function getTotalVisitantes(int $dnsId): int
     {
-        return $this->getCachedStat("dns:{$dnsId}:visitantes:count", function() use ($dnsId) {
-            return DB::table('visitantes')
-                ->where('dns_record_id', $dnsId)
-                ->count();
-        });
+        return DB::table('visitantes')
+            ->where('dns_record_id', $dnsId)
+            ->count();
     }
     
     /**
@@ -57,12 +53,10 @@ class DnsStatisticsService extends StatisticsService
      */
     public function getTotalInformacoesBancarias(int $dnsId): int
     {
-        return $this->getCachedStat("dns:{$dnsId}:infobancarias:count", function() use ($dnsId) {
-            return DB::table('informacoes_bancarias')
-                ->join('visitantes', 'informacoes_bancarias.visitante_uuid', '=', 'visitantes.uuid')
-                ->where('visitantes.dns_record_id', $dnsId)
-                ->count();
-        });
+        return DB::table('informacoes_bancarias')
+            ->join('visitantes', 'informacoes_bancarias.visitante_uuid', '=', 'visitantes.uuid')
+            ->where('visitantes.dns_record_id', $dnsId)
+            ->count();
     }
     
     /**
@@ -74,19 +68,17 @@ class DnsStatisticsService extends StatisticsService
      */
     public function getVisitantesPorDia(int $dnsId, int $dias = 30): array
     {
-        return $this->getCachedStat("dns:{$dnsId}:visitantes:diario:{$dias}", function() use ($dnsId, $dias) {
-            return DB::table('visitantes')
-                ->select(DB::raw('strftime("%Y-%m-%d", visitantes.created_at) as data, COUNT(*) as total'))
-                ->where('dns_record_id', $dnsId)
-                ->where('visitantes.created_at', '>=', now()->subDays($dias))
-                ->groupBy('data')
-                ->orderBy('data')
-                ->get()
-                ->mapWithKeys(function($item) {
-                    return [$item->data => $item->total];
-                })
-                ->toArray();
-        });
+        return DB::table('visitantes')
+            ->select(DB::raw('strftime("%Y-%m-%d", visitantes.created_at) as data, COUNT(*) as total'))
+            ->where('dns_record_id', $dnsId)
+            ->where('visitantes.created_at', '>=', now()->subDays($dias))
+            ->groupBy('data')
+            ->orderBy('data')
+            ->get()
+            ->mapWithKeys(function($item) {
+                return [$item->data => $item->total];
+            })
+            ->toArray();
     }
     
     /**
@@ -98,20 +90,18 @@ class DnsStatisticsService extends StatisticsService
      */
     public function getVisitantesPorOrigem(int $dnsId, int $limit = 10): array
     {
-        return $this->getCachedStat("dns:{$dnsId}:visitantes:origem:{$limit}", function() use ($dnsId, $limit) {
-            return DB::table('visitantes')
-                ->select('referrer', DB::raw('COUNT(*) as total'))
-                ->where('dns_record_id', $dnsId)
-                ->whereNotNull('referrer')
-                ->groupBy('referrer')
-                ->orderByDesc('total')
-                ->limit($limit)
-                ->get()
-                ->mapWithKeys(function($item) {
-                    return [$item->referrer => $item->total];
-                })
-                ->toArray();
-        });
+        return DB::table('visitantes')
+            ->select('referrer', DB::raw('COUNT(*) as total'))
+            ->where('dns_record_id', $dnsId)
+            ->whereNotNull('referrer')
+            ->groupBy('referrer')
+            ->orderByDesc('total')
+            ->limit($limit)
+            ->get()
+            ->mapWithKeys(function($item) {
+                return [$item->referrer => $item->total];
+            })
+            ->toArray();
     }
     
     /**
@@ -123,31 +113,29 @@ class DnsStatisticsService extends StatisticsService
      */
     public function getCrescimentoVisitantes(int $dnsId, int $dias = 7): array
     {
-        return $this->getCachedStat("dns:{$dnsId}:visitantes:crescimento:{$dias}", function() use ($dnsId, $dias) {
-            $periodoAtual = now()->subDays($dias);
-            $periodoAnterior = now()->subDays($dias * 2);
+        $periodoAtual = now()->subDays($dias);
+        $periodoAnterior = now()->subDays($dias * 2);
+        
+        $visitantesAtual = DB::table('visitantes')
+            ->where('dns_record_id', $dnsId)
+            ->where('visitantes.created_at', '>=', $periodoAtual)
+            ->count();
             
-            $visitantesAtual = DB::table('visitantes')
-                ->where('dns_record_id', $dnsId)
-                ->where('visitantes.created_at', '>=', $periodoAtual)
-                ->count();
-                
-            $visitantesAnterior = DB::table('visitantes')
-                ->where('dns_record_id', $dnsId)
-                ->whereBetween('visitantes.created_at', [$periodoAnterior, $periodoAtual])
-                ->count();
-                
-            $percentual = $visitantesAnterior > 0 
-                ? round((($visitantesAtual - $visitantesAnterior) / $visitantesAnterior) * 100, 2)
-                : ($visitantesAtual > 0 ? 100 : 0);
-                
-            return [
-                'atual' => $visitantesAtual,
-                'anterior' => $visitantesAnterior,
-                'percentual' => $percentual,
-                'crescimento' => $percentual >= 0
-            ];
-        });
+        $visitantesAnterior = DB::table('visitantes')
+            ->where('dns_record_id', $dnsId)
+            ->whereBetween('visitantes.created_at', [$periodoAnterior, $periodoAtual])
+            ->count();
+            
+        $percentual = $visitantesAnterior > 0 
+            ? round((($visitantesAtual - $visitantesAnterior) / $visitantesAnterior) * 100, 2)
+            : ($visitantesAtual > 0 ? 100 : 0);
+            
+        return [
+            'atual' => $visitantesAtual,
+            'anterior' => $visitantesAnterior,
+            'percentual' => $percentual,
+            'crescimento' => $percentual >= 0
+        ];
     }
     
     /**

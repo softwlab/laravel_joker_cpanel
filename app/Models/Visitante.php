@@ -22,7 +22,7 @@ use App\Models\DnsRecord;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, InformacaoBancaria> $informacoes
  * @property-read int|null $informacoes_count
- * @property-read \App\Models\DnsRecord|null $dnsRecord 
+ * @property-read \App\Models\DnsRecord|null $dnsRecord
  * @property-read \App\Models\Usuario $usuario
  * @method static \Database\Factories\VisitanteFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante newModelQuery()

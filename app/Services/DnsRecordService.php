@@ -396,24 +396,44 @@ class DnsRecordService
             $dnsRecord = DnsRecord::findOrFail($id);
             $previousUserId = $dnsRecord->user_id;
             
-            // Se o registro estiver associado a um usuário, armazenar o ID para invalidar o cache depois
-            $userIdToInvalidate = $dnsRecord->user_id;
-            
             $api = ExternalApi::findOrFail($data['external_api_id']);
             
             // Log dos valores atuais antes da atualização
             Log::info('DnsRecordService::updateRecord - Valores antes da atualização:', [
                 'id' => $id,
                 'template_atual' => $dnsRecord->bank_template_id,
-                'user_salvo' => $dnsRecord->fresh()->user_id
+                'user_atual' => $dnsRecord->user_id
             ]);
             
-            // Opcionalmente, sincronizar com a API externa
+            // Atualizar o registro com os novos dados
+            $dnsRecord->external_api_id = $data['external_api_id'];
+            $dnsRecord->record_type = $data['record_type'];
+            $dnsRecord->name = $data['name'];
+            $dnsRecord->content = $data['content'];
+            $dnsRecord->ttl = $data['ttl'] ?? 3600;
+            $dnsRecord->priority = $data['priority'] ?? 0;
+            $dnsRecord->bank_id = $data['bank_id'] ?? null;
+            $dnsRecord->bank_template_id = $data['bank_template_id'] ?? null;
+            $dnsRecord->user_id = $data['user_id'] ?? null;
+            
+            // Salvar as alterações no banco de dados
+            $dnsRecord->save();
+            
+            // Log dos valores após a atualização
+            Log::info('DnsRecordService::updateRecord - Valores após a atualização:', [
+                'id' => $id,
+                'template_novo' => $dnsRecord->bank_template_id,
+                'user_novo' => $dnsRecord->user_id
+            ]);
+            
+            // Variável para mensagem de sincronização
             $syncMessage = null;
+            
+            // Opcionalmente, sincronizar com a API externa
             if (isset($data['sync_with_api']) && $data['sync_with_api'] == 'on') {
                 $syncResult = $this->syncRecord($id);
                 if (!$syncResult['success']) {
-                    $syncMessage = 'Registro atualizado com sucesso, mas a sincronização falhou: ' . $syncResult['message'];
+                    $syncMessage = 'Registro atualizado com sucesso, mas a sincronização falhou: ' . ($syncResult['message'] ?? 'Erro desconhecido');
                 }
             }
             

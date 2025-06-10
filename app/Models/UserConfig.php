@@ -23,6 +23,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereUserId($value)
+ * @property int|null $template_id
+ * @property int|null $record_id
+ * @property array<array-key, mixed>|null $config
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereConfig($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereRecordId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereTemplateId($value)
  * @mixin \Eloquent
  */
 class UserConfig extends Model

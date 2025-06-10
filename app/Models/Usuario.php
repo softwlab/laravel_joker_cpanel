@@ -27,7 +27,6 @@ use Illuminate\Notifications\Notifiable;
  * @property-read int|null $banks_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CloudflareDomain> $cloudflareDomains
  * @property-read int|null $cloudflare_domains_count
-
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \App\Models\UserConfig|null $userConfig

@@ -190,7 +190,7 @@ endpoints:
         name: data
         description: 'Must be a valid date.'
         required: false
-        example: '2025-06-10T15:56:43'
+        example: '2025-06-10T19:03:06'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -288,7 +288,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       visitante_uuid: consequatur
-      data: '2025-06-10T15:56:43'
+      data: '2025-06-10T19:03:06'
       agencia: consequatur
       conta: consequatur
       cpf: consequatur
@@ -350,7 +350,7 @@ endpoints:
         name: data
         description: 'Must be a valid date.'
         required: false
-        example: '2025-06-10T15:56:43'
+        example: '2025-06-10T19:03:06'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -449,7 +449,7 @@ endpoints:
     cleanBodyParameters:
       id: consequatur
       visitante_uuid: consequatur
-      data: '2025-06-10T15:56:43'
+      data: '2025-06-10T19:03:06'
       agencia: consequatur
       conta: consequatur
       cpf: consequatur

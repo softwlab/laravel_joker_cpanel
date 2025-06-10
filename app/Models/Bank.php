@@ -21,7 +21,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int|null $bank_template_id
  * @property array<array-key, mixed>|null $field_values
  * @property array<array-key, mixed>|null $field_active
-
  * @property-read \App\Models\BankTemplate|null $template
  * @property-read \App\Models\Usuario $usuario
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank newModelQuery()

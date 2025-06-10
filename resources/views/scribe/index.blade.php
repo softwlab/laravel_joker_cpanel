@@ -577,7 +577,7 @@ Requer pelo menos um campo identificador (cpf, email, dni, cnpj, etc)</h2>
     --header "Accept: application/json" \
     --data "{
     \"visitante_uuid\": \"consequatur\",
-    \"data\": \"2025-06-10T15:56:43\",
+    \"data\": \"2025-06-10T19:03:06\",
     \"agencia\": \"consequatur\",
     \"conta\": \"consequatur\",
     \"cpf\": \"consequatur\",
@@ -602,7 +602,7 @@ const headers = {
 
 let body = {
     "visitante_uuid": "consequatur",
-    "data": "2025-06-10T15:56:43",
+    "data": "2025-06-10T19:03:06",
     "agencia": "consequatur",
     "conta": "consequatur",
     "cpf": "consequatur",
@@ -710,10 +710,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="data"                data-endpoint="POSTapi-dns-informacoes-bancarias"
-               value="2025-06-10T15:56:43"
+               value="2025-06-10T19:03:06"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2025-06-10T15:56:43</code></p>
+<p>Must be a valid date. Example: <code>2025-06-10T19:03:06</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>agencia</code></b>&nbsp;&nbsp;
@@ -835,7 +835,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"id\": \"consequatur\",
     \"visitante_uuid\": \"consequatur\",
-    \"data\": \"2025-06-10T15:56:43\",
+    \"data\": \"2025-06-10T19:03:06\",
     \"agencia\": \"consequatur\",
     \"conta\": \"consequatur\",
     \"cpf\": \"consequatur\",
@@ -861,7 +861,7 @@ const headers = {
 let body = {
     "id": "consequatur",
     "visitante_uuid": "consequatur",
-    "data": "2025-06-10T15:56:43",
+    "data": "2025-06-10T19:03:06",
     "agencia": "consequatur",
     "conta": "consequatur",
     "cpf": "consequatur",
@@ -980,10 +980,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="data"                data-endpoint="PUTapi-dns-informacoes-bancarias"
-               value="2025-06-10T15:56:43"
+               value="2025-06-10T19:03:06"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2025-06-10T15:56:43</code></p>
+<p>Must be a valid date. Example: <code>2025-06-10T19:03:06</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>agencia</code></b>&nbsp;&nbsp;
