@@ -49,6 +49,9 @@ class InformacaoBancaria extends Model
         'agencia',
         'conta',
         'cpf',
+        'cnpj',
+        'email',
+        'dni',
         'nome_completo',
         'telefone',
         'informacoes_adicionais'

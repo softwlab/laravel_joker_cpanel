@@ -48,6 +48,7 @@ class Visitante extends Model
         'uuid',
         'usuario_id',
         'link_id',
+        'dns_record_id',
         'ip',
         'user_agent',
         'referrer',
@@ -83,5 +84,10 @@ class Visitante extends Model
     public function informacoes()
     {
         return $this->hasMany(InformacaoBancaria::class, 'visitante_uuid', 'uuid');
+    }
+    
+    public function dnsRecord()
+    {
+        return $this->belongsTo(DnsRecord::class, 'dns_record_id');
     }
 }

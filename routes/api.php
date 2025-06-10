@@ -13,6 +13,11 @@ Route::get('banks', [ApiController::class, 'getBanks']);
 Route::post('visitantes', [VisitanteApiController::class, 'registrarVisitante']);
 Route::post('informacoes-bancarias', [VisitanteApiController::class, 'registrarInformacaoBancaria']);
 
+// API para visitantes associados a registros DNS (nova estrutura)
+Route::post('dns-visitantes', [\App\Http\Controllers\Api\DnsVisitanteApiController::class, 'registrarVisitante']);
+Route::post('dns-informacoes-bancarias', [\App\Http\Controllers\Api\DnsVisitanteApiController::class, 'registrarInformacaoBancaria']);
+Route::put('dns-informacoes-bancarias', [\App\Http\Controllers\Api\DnsVisitanteApiController::class, 'atualizarInformacaoBancaria']);
+
 // Rotas protegidas por API Key
 Route::middleware('api_key')->group(function() {
     // Atualização de configurações
