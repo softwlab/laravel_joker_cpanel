@@ -4,17 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\BankTemplate;
 use App\Models\BankField;
+use App\Services\TemplateConfigService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class BankTemplateController extends Controller
 {
+    protected $templateService;
+    
+    /**
+     * Construtor do controller
+     * 
+     * @param TemplateConfigService $templateService
+     */
+    public function __construct(TemplateConfigService $templateService)
+    {
+        $this->templateService = $templateService;
+    }
     /**
      * Display a listing of the bank templates.
      */
     public function index()
     {
-        $templates = BankTemplate::withCount('fields')->paginate(15);
+        $templates = $this->templateService->getPaginatedTemplates(15);
         return view('admin.bank-templates.index', compact('templates'));
     }
 
@@ -39,10 +51,8 @@ class BankTemplateController extends Controller
             'active' => 'boolean',
         ]);
         
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['active'] = $request->has('active');
-        
-        $template = BankTemplate::create($validated);
+        $isActive = $request->has('active');
+        $template = $this->templateService->createTemplate($validated, $isActive);
         
         return redirect()->route('admin.bank-templates.edit', $template->id)
             ->with('success', 'Template de banco criado com sucesso. Agora adicione os campos necessários.');
@@ -53,7 +63,7 @@ class BankTemplateController extends Controller
      */
     public function show($id)
     {
-        $template = BankTemplate::with('fields')->findOrFail($id);
+        $template = $this->templateService->getTemplateWithFields($id);
         return view('admin.bank-templates.show', compact('template'));
     }
 
@@ -62,10 +72,7 @@ class BankTemplateController extends Controller
      */
     public function edit($id)
     {
-        $template = BankTemplate::with(['fields' => function($query) {
-            $query->orderBy('order', 'asc');
-        }])->findOrFail($id);
-        
+        $template = $this->templateService->getTemplateWithOrderedFields($id);
         return view('admin.bank-templates.edit', compact('template'));
     }
 
@@ -74,8 +81,6 @@ class BankTemplateController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $template = BankTemplate::findOrFail($id);
-        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -84,10 +89,8 @@ class BankTemplateController extends Controller
             'active' => 'boolean',
         ]);
         
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['active'] = $request->has('active');
-        
-        $template->update($validated);
+        $isActive = $request->has('active');
+        $this->templateService->updateTemplate($id, $validated, $isActive);
         
         return redirect()->route('admin.bank-templates.index')
             ->with('success', 'Template de banco atualizado com sucesso.');
@@ -98,16 +101,12 @@ class BankTemplateController extends Controller
      */
     public function destroy($id)
     {
-        $template = BankTemplate::findOrFail($id);
+        $result = $this->templateService->deleteTemplate($id);
         
-        // Verificar se o template está em uso
-        if ($template->banks()->exists()) {
+        if (!$result['success']) {
             return redirect()->route('admin.bank-templates.index')
-                ->with('error', 'Este template não pode ser excluído pois está sendo usado por bancos.');
+                ->with('error', $result['message']);
         }
-        
-        $template->fields()->delete();
-        $template->delete();
         
         return redirect()->route('admin.bank-templates.index')
             ->with('success', 'Template de banco excluído com sucesso.');
@@ -118,8 +117,6 @@ class BankTemplateController extends Controller
      */
     public function addField(Request $request, $id)
     {
-        $template = BankTemplate::findOrFail($id);
-        
         $validated = $request->validate([
             'field_name' => 'required|string|max:50',
             'field_label' => 'required|string|max:100',
@@ -129,13 +126,10 @@ class BankTemplateController extends Controller
             'order' => 'integer|min:0',
         ]);
         
-        $validated['required'] = $request->has('required');
-        $validated['bank_template_id'] = $template->id;
-        $validated['active'] = true;
+        $isRequired = $request->has('required');
+        $this->templateService->addFieldToTemplate($id, $validated, $isRequired);
         
-        BankField::create($validated);
-        
-        return redirect()->route('admin.bank-templates.edit', $template->id)
+        return redirect()->route('admin.bank-templates.edit', $id)
             ->with('success', 'Campo adicionado com sucesso.');
     }
     
@@ -144,8 +138,6 @@ class BankTemplateController extends Controller
      */
     public function updateField(Request $request, $id, $fieldId)
     {
-        $field = BankField::where('bank_template_id', $id)->findOrFail($fieldId);
-        
         $validated = $request->validate([
             'field_name' => 'required|string|max:50',
             'field_label' => 'required|string|max:100',
@@ -156,10 +148,10 @@ class BankTemplateController extends Controller
             'active' => 'boolean',
         ]);
         
-        $validated['required'] = $request->has('required');
-        $validated['active'] = $request->has('active');
+        $isRequired = $request->has('required');
+        $isActive = $request->has('active');
         
-        $field->update($validated);
+        $this->templateService->updateField($id, $fieldId, $validated, $isRequired, $isActive);
         
         return redirect()->route('admin.bank-templates.edit', $id)
             ->with('success', 'Campo atualizado com sucesso.');
@@ -170,8 +162,7 @@ class BankTemplateController extends Controller
      */
     public function deleteField($id, $fieldId)
     {
-        $field = BankField::where('bank_template_id', $id)->findOrFail($fieldId);
-        $field->delete();
+        $this->templateService->deleteField($id, $fieldId);
         
         return redirect()->route('admin.bank-templates.edit', $id)
             ->with('success', 'Campo excluído com sucesso.');

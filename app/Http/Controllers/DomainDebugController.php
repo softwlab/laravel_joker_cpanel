@@ -2,37 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Usuario;
-use App\Models\CloudflareDomain;
-use App\Models\DnsRecord;
+use App\Services\DomainService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class DomainDebugController extends Controller
 {
+    protected $domainService;
+    
+    /**
+     * Construtor do controller
+     *
+     * @param DomainService $domainService
+     */
+    public function __construct(DomainService $domainService)
+    {
+        $this->domainService = $domainService;
+    }
+
+    /**
+     * Exibe informações de diagnóstico para um usuário específico
+     *
+     * @param int $userId ID do usuário
+     * @return \Illuminate\View\View
+     */
     public function showDebug($userId)
     {
-        $user = Usuario::findOrFail($userId);
+        // Delega a obtenção dos dados de diagnóstico para o serviço
+        $diagnostics = $this->domainService->getUserDomainDiagnostics($userId);
         
-        // Consulta direta na tabela pivot
-        $pivotData = DB::table('cloudflare_domain_usuario')
-            ->where('usuario_id', $userId)
-            ->get();
-            
-        // Todos os domínios disponíveis
-        $allDomains = CloudflareDomain::all();
-        
-        // Registros DNS associados ao usuário
-        $userDnsRecords = DnsRecord::where('user_id', $userId)->get();
-        
-        // Log para diagnóstico
-        Log::info('Executando diagnóstico para usuário ' . $userId);
-        Log::info('Registros na tabela pivot: ' . $pivotData->count());
+        // Extrai as variáveis individuais do array para manter compatibilidade com a view existente
+        $user = $diagnostics['user'];
+        $pivotData = $diagnostics['pivotData'];
+        $allDomains = $diagnostics['allDomains'];
+        $userDnsRecords = $diagnostics['userDnsRecords'];
         
         return view('admin.domain-debug', compact('user', 'pivotData', 'allDomains', 'userDnsRecords'));
     }
     
+    /**
+     * Associa um domínio a um usuário
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function associateDomain(Request $request)
     {
         // Validação
@@ -44,27 +56,11 @@ class DomainDebugController extends Controller
         $userId = $request->input('usuario_id');
         $domainId = $request->input('cloudflare_domain_id');
         
-        // Verificar se já existe associação
-        $exists = DB::table('cloudflare_domain_usuario')
-            ->where('usuario_id', $userId)
-            ->where('cloudflare_domain_id', $domainId)
-            ->exists();
-            
-        if ($exists) {
-            return redirect()->back()->with('info', 'Este domínio já está associado a este usuário.');
-        }
+        // Delega a associação ao serviço
+        $result = $this->domainService->associateDomain($userId, $domainId);
         
-        // Criar associação
-        DB::table('cloudflare_domain_usuario')->insert([
-            'usuario_id' => $userId,
-            'cloudflare_domain_id' => $domainId,
-            'status' => 'active',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        
-        Log::info("Associação criada: Usuário $userId com Domínio $domainId");
-        
-        return redirect()->back()->with('success', 'Domínio associado com sucesso!');
+        // Retorna redirecionamento com mensagem adequada baseada no resultado
+        $messageType = $result['success'] ? 'success' : 'info';
+        return redirect()->back()->with($messageType, $result['message']);
     }
 }

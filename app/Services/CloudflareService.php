@@ -394,13 +394,24 @@ class CloudflareService
     /**
      * Atualiza um registro DNS existente
      * 
-     * @param string $zoneId
-     * @param string $recordId
-     * @param array $recordData
-     * @return array
+     * @param \App\Models\DnsRecord $record O modelo de registro DNS a atualizar
+     * @return array Resultado da operação
      */
     public function updateDnsRecord(\App\Models\DnsRecord $record)
     {
+        // Extrair dados necessários do objeto DnsRecord
+        $zoneId = $record->cloudflare_domain->zone_id;
+        $recordId = $record->cloudflare_record_id;
+        
+        // Preparar dados para atualização
+        $recordData = [
+            'type' => $record->type,
+            'name' => $record->name,
+            'content' => $record->content,
+            'ttl' => $record->ttl,
+            'proxied' => $record->proxied
+        ];
+        
         try {
             $response = Http::withHeaders($this->headers)
                 ->put($this->baseUrl . '/zones/' . $zoneId . '/dns_records/' . $recordId, $recordData);
@@ -428,6 +439,7 @@ class CloudflareService
                     'zone_id' => $zoneId,
                     'record_id' => $recordId,
                     'record_data' => $recordData,
+                    'dns_record_id' => $record->id,
                     'errors' => $data['errors'] ?? []
                 ]);
                 
@@ -441,7 +453,8 @@ class CloudflareService
             Log::error($errorMessage, [
                 'zone_id' => $zoneId,
                 'record_id' => $recordId,
-                'record_data' => $recordData
+                'record_data' => $recordData,
+                'dns_record_id' => $record->id
             ]);
             
             return [

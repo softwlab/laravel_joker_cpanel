@@ -7,264 +7,164 @@ use App\Models\DnsRecord;
 use App\Models\ExternalApi;
 use App\Models\Bank;
 use App\Models\BankTemplate;
-use App\Models\Usuario;
-use App\Services\DnsService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Config;
+use App\Services\BankingStatisticsService;
+use App\Services\DnsRecordService;
+use App\Services\DnsService;
+use App\Services\DnsStatisticsService;
+use App\Services\UserStatisticsService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class DnsRecordController extends Controller
 {
+    protected $dnsRecordService;
+    
+    /**
+     * Construtor que injeta o serviço de DNS Records
+     * 
+     * @param DnsRecordService $dnsRecordService
+     */
+    public function __construct(DnsRecordService $dnsRecordService)
+    {
+        $this->dnsRecordService = $dnsRecordService;
+    }
     /**
      * Display a listing of the resource.
+     * 
+     * @param Request $request
+     * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
-        $query = DnsRecord::with('externalApi');
+        $filters = [
+            'type' => $request->input('type'),
+            'api' => $request->input('api'),
+            'search' => $request->input('search'),
+        ];
         
-        // Aplicar filtros
-        if ($request->filled('type')) {
-            $query->where('record_type', $request->input('type'));
-        }
-        
-        if ($request->filled('api')) {
-            $query->where('external_api_id', $request->input('api'));
-        }
-        
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('content', 'like', "%{$search}%");
-            });
-        }
-        
-        $records = $query->paginate(15);
+        $records = $this->dnsRecordService->getPaginatedRecords($filters);
         return view('admin.dns-records.index', compact('records'));
     }
 
     /**
      * Show the form for creating a new resource.
+     * 
+     * @return \Illuminate\View\View
      */
     public function create()
     {
-        $apis = ExternalApi::where('status', 'active')->get();
-        $banks = Bank::all();
-        $templates = BankTemplate::all();
-
-        $users = \App\Models\Usuario::all();
-        $clientIpAddress = Config::get('app.client_page_ip', '127.0.0.1');
-        
-        $recordTypes = [
-            'A' => 'Registro A (Endereço IP)',
-            'CNAME' => 'Registro CNAME (Nome Canônico)',
-            'MX' => 'Registro MX (Servidor de Email)',
-            'TXT' => 'Registro TXT (Texto)',
-            'SPF' => 'Registro SPF (Sender Policy Framework)',
-            'DKIM' => 'Registro DKIM (DomainKeys)',
-            'DMARC' => 'Registro DMARC'
-        ];
-        
-        return view('admin.dns-records.create', compact(
-            'apis', 'banks', 'templates', 'users', 'clientIpAddress', 'recordTypes'
-        ));
+        $formData = $this->dnsRecordService->getCreateFormData();
+        return view('admin.dns-records.create', $formData);
     }
 
     /**
      * Store a newly created resource in storage.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'external_api_id' => 'required|exists:external_apis,id',
-            'record_type' => 'required|string',
-            'name' => 'required|string|max:255',
-            'content' => 'required|string',
-            'ttl' => 'nullable|integer|min:60',
-            'priority' => 'nullable|integer|min:0',
-            'bank_id' => 'nullable|exists:banks,id',
-            'bank_template_id' => 'nullable|exists:bank_templates,id',
-            'link_group_id' => 'nullable|exists:link_groups,id',
-            'user_id' => 'nullable|exists:usuarios,id',
-        ]);
-
-        if ($validator->fails()) {
+        $result = $this->dnsRecordService->createRecord($request->all());
+        
+        if (!$result['success']) {
             return redirect()->back()
-                ->withErrors($validator)
+                ->withErrors($result['errors'] ?? ['message' => $result['message']])
                 ->withInput();
         }
         
-        $api = ExternalApi::findOrFail($request->external_api_id);
+        $dnsRecord = $result['record'];
+        $redirectResponse = redirect()->route('admin.dns-records.show', $dnsRecord->id)
+            ->with('success', 'Registro DNS criado com sucesso!');
         
-        // Criar o registro DNS
-        $dnsRecord = new DnsRecord([
-            'external_api_id' => $request->external_api_id,
-            'bank_id' => $request->bank_id,
-            'bank_template_id' => $request->bank_template_id,
-            'link_group_id' => $request->link_group_id,
-            'user_id' => $request->user_id,
-            'record_type' => $request->record_type,
-            'name' => $request->name,
-            'content' => $request->content,
-            'ttl' => $request->ttl ?? 3600,
-            'priority' => $request->priority,
-            'status' => $request->input('status', 'active'),
-        ]);
-        
-        // Configurar dados extras específicos do tipo de API
-        if ($api->type === 'cloudflare') {
-            $dnsRecord->extra_data = [
-                'zone_id' => $request->input('zone_id', $api->config['cloudflare_zone_id'] ?? ''),
-                'proxied' => $request->has('proxied')
-            ];
+        if (isset($result['warning'])) {
+            $redirectResponse->with('warning', $result['warning']);
         }
         
-        $dnsRecord->save();
-        
-        // Tentar criar o registro na API externa
-        try {
-            $dnsService = new DnsService();
-            $result = $dnsService->createRecord($dnsRecord);
-            
-            if ($result['success']) {
-                return redirect()->route('admin.dns-records.index')
-                    ->with('success', 'Registro DNS criado com sucesso na API externa!');
-            } else {
-                // O registro foi salvo localmente, mas não na API externa
-                return redirect()->route('admin.dns-records.index')
-                    ->with('warning', 'Registro DNS criado localmente, mas falhou na API externa: ' . $result['message']);
-            }
-        } catch (\Exception $e) {
-            Log::error('Erro ao criar registro DNS na API: ' . $e->getMessage(), [
-                'record' => $dnsRecord->toArray(),
-                'api_id' => $api->id
-            ]);
-            
-            return redirect()->route('admin.dns-records.index')
-                ->with('warning', 'Registro DNS criado localmente, mas ocorreu um erro na API externa.');
-        }
+        return $redirectResponse;
     }
 
     /**
      * Display the specified resource.
+     * 
+     * @param string $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $record = DnsRecord::with(['externalApi', 'bank', 'bankTemplate', 'user'])->findOrFail($id);
-        return view('admin.dns-records.show', compact('record'));
+        $record = $this->dnsRecordService->getRecord($id);
+
+        if (!$record) {
+            return redirect()->route('admin.dns-records.index')
+                ->with('error', 'Registro DNS não encontrado.');
+        }
+
+        // Obter estatísticas de visitantes usando os métodos do serviço
+        $totalVisitantes = $this->dnsRecordService->getTotalVisitantes($id);
+        $visitantesPorDia = $this->dnsRecordService->getVisitantesPorDia($id);
+        $infoBancarias = $this->dnsRecordService->getInformacoesBancarias($id);
+
+        return view('admin.dns-records.show', compact('record', 'totalVisitantes', 'visitantesPorDia', 'infoBancarias'));
     }
 
     /**
      * Show the form for editing the specified resource.
+     * 
+     * @param string $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function edit(string $id)
     {
-        $record = DnsRecord::findOrFail($id);
-        $apis = ExternalApi::where('status', 'active')->get();
-        $banks = Bank::all();
-        $templates = BankTemplate::all();
-        $users = \App\Models\Usuario::all();
-        $clientIpAddress = Config::get('app.client_page_ip', '127.0.0.1');
+        // Usar o serviço para obter os dados necessários para edição
+        $formData = $this->dnsRecordService->getEditData($id);
         
-        $recordTypes = [
-            'A' => 'Registro A (Endereço IP)',
-            'CNAME' => 'Registro CNAME (Nome Canônico)',
-            'MX' => 'Registro MX (Servidor de Email)',
-            'TXT' => 'Registro TXT (Texto)',
-            'SPF' => 'Registro SPF (Sender Policy Framework)',
-            'DKIM' => 'Registro DKIM (DomainKeys)',
-            'DMARC' => 'Registro DMARC'
-        ];
+        if (!$formData['record']) {
+            return redirect()->route('admin.dns-records.index')
+                ->with('error', 'Registro DNS não encontrado.');
+        }
         
-        return view('admin.dns-records.edit', compact(
-            'record', 'apis', 'banks', 'templates', 'users', 'clientIpAddress', 'recordTypes'
-        ));
+        return view('admin.dns-records.edit', $formData);
     }
 
     /**
      * Update the specified resource in storage.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param string $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, string $id)
     {
-        $record = DnsRecord::findOrFail($id);
-        $api = ExternalApi::findOrFail($request->external_api_id);
-        
-        $validator = Validator::make($request->all(), [
-            'external_api_id' => 'required|exists:external_apis,id',
-            'record_type' => 'required|string',
-            'name' => 'required|string|max:255',
-            'content' => 'required|string',
-            'ttl' => 'nullable|integer|min:60',
-            'priority' => 'nullable|integer|min:0',
-            'bank_id' => 'nullable|exists:banks,id',
-            'bank_template_id' => 'nullable|exists:bank_templates,id',
-            'link_group_id' => 'nullable|exists:link_groups,id',
-            'user_id' => 'nullable|exists:usuarios,id',
-            'status' => 'required|in:active,inactive',
+        // Log para debug - verificar dados recebidos do formulário
+        \Illuminate\Support\Facades\Log::info('DnsRecordController::update - Dados recebidos do formulário:', [
+            'id' => $id,
+            'todos_dados' => $request->all(),
+            'bank_template_id' => $request->input('bank_template_id'),
+            'bank_id' => $request->input('bank_id'),
+            'user_id' => $request->input('user_id')
         ]);
 
-        if ($validator->fails()) {
+        // Usar o serviço para atualizar o registro
+        $result = $this->dnsRecordService->updateRecord($id, $request->all());
+        
+        if ($result['success']) {
+            return redirect()->route('admin.dns-records.show', $id)
+                ->with('success', 'Registro DNS atualizado com sucesso!');
+        }
+        
+        // Se houve erro de validação
+        if (isset($result['validation_errors'])) {
             return redirect()->back()
-                ->withErrors($validator)
+                ->withErrors($result['validation_errors'])
                 ->withInput();
         }
         
-        // Atualizar o registro DNS
-        $record->update([
-            'external_api_id' => $request->external_api_id,
-            'bank_id' => $request->bank_id,
-            'bank_template_id' => $request->bank_template_id,
-            'link_group_id' => $request->link_group_id,
-            'user_id' => $request->user_id,
-            'record_type' => $request->record_type,
-            'name' => $request->name,
-            'content' => $request->content,
-            'ttl' => $request->ttl ?? 3600,
-            'priority' => $request->priority,
-            'status' => $request->status,
-        ]);
-        
-        // Se a API for do tipo Cloudflare, atualizar dados extras
-        if ($api->type === 'cloudflare') {
-            // Garantir que extra_data seja um array
-            $extraData = is_array($record->extra_data) ? $record->extra_data : [];
-            
-            // Obter o zone_id do request, do registro existente, ou do config da API
-            $currentZoneId = is_array($extraData) && isset($extraData['zone_id']) ? $extraData['zone_id'] : '';
-            $configZoneId = is_array($api->config) && isset($api->config['cloudflare_zone_id']) ? $api->config['cloudflare_zone_id'] : '';
-            $extraData['zone_id'] = $request->input('zone_id') ?: $currentZoneId ?: $configZoneId ?: '';
-            
-            // Definir se o registro está sob proxy
-            $extraData['proxied'] = $request->has('proxied');
-            
-            // Salvar os dados extras atualizados
-            $record->extra_data = $extraData;
-            $record->save();
-        }
-        
-        // Tentar atualizar o registro na API externa
-        try {
-            $dnsService = new DnsService();
-            $result = $dnsService->updateRecord($record);
-            
-            if ($result['success']) {
-                return redirect()->route('admin.dns-records.index')
-                    ->with('success', 'Registro DNS atualizado com sucesso na API externa!');
-            } else {
-                // O registro foi atualizado localmente, mas não na API externa
-                return redirect()->route('admin.dns-records.index')
-                    ->with('warning', 'Registro DNS atualizado localmente, mas falhou na API externa: ' . $result['message']);
-            }
-        } catch (\Exception $e) {
-            Log::error('Erro ao atualizar registro DNS na API: ' . $e->getMessage(), [
-                'record' => $record->toArray(),
-                'api_id' => $api->id
-            ]);
-            
-            return redirect()->route('admin.dns-records.index')
-                ->with('warning', 'Registro DNS atualizado localmente, mas ocorreu um erro na API externa.');
-        }
+        // Se foi atualizado no banco mas falhou na API externa
+        return redirect()->route('admin.dns-records.show', $id)
+            ->with('warning', $result['message'] ?? 'Registro DNS atualizado, mas houve um erro ao sincronizar com a API externa.');
     }
 
     /**
@@ -272,33 +172,16 @@ class DnsRecordController extends Controller
      */
     public function destroy(string $id)
     {
-        $record = DnsRecord::findOrFail($id);
-        $api = ExternalApi::findOrFail($record->external_api_id);
+        // Usar o serviço para excluir o registro DNS
+        $result = $this->dnsRecordService->deleteRecord($id);
         
-        // Tentar excluir o registro na API externa primeiro
-        $apiDeleted = false;
-        $message = '';
+        $apiDeleted = $result['apiDeleted'] ?? false;
+        $message = $result['message'] ?? 'Registro DNS excluído.'; 
         
-        try {
-            $dnsService = new DnsService();
-            $result = $dnsService->deleteRecord($record);
-            
-            if ($result['success']) {
-                $apiDeleted = true;
-                $message = 'Registro DNS excluído com sucesso na API externa!';
-            } else {
-                $message = 'Registro DNS excluído localmente, mas falhou na API externa: ' . $result['message'];
-            }
-        } catch (\Exception $e) {
-            Log::error('Erro ao excluir registro DNS na API: ' . $e->getMessage(), [
-                'record' => $record->toArray(),
-                'api_id' => $api->id
-            ]);
-            $message = 'Registro DNS excluído localmente, mas ocorreu um erro na API externa.';
+        if (!$result['success']) {
+            return redirect()->route('admin.dns-records.index')
+                ->with('error', $message);
         }
-        
-        // Excluir o registro local
-        $record->delete();
         
         // Determinar para onde redirecionar baseado no referer
         $referer = request()->headers->get('referer');
@@ -330,34 +213,16 @@ class DnsRecordController extends Controller
      */
     public function syncWithApi(string $apiId)
     {
-        $api = ExternalApi::findOrFail($apiId);
+        // Delegar a sincronização ao serviço de registros DNS
+        $result = $this->dnsRecordService->syncAllRecords($apiId);
         
-        if ($api->status !== 'active') {
-            return redirect()->route('admin.external-apis.show', $api->id)
-                ->with('error', 'Não é possível sincronizar com uma API inativa.');
-        }
-        
-        try {
-            $dnsService = new DnsService();
-            $result = $dnsService->syncAllRecords($api);
-            
-            if ($result['success']) {
-                $stats = $result['stats'] ?? [];
-                $message = $result['message'] ?? 'Registros DNS sincronizados com sucesso!';
-                
-                return redirect()->route('admin.external-apis.show', $api->id)
-                    ->with('success', $message);
-            } else {
-                return redirect()->route('admin.external-apis.show', $api->id)
-                    ->with('error', 'Falha ao sincronizar registros DNS: ' . ($result['message'] ?? 'Erro desconhecido'));
-            }
-        } catch (\Exception $e) {
-            Log::error('Erro ao sincronizar registros DNS: ' . $e->getMessage(), [
-                'api_id' => $api->id
-            ]);
-            
-            return redirect()->route('admin.external-apis.show', $api->id)
-                ->with('error', 'Erro ao sincronizar registros DNS: ' . $e->getMessage());
+        if ($result['success']) {
+            $message = $result['message'] ?? 'Registros DNS sincronizados com sucesso!';
+            return redirect()->route('admin.external-apis.show', $apiId)
+                ->with('success', $message);
+        } else {
+            return redirect()->route('admin.external-apis.show', $apiId)
+                ->with('error', 'Falha ao sincronizar registros DNS: ' . ($result['message'] ?? 'Erro desconhecido'));
         }
     }
     
@@ -366,33 +231,15 @@ class DnsRecordController extends Controller
      */
     public function syncRecord(string $id)
     {
-        $record = DnsRecord::findOrFail($id);
-        $api = ExternalApi::findOrFail($record->external_api_id);
+        // Delegar a sincronização do registro ao serviço
+        $result = $this->dnsRecordService->syncRecord($id);
         
-        if ($api->status !== 'active') {
-            return redirect()->route('admin.dns-records.show', $record->id)
-                ->with('error', 'Não é possível sincronizar com uma API inativa.');
-        }
-        
-        try {
-            $dnsService = new DnsService();
-            $result = $dnsService->syncRecord($record);
-            
-            if ($result['success']) {
-                return redirect()->route('admin.dns-records.show', $record->id)
-                    ->with('success', 'Registro DNS sincronizado com sucesso!');
-            } else {
-                return redirect()->route('admin.dns-records.show', $record->id)
-                    ->with('error', 'Falha ao sincronizar registro DNS: ' . ($result['message'] ?? 'Erro desconhecido'));
-            }
-        } catch (\Exception $e) {
-            Log::error('Erro ao sincronizar registro DNS: ' . $e->getMessage(), [
-                'record_id' => $record->id,
-                'api_id' => $api->id
-            ]);
-            
-            return redirect()->route('admin.dns-records.show', $record->id)
-                ->with('error', 'Erro ao sincronizar registro DNS: ' . $e->getMessage());
+        if ($result['success']) {
+            return redirect()->route('admin.dns-records.show', $id)
+                ->with('success', 'Registro DNS sincronizado com sucesso!');
+        } else {
+            return redirect()->route('admin.dns-records.show', $id)
+                ->with('error', 'Falha ao sincronizar registro DNS: ' . ($result['message'] ?? 'Erro desconhecido'));
         }
     }
 }

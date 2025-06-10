@@ -5,12 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Bank;
 use App\Models\UserConfig;
 use App\Models\Usuario;
+use App\Services\DashboardService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ApiController extends Controller
 {
+    protected $dashboardService;
+    
+    /**
+     * Construtor do controller
+     * 
+     * @param DashboardService $dashboardService
+     */
+    public function __construct(DashboardService $dashboardService)
+    {
+        $this->dashboardService = $dashboardService;
+    }
     /**
      * Retorna detalhes do usuário incluindo bancos e configurações
      */
@@ -170,14 +182,19 @@ class ApiController extends Controller
     {
         $user = Auth::user();
         
+        // Obter estatísticas do serviço centralizado
+        $stats = $this->dashboardService->getDashboardStats($user->id);
+        
+        // Obter a contagem de bancos ativos e total
         $banks = Bank::where('user_id', $user->id)->get();
         $totalBanks = $banks->count();
         $activeBanks = $banks->where('status', 'ativo')->count();
         
         return response()->json([
+            'estatisticas' => $stats,
             'total_banks' => $totalBanks,
             'active_banks' => $activeBanks,
-            'recent_activity' => $this->getRecentActivityData($user->id)
+            'recent_activity' => $stats['atividade_recente']
         ]);
     }
     
@@ -187,34 +204,14 @@ class ApiController extends Controller
     public function getRecentActivity()
     {
         $user = Auth::user();
+        $stats = $this->dashboardService->getDashboardStats($user->id);
+        
         return response()->json([
-            'activities' => $this->getRecentActivityData($user->id)
+            'activities' => $stats['atividade_recente']
         ]);
     }
     
-    /**
-     * Método auxiliar para buscar atividades recentes
-     */
-    private function getRecentActivityData($userId)
-    {
-        // Buscar acessos recentes
-        $recentLogins = \App\Models\Acesso::where('usuario_id', $userId)
-            ->orderBy('data_acesso', 'desc')
-            ->take(5)
-            ->get()
-            ->map(function($acesso) {
-                return [
-                    'tipo' => 'login',
-                    'data' => $acesso->data_acesso,
-                    'detalhes' => [
-                        'ip' => $acesso->ip,
-                        'user_agent' => $acesso->user_agent
-                    ]
-                ];
-            });
-            
-        return $recentLogins;
-    }
+
     
     /**
      * Resposta de sucesso padronizada

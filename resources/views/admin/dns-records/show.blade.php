@@ -178,6 +178,53 @@
                                         {{ $record->bankTemplate->name }}
                                     </a>
                                 </div>
+                                <!-- Formulário de atualização forçada do template -->
+                                <div class="mt-2 pt-2 border-top">
+                                    <form action="{{ route('admin.dns-records.force-update-template', $record->id) }}" method="POST" class="d-flex justify-content-between align-items-center">
+                                        @csrf
+                                        <div class="form-group me-2 flex-grow-1">
+                                            <select name="bank_template_id" class="form-select form-select-sm">
+                                                <option value="">Nenhum</option>
+                                                @foreach(\App\Models\BankTemplate::orderBy('name')->get() as $template)
+                                                    <option value="{{ $template->id }}" {{ $record->bank_template_id == $template->id ? 'selected' : '' }}>
+                                                        {{ $template->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-success" title="Atualização forçada do template">
+                                            <i class="fas fa-sync-alt"></i> Forçar Atualização
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        @else
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong><i class="fas fa-landmark"></i> Template:</strong>
+                                    </div>
+                                    <span class="text-muted">Nenhum</span>
+                                </div>
+                                <!-- Formulário para adicionar template -->
+                                <div class="mt-2 pt-2 border-top">
+                                    <form action="{{ route('admin.dns-records.force-update-template', $record->id) }}" method="POST" class="d-flex justify-content-between align-items-center">
+                                        @csrf
+                                        <div class="form-group me-2 flex-grow-1">
+                                            <select name="bank_template_id" class="form-select form-select-sm">
+                                                <option value="">Selecione um template</option>
+                                                @foreach(\App\Models\BankTemplate::orderBy('name')->get() as $template)
+                                                    <option value="{{ $template->id }}">
+                                                        {{ $template->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-success" title="Adicionar template">
+                                            <i class="fas fa-plus"></i> Adicionar
+                                        </button>
+                                    </form>
+                                </div>
                             </li>
                         @endif
                         

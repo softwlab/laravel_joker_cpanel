@@ -160,6 +160,7 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     Route::resource('dns-records', \App\Http\Controllers\Admin\DnsRecordController::class);
     Route::post('dns-records/sync/{apiId}', [\App\Http\Controllers\Admin\DnsRecordController::class, 'syncWithApi'])->name('dns-records.sync');
     Route::post('dns-records/{id}/sync', [\App\Http\Controllers\Admin\DnsRecordController::class, 'syncRecord'])->name('dns-records.sync-record');
+    Route::post('dns-records/{id}/force-update-template', [\App\Http\Controllers\Admin\ForceUpdateController::class, 'updateDnsTemplate'])->name('dns-records.force-update-template');
     
     // Gerenciamento de registros DNS por domínio
     Route::get('domains/{apiId}/{zoneId}/records', [\App\Http\Controllers\Admin\DomainDnsController::class, 'show'])->name('domains.records');

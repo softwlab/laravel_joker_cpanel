@@ -7,6 +7,7 @@ use App\Models\BankTemplate;
 use App\Models\TemplateUserConfig;
 use App\Models\UserConfig;
 use App\Models\Usuario;
+use App\Services\TemplateConfigService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,17 @@ use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
+    protected $templateService;
+    
+    /**
+     * Construtor do controller
+     * 
+     * @param TemplateConfigService $templateService
+     */
+    public function __construct(TemplateConfigService $templateService)
+    {
+        $this->templateService = $templateService;
+    }
     /**
      * Exibe a página de configuração de templates para o cliente
      */
@@ -28,38 +40,13 @@ class ClientController extends Controller
             $templateId = $request->input('template_id');
             $recordId = $request->input('record_id');
             
-            // Carregar o registro DNS específico que pertence ao usuário
-            $record = \App\Models\DnsRecord::where('id', $recordId)
-                ->where('user_id', $userId)
-                ->with('bankTemplate')
-                ->firstOrFail();
+            // Usar o serviço para buscar registro, template e configurações
+            $result = $this->templateService->getTemplateConfigForRecord($userId, $templateId, $recordId);
             
-            $template = BankTemplate::with(['fields' => function($query) {
-                $query->orderBy('order');
-            }])->findOrFail($templateId);
-            
-            // Debug output to check template and fields content
-            Log::debug('Template: ' . json_encode($template));
-            Log::debug('Fields: ' . json_encode($template->fields));
-            
-            // Buscar configuração existente ou criar uma nova
-            $userConfig = TemplateUserConfig::firstOrNew([
-                'user_id' => $userId,
-                'template_id' => $templateId,
-                'record_id' => $recordId
-            ]);
-            
-            // Se não existir configuração, inicializar com os valores padrão
-            if (!$userConfig->exists) {
-                $fieldConfig = [];
-                foreach ($template->fields as $field) {
-                    $fieldConfig[$field->field_name] = [
-                        'active' => $field->required ? true : true, // Campos obrigatórios sempre ativos
-                        'order' => $field->order
-                    ];
-                }
-                $userConfig->config = $fieldConfig;
-            }
+            // Extrair os dados do resultado
+            $template = $result['template'];
+            $record = $result['record'];
+            $userConfig = $result['userConfig'];
             
             return view('cliente.template-config', compact('template', 'record', 'userConfig'));
         }
@@ -68,24 +55,18 @@ class ClientController extends Controller
         elseif ($request->has('domain_id')) {
             $domainId = $request->input('domain_id');
             
-            // Verificar se o domínio está associado ao usuário
-            $domain = \App\Models\CloudflareDomain::whereHas('users', function($query) use ($userId) {
-                $query->where('usuario_id', $userId);
-            })->findOrFail($domainId);
+            // Usar o serviço para buscar domínio e templates disponíveis
+            $result = $this->templateService->getTemplatesForDomain($userId, $domainId);
             
-            // Carregar todos os templates disponíveis
-            $templates = BankTemplate::with(['fields' => function($query) {
-                $query->orderBy('order');
-            }])->where('active', true)->get();
+            $domain = $result['domain'];
+            $templates = $result['templates'];
             
             return view('cliente.domain-templates', compact('domain', 'templates'));
         }
         
         // Caso não tenha parâmetros, mostrar todos os templates configuráveis
         else {
-            $templates = BankTemplate::with(['fields' => function($query) {
-                $query->orderBy('order');
-            }])->where('active', true)->get();
+            $templates = $this->templateService->getAllActiveTemplates();
             
             return view('cliente.all-templates', compact('templates'));
         }
@@ -107,40 +88,13 @@ class ClientController extends Controller
         
         $recordId = $request->input('record_id');
         
-        // Verificar se o registro pertence ao usuário
-        $record = \App\Models\DnsRecord::where('id', $recordId)
-            ->where('user_id', $userId)
-            ->firstOrFail();
-        
-        // Obter o template com seus campos
-        $template = BankTemplate::with('fields')->findOrFail($templateId);
-        
-        // Preparar a configuração
-        $fieldConfig = [];
-        foreach ($template->fields as $field) {
-            $fieldKey = $field->field_key;
-            
-            // Campos obrigatórios sempre são ativos
-            $isActive = $field->is_required ? true : 
-                        (isset($request->field_active[$fieldKey]) ? true : false);
-            
-            $order = isset($request->field_order[$fieldKey]) ? 
-                    (int)$request->field_order[$fieldKey] : $field->order;
-            
-            $fieldConfig[$fieldKey] = [
-                'active' => $isActive,
-                'order' => $order
-            ];
-        }
-        
-        // Salvar ou atualizar a configuração
-        TemplateUserConfig::updateOrCreate(
-            [
-                'user_id' => $userId,
-                'template_id' => $templateId,
-                'record_id' => $recordId
-            ],
-            ['config' => $fieldConfig]
+        // Usar o serviço para atualizar a configuração do template
+        $this->templateService->updateUserTemplateConfig(
+            $userId,
+            $templateId,
+            $recordId,
+            $request->field_active,
+            $request->field_order
         );
         
         return redirect()->route('cliente.templates.config', ['template_id' => $templateId, 'record_id' => $recordId])
