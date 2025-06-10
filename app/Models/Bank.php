@@ -5,6 +5,44 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property string|null $description
+ * @property string|null $url
+ * @property array<array-key, mixed>|null $links
+ * @property int $active
+ * @property int $usuario_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $bank_template_id
+ * @property array<array-key, mixed>|null $field_values
+ * @property array<array-key, mixed>|null $field_active
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LinkGroup> $linkGroups
+ * @property-read int|null $link_groups_count
+ * @property-read \App\Models\BankTemplate|null $template
+ * @property-read \App\Models\Usuario $usuario
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereBankTemplateId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereFieldActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereFieldValues($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereLinks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bank whereUsuarioId($value)
+ * @mixin \Eloquent
+ */
 class Bank extends Model
 {
     use HasFactory;

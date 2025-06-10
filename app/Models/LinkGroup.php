@@ -5,6 +5,36 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $title
+ * @property string|null $description
+ * @property int $active
+ * @property int $user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $usuario_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Bank> $banks
+ * @property-read int|null $banks_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LinkGroupItem> $items
+ * @property-read int|null $items_count
+ * @property-read \App\Models\Usuario|null $usuario
+ * @method static \Database\Factories\LinkGroupFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LinkGroup newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LinkGroup newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LinkGroup query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LinkGroup whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LinkGroup whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LinkGroup whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LinkGroup whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LinkGroup whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LinkGroup whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LinkGroup whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LinkGroup whereUsuarioId($value)
+ * @mixin \Eloquent
+ */
 class LinkGroup extends Model
 {
     use HasFactory;

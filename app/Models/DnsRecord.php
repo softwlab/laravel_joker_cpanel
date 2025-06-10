@@ -6,6 +6,51 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Usuario;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int|null $external_api_id
+ * @property int|null $bank_id
+ * @property int|null $bank_template_id
+ * @property int|null $link_group_id
+ * @property int|null $user_id
+ * @property string $record_type
+ * @property string $name
+ * @property string $content
+ * @property int $ttl
+ * @property int $priority
+ * @property string $status
+ * @property array<array-key, mixed>|null $extra_data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Bank|null $bank
+ * @property-read \App\Models\BankTemplate|null $bankTemplate
+ * @property-read \App\Models\ExternalApi|null $externalApi
+ * @property-read mixed $icon
+ * @property-read \App\Models\LinkGroup|null $linkGroup
+ * @property-read Usuario|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereBankId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereBankTemplateId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereExternalApiId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereExtraData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereLinkGroupId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereRecordType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereTtl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereUserId($value)
+ * @mixin \Eloquent
+ */
 class DnsRecord extends Model
 {
     use HasFactory;

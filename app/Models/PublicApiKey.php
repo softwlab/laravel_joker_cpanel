@@ -6,6 +6,39 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $key
+ * @property string|null $description
+ * @property bool $active
+ * @property int|null $usuario_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $last_used_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PublicApiKeyLog> $logs
+ * @property-read int|null $logs_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey whereLastUsedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey whereUsuarioId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PublicApiKey withoutTrashed()
+ * @mixin \Eloquent
+ */
 class PublicApiKey extends Model
 {
     use HasFactory, SoftDeletes;

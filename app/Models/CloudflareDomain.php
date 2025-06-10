@@ -6,6 +6,39 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ExternalApi;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $external_api_id
+ * @property string $zone_id
+ * @property string $name
+ * @property string $status
+ * @property bool $is_ghost
+ * @property array<array-key, mixed>|null $name_servers
+ * @property int|null $records_count
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DnsRecord> $dnsRecords
+ * @property-read int|null $dns_records_count
+ * @property-read ExternalApi $externalApi
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Usuario> $usuarios
+ * @property-read int|null $usuarios_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain whereExternalApiId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain whereIsGhost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain whereNameServers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain whereRecordsCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CloudflareDomain whereZoneId($value)
+ * @mixin \Eloquent
+ */
 class CloudflareDomain extends Model
 {
     use HasFactory;

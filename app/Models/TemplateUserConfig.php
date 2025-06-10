@@ -4,6 +4,31 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $template_id
+ * @property int|null $record_id
+ * @property array<array-key, mixed> $config
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\DnsRecord|null $record
+ * @property-read \App\Models\BankTemplate $template
+ * @property-read \App\Models\Usuario $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateUserConfig newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateUserConfig newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateUserConfig query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateUserConfig whereConfig($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateUserConfig whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateUserConfig whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateUserConfig whereRecordId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateUserConfig whereTemplateId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateUserConfig whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TemplateUserConfig whereUserId($value)
+ * @mixin \Eloquent
+ */
 class TemplateUserConfig extends Model
 {
     protected $table = 'template_user_configs';

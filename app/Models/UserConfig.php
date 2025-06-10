@@ -4,6 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $usuario_id
+ * @property array<array-key, mixed>|null $config_json
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\DnsRecord|null $record
+ * @property-read \App\Models\BankTemplate|null $template
+ * @property-read \App\Models\Usuario|null $usuario
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereConfigJson($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereUsuarioId($value)
+ * @mixin \Eloquent
+ */
 class UserConfig extends Model
 {
     protected $table = 'user_configs';
