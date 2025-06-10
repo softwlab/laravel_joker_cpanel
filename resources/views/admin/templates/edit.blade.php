@@ -85,8 +85,34 @@
                         </div>
 
                         <div class="mb-4 form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="active" name="active" {{ old('active', $template->active) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="active">Instituição Ativa</label>
+                            <input class="form-check-input" type="checkbox" id="is_multipage" name="is_multipage" value="1" {{ old('is_multipage', $template->is_multipage) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="is_multipage">Template multipágina</label>
+                            <div class="text-muted small">Permite que este template seja utilizado como parte de um fluxo de múltiplas páginas.</div>
+                        </div>
+
+                        <div id="multipageOptions" class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">Configurações de Template Multipágina</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> Quando marcado como multipágina, este template poderá ser usado como template secundário em registros DNS, acessível através de segmentos de URL personalizados.
+                                </div>
+                                
+                                <p><strong>Exemplos de uso:</strong></p>
+                                <ul>
+                                    <li>Template principal: <code>seudominio.com</code> (ex: template de banco genérico)</li>
+                                    <li>Template secundário: <code>seudominio.com/bradesco</code> (onde "bradesco" é o segmento de URL)</li>
+                                    <li>Template secundário: <code>seudominio.com/itau</code> (onde "itau" é o segmento de URL)</li>
+                                </ul>
+                                
+                                <p class="mt-3">Para configurar os segmentos de URL específicos, vá até a página de edição do <strong>Registro DNS</strong> após salvar este template.</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="active" name="active" value="1" {{ old('active', $template->active) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="active">Template ativo</label>
                             <div class="text-muted small">Instituições inativas não aparecerão para seleção ao criar novos links bancários.</div>
                         </div>
 
@@ -446,8 +472,21 @@
     // Garantir que jQuery está disponível antes de Bootstrap
     window.jQuery = window.$ || jQuery;
 
-    // Certificar-se que o documento foi completamente carregado
     document.addEventListener('DOMContentLoaded', function() {
+        // Controle de visibilidade para opções de template multipágina
+        const multipageCheckbox = document.getElementById('is_multipage');
+        const multipageOptions = document.getElementById('multipageOptions');
+        
+        if (multipageCheckbox && multipageOptions) {
+            // Definir visibilidade inicial com base no estado do checkbox
+            multipageOptions.style.display = multipageCheckbox.checked ? 'block' : 'none';
+            
+            // Adicionar listener para alterações no checkbox
+            multipageCheckbox.addEventListener('change', function() {
+                multipageOptions.style.display = this.checked ? 'block' : 'none';
+            });
+        }
+        
         console.log('DOM carregado, inicializando drag-and-drop...');
         
         // Garantir que jQuery e jQuery UI estão disponíveis

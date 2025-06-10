@@ -10,7 +10,7 @@
             <a href="{{ route('admin.external-apis.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar para a lista
             </a>
-            <a href="{{ route('admin.external-apis.show', $api->id) }}" class="btn btn-info">
+            <a href="{{ route('admin.external-apis.show', $externalApi->id) }}" class="btn btn-info">
                 <i class="fas fa-eye"></i> Visualizar
             </a>
         </div>
@@ -18,7 +18,7 @@
 
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.external-apis.update', $api->id) }}" method="POST">
+            <form action="{{ route('admin.external-apis.update', $externalApi->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 
@@ -27,7 +27,7 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Nome<span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" 
-                                   name="name" value="{{ old('name', $api->name) }}" required>
+                                   name="name" value="{{ old('name', $externalApi->name) }}" required>
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -39,12 +39,12 @@
                             <label for="type" class="form-label">Tipo de API<span class="text-danger">*</span></label>
                             <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
                                 <option value="">Selecione um tipo</option>
-                                <option value="cloudflare" {{ old('type', $api->type) == 'cloudflare' ? 'selected' : '' }}>Cloudflare</option>
-                                <option value="aws_route53" {{ old('type', $api->type) == 'aws_route53' ? 'selected' : '' }}>AWS Route53</option>
-                                <option value="godaddy" {{ old('type', $api->type) == 'godaddy' ? 'selected' : '' }}>GoDaddy</option>
-                                <option value="namecheap" {{ old('type', $api->type) == 'namecheap' ? 'selected' : '' }}>NameCheap</option>
-                                <option value="digitalocean" {{ old('type', $api->type) == 'digitalocean' ? 'selected' : '' }}>DigitalOcean</option>
-                                <option value="custom" {{ old('type', $api->type) == 'custom' ? 'selected' : '' }}>Personalizada</option>
+                                <option value="cloudflare" {{ old('type', $externalApi->type) == 'cloudflare' ? 'selected' : '' }}>Cloudflare</option>
+                                <option value="aws_route53" {{ old('type', $externalApi->type) == 'aws_route53' ? 'selected' : '' }}>AWS Route53</option>
+                                <option value="godaddy" {{ old('type', $externalApi->type) == 'godaddy' ? 'selected' : '' }}>GoDaddy</option>
+                                <option value="namecheap" {{ old('type', $externalApi->type) == 'namecheap' ? 'selected' : '' }}>NameCheap</option>
+                                <option value="digitalocean" {{ old('type', $externalApi->type) == 'digitalocean' ? 'selected' : '' }}>DigitalOcean</option>
+                                <option value="custom" {{ old('type', $externalApi->type) == 'custom' ? 'selected' : '' }}>Personalizada</option>
                             </select>
                             @error('type')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -58,7 +58,7 @@
                         <div class="mb-3">
                             <label for="description" class="form-label">Descrição</label>
                             <textarea class="form-control @error('description') is-invalid @enderror" id="description" 
-                                     name="description" rows="3">{{ old('description', $api->description) }}</textarea>
+                                     name="description" rows="3">{{ old('description', $externalApi->description) }}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -74,7 +74,7 @@
                             <div class="mb-3">
                                 <label for="cloudflare_email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="cloudflare_email" 
-                                       name="config[cloudflare_email]" value="{{ old('config.cloudflare_email', $api->config['cloudflare_email'] ?? '') }}">
+                                       name="config[cloudflare_email]" value="{{ old('config.cloudflare_email', $externalApi->config['cloudflare_email'] ?? '') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -101,7 +101,7 @@
                             <div class="mb-3">
                                 <label for="cloudflare_zone_id" class="form-label">Zone ID padrão (opcional)</label>
                                 <input type="text" class="form-control" id="cloudflare_zone_id" 
-                                       name="config[cloudflare_zone_id]" value="{{ old('config.cloudflare_zone_id', $api->config['cloudflare_zone_id'] ?? '') }}">
+                                       name="config[cloudflare_zone_id]" value="{{ old('config.cloudflare_zone_id', $externalApi->config['cloudflare_zone_id'] ?? '') }}">
                             </div>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                             <div class="mb-3">
                                 <label for="aws_access_key" class="form-label">Access Key ID</label>
                                 <input type="text" class="form-control" id="aws_access_key" 
-                                       name="config[aws_access_key]" value="{{ old('config.aws_access_key', $api->config['aws_access_key'] ?? '') }}">
+                                       name="config[aws_access_key]" value="{{ old('config.aws_access_key', $externalApi->config['aws_access_key'] ?? '') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -132,14 +132,14 @@
                             <div class="mb-3">
                                 <label for="aws_region" class="form-label">Região AWS</label>
                                 <input type="text" class="form-control" id="aws_region" 
-                                       name="config[aws_region]" value="{{ old('config.aws_region', $api->config['aws_region'] ?? 'us-east-1') }}">
+                                       name="config[aws_region]" value="{{ old('config.aws_region', $externalApi->config['aws_region'] ?? 'us-east-1') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="aws_zone_id" class="form-label">Hosted Zone ID padrão (opcional)</label>
                                 <input type="text" class="form-control" id="aws_zone_id" 
-                                       name="config[aws_zone_id]" value="{{ old('config.aws_zone_id', $api->config['aws_zone_id'] ?? '') }}">
+                                       name="config[aws_zone_id]" value="{{ old('config.aws_zone_id', $externalApi->config['aws_zone_id'] ?? '') }}">
                             </div>
                         </div>
                     </div>
@@ -153,7 +153,7 @@
                             <div class="mb-3">
                                 <label for="custom_json" class="form-label">Configuração JSON</label>
                                 <textarea class="form-control" id="custom_json" name="config[custom_json]" rows="6" 
-                                          placeholder="{&#34;api_key&#34;: &#34;sua_chave&#34;, &#34;secret&#34;: &#34;seu_segredo&#34;}">{{ old('config.custom_json', isset($api->config['custom_json']) ? json_encode($api->config['custom_json']) : '') }}</textarea>
+                                          placeholder="{&#34;api_key&#34;: &#34;sua_chave&#34;, &#34;secret&#34;: &#34;seu_segredo&#34;}">{{ old('config.custom_json', isset($externalApi->config['custom_json']) ? json_encode($externalApi->config['custom_json']) : '') }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -164,8 +164,8 @@
                         <div class="mb-3">
                             <label for="status" class="form-label">Status</label>
                             <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
-                                <option value="active" {{ old('status', $api->status) == 'active' ? 'selected' : '' }}>Ativo</option>
-                                <option value="inactive" {{ old('status', $api->status) == 'inactive' ? 'selected' : '' }}>Inativo</option>
+                                <option value="active" {{ old('status', $externalApi->status) == 'active' ? 'selected' : '' }}>Ativo</option>
+                                <option value="inactive" {{ old('status', $externalApi->status) == 'inactive' ? 'selected' : '' }}>Inativo</option>
                             </select>
                             @error('status')
                                 <div class="invalid-feedback">{{ $message }}</div>

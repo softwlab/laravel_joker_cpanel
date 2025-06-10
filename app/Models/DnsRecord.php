@@ -46,6 +46,8 @@ use App\Models\Usuario;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereTtl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereUserId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BankTemplate> $templates
+ * @property-read int|null $templates_count
  * @mixin \Eloquent
  */
 class DnsRecord extends Model
@@ -97,11 +99,87 @@ class DnsRecord extends Model
     }
     
     /**
-     * Relacionamento com a Instituição Bancária associada.
+     * Relacionamento com a Instituição Bancária principal associada.
      */
     public function bankTemplate()
     {
         return $this->belongsTo(BankTemplate::class);
+    }
+    
+    /**
+     * Relacionamento com todos os templates associados a este registro DNS.
+     */
+    public function templates()
+    {
+        return $this->belongsToMany(BankTemplate::class, 'dns_record_templates')
+            ->withPivot('path_segment', 'is_primary')
+            ->withTimestamps();
+    }
+    
+    /**
+     * Retorna apenas os templates secundários (não primários) associados a este registro.
+     */
+    public function secondaryTemplates()
+    {
+        return $this->templates()->wherePivot('is_primary', false);
+    }
+    
+    /**
+     * Verifica se este registro DNS está configurado como multipágina.
+     * 
+     * @return bool
+     */
+    public function isMultipage()
+    {
+        // Verifica se o template principal está configurado como multipágina
+        if ($this->bankTemplate && $this->bankTemplate->is_multipage) {
+            return true;
+        }
+        
+        // Ou se existem templates secundários associados
+        return $this->secondaryTemplates()->count() > 0;
+    }
+    
+    /**
+     * Obtém a configuração completa de multipágina para API.
+     * 
+     * @return array
+     */
+    public function getMultipageConfig()
+    {
+        if (!$this->isMultipage()) {
+            return ['is_multipage' => false];
+        }
+        
+        $pagesConfig = [
+            'is_multipage' => true,
+            'pages' => []
+        ];
+        
+        // Adiciona o template principal como página principal
+        if ($this->bankTemplate) {
+            $pagesConfig['pages'][] = [
+                'template_id' => $this->bankTemplate->id,
+                'name' => $this->bankTemplate->name,
+                'slug' => $this->bankTemplate->slug,
+                'path' => '',  // Página principal (raiz)
+                'is_primary' => true
+            ];
+        }
+        
+        // Adiciona páginas secundárias
+        $secondaryTemplates = $this->secondaryTemplates()->get();
+        foreach ($secondaryTemplates as $template) {
+            $pagesConfig['pages'][] = [
+                'template_id' => $template->id,
+                'name' => $template->name,
+                'slug' => $template->slug,
+                'path' => $template->pivot->path_segment,
+                'is_primary' => false
+            ];
+        }
+        
+        return $pagesConfig;
     }
     
 

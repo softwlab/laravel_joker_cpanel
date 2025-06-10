@@ -47,6 +47,7 @@ class BankTemplateController extends Controller
             'template_url' => 'nullable|url|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'active' => 'boolean',
+            'is_multipage' => 'boolean',
         ]);
 
         // Gerar slug se não for fornecido
@@ -60,8 +61,9 @@ class BankTemplateController extends Controller
             $validated['logo'] = $logoPath;
         }
 
-        // Status ativo padrão
+        // Status ativo padrão e multipágina
         $validated['active'] = $request->has('active') ? 1 : 0;
+        $validated['is_multipage'] = $request->has('is_multipage') ? 1 : 0;
 
         BankTemplate::create($validated);
 
@@ -99,6 +101,7 @@ class BankTemplateController extends Controller
             'template_url' => 'nullable|url|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'active' => 'boolean',
+            'is_multipage' => 'boolean',
         ]);
 
         // Gerar slug se não for fornecido
@@ -117,8 +120,9 @@ class BankTemplateController extends Controller
             $validated['logo'] = $logoPath;
         }
 
-        // Status ativo
+        // Status ativo e multipágina
         $validated['active'] = $request->has('active') ? 1 : 0;
+        $validated['is_multipage'] = $request->has('is_multipage') ? 1 : 0;
 
         $template->update($validated);
 

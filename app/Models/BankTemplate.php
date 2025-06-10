@@ -33,6 +33,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplate whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplate whereTemplateUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplate whereUpdatedAt($value)
+ * @property bool $is_multipage
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DnsRecord> $dnsRecords
+ * @property-read int|null $dns_records_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplate whereIsMultipage($value)
  * @mixin \Eloquent
  */
 class BankTemplate extends Model
@@ -47,7 +51,18 @@ class BankTemplate extends Model
         'description', 
         'template_url', 
         'logo',
-        'active'
+        'active',
+        'is_multipage'
+    ];
+    
+    /**
+     * Os atributos que devem ser convertidos para tipos nativos.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'active' => 'boolean',
+        'is_multipage' => 'boolean',
     ];
 
     /**
@@ -64,5 +79,15 @@ class BankTemplate extends Model
     public function banks()
     {
         return $this->hasMany(Bank::class, 'bank_template_id');
+    }
+    
+    /**
+     * Registros DNS que usam este template como principal ou secundário.
+     */
+    public function dnsRecords()
+    {
+        return $this->belongsToMany(DnsRecord::class, 'dns_record_templates')
+            ->withPivot('path_segment', 'is_primary')
+            ->withTimestamps();
     }
 }

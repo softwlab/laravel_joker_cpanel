@@ -142,11 +142,22 @@ endpoints:
         exampleWasSpecified: false
         nullable: true
         custom: []
+      path_segment:
+        name: path_segment
+        description: ''
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
     cleanBodyParameters:
       dns_record_id: consequatur
       ip: consequatur
       user_agent: consequatur
       referrer: consequatur
+      path_segment: consequatur
     fileParameters: []
     responses: []
     responseFields: []
@@ -192,7 +203,7 @@ endpoints:
         name: data
         description: 'Must be a valid date.'
         required: false
-        example: '2025-06-10T19:03:06'
+        example: '2025-06-10T21:08:58'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -290,7 +301,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       visitante_uuid: consequatur
-      data: '2025-06-10T19:03:06'
+      data: '2025-06-10T21:08:58'
       agencia: consequatur
       conta: consequatur
       cpf: consequatur
@@ -352,7 +363,7 @@ endpoints:
         name: data
         description: 'Must be a valid date.'
         required: false
-        example: '2025-06-10T19:03:06'
+        example: '2025-06-10T21:08:58'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -451,7 +462,7 @@ endpoints:
     cleanBodyParameters:
       id: consequatur
       visitante_uuid: consequatur
-      data: '2025-06-10T19:03:06'
+      data: '2025-06-10T21:08:58'
       agencia: consequatur
       conta: consequatur
       cpf: consequatur
@@ -603,7 +614,9 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)'
+      title: |-
+        Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)
+        Inclui suporte para templates multipágina (multibanco)
       description: ''
       authenticated: false
       custom: []
@@ -653,7 +666,9 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)'
+      title: |-
+        Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)
+        Inclui suporte para templates multipágina (multibanco)
       description: ''
       authenticated: false
       custom: []

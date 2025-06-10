@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\DnsRecord;
-use App\Models\ExternalApi;
 use App\Models\Bank;
 use App\Models\BankTemplate;
+use App\Models\ExternalApi;
+use App\Models\Usuario;
 use Illuminate\Support\Facades\Config;
 use App\Services\BankingStatisticsService;
 use App\Services\DnsRecordService;
@@ -118,15 +119,46 @@ class DnsRecordController extends Controller
      */
     public function edit(string $id)
     {
-        // Usar o serviço para obter os dados necessários para edição
-        $formData = $this->dnsRecordService->getEditData($id);
+        $dnsRecord = DnsRecord::with(['templates' => function($query) {
+            $query->wherePivot('is_primary', false);
+        }])->findOrFail($id);
         
-        if (!$formData['record']) {
-            return redirect()->route('admin.dns-records.index')
-                ->with('error', 'Registro DNS não encontrado.');
-        }
+        $externalApis = ExternalApi::all();
+        $banks = Bank::all();
+        $bankTemplates = BankTemplate::where('active', 1)->get();
+        // Buscar todos os usuários
+        $usuarios = Usuario::where('ativo', 1)->orderBy('nome')->get();
+
+        // Obter templates disponíveis para multipágina (que estão marcados como is_multipage)
+        $multipageTemplates = BankTemplate::where('active', 1)
+            ->where('is_multipage', 1)
+            ->get();
+            
+        // Obter IDs de templates já associados como secundários para este registro
+        $associatedTemplateIds = $dnsRecord->templates->pluck('id')->toArray();
         
-        return view('admin.dns-records.edit', $formData);
+        // Definir os tipos de registros DNS disponíveis
+        $recordTypes = [
+            'A' => 'A (Endereço IPv4)',
+            'AAAA' => 'AAAA (Endereço IPv6)',
+            'CNAME' => 'CNAME (Nome Canônico)',
+            'MX' => 'MX (Servidor de Email)',
+            'TXT' => 'TXT (Texto)',
+            'NS' => 'NS (Servidor de Nomes)',
+            'SRV' => 'SRV (Serviço)',
+            'CAA' => 'CAA (Autorização de Autoridade de Certificação)'
+        ];
+
+        return view('admin.dns-records.edit', compact(
+            'dnsRecord', 
+            'externalApis', 
+            'banks', 
+            'bankTemplates', 
+            'usuarios',
+            'multipageTemplates',
+            'associatedTemplateIds',
+            'recordTypes'
+        ));
     }
 
     /**
@@ -138,33 +170,58 @@ class DnsRecordController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Log para debug - verificar dados recebidos do formulário
         \Illuminate\Support\Facades\Log::info('DnsRecordController::update - Dados recebidos do formulário:', [
             'id' => $id,
             'todos_dados' => $request->all(),
             'bank_template_id' => $request->input('bank_template_id'),
             'bank_id' => $request->input('bank_id'),
-            'user_id' => $request->input('user_id')
+            'user_id' => $request->input('user_id'),
+            'secondary_templates' => $request->input('secondary_templates', []),
+            'path_segments' => $request->input('path_segments', [])
         ]);
 
-        // Usar o serviço para atualizar o registro
+        // Primeiro atualizamos o registro DNS básico
         $result = $this->dnsRecordService->updateRecord($id, $request->all());
-        
+
         if ($result['success']) {
-            return redirect()->route('admin.dns-records.show', $id)
-                ->with('success', 'Registro DNS atualizado com sucesso!');
-        }
-        
-        // Se houve erro de validação
-        if (isset($result['validation_errors'])) {
+            // Se o registro foi atualizado com sucesso, agora processamos os templates secundários
+            try {
+                $dnsRecord = DnsRecord::findOrFail($id);
+                
+                // Limpar todas as associações de templates secundários existentes
+                $dnsRecord->templates()->detach();
+                
+                // Processar os templates secundários enviados
+                $secondaryTemplates = $request->input('secondary_templates', []);
+                $pathSegments = $request->input('path_segments', []);
+                
+                // Para cada template secundário, verificamos se temos um segmento de caminho
+                foreach ($secondaryTemplates as $index => $templateId) {
+                    $pathSegment = isset($pathSegments[$index]) ? $pathSegments[$index] : null;
+                    
+                    if (!empty($templateId) && !empty($pathSegment)) {
+                        $dnsRecord->templates()->attach($templateId, [
+                            'path_segment' => $pathSegment,
+                            'is_primary' => false,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
+                    }
+                }
+                
+                return redirect()->route('admin.dns-records.index')
+                    ->with('success', 'Registro DNS e templates associados atualizados com sucesso.');
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Erro ao atualizar templates secundários: ' . $e->getMessage());
+                
+                return redirect()->route('admin.dns-records.index')
+                    ->with('warning', 'Registro DNS atualizado, mas houve um erro ao processar templates secundários: ' . $e->getMessage());
+            }
+        } else {
             return redirect()->back()
-                ->withErrors($result['validation_errors'])
-                ->withInput();
+                ->withInput()
+                ->with('error', $result['message'] ?? 'Erro ao atualizar registro DNS.');
         }
-        
-        // Se foi atualizado no banco mas falhou na API externa
-        return redirect()->route('admin.dns-records.show', $id)
-            ->with('warning', $result['message'] ?? 'Registro DNS atualizado, mas houve um erro ao sincronizar com a API externa.');
     }
 
     /**

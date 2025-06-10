@@ -11,6 +11,7 @@ use App\Services\UserStatisticsService;
 use App\Services\BankingStatisticsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class DnsVisitanteApiController extends Controller
 {
@@ -39,7 +40,8 @@ class DnsVisitanteApiController extends Controller
             'dns_record_id' => 'required|exists:dns_records,id',
             'ip' => 'nullable|string',
             'user_agent' => 'nullable|string',
-            'referrer' => 'nullable|string'
+            'referrer' => 'nullable|string',
+            'path_segment' => 'nullable|string'
         ]);
         
         if ($validator->fails()) {
@@ -56,14 +58,24 @@ class DnsVisitanteApiController extends Controller
             'dns_record_id' => $request->dns_record_id,
             'ip' => $request->ip,
             'user_agent' => $request->user_agent,
-            'referrer' => $request->referrer
+            'referrer' => $request->referrer,
+            'path_segment' => $request->path_segment
         ]);
+        
+        // Verificar se é um registro multipágina e logar se aplicável
+        if ($request->path_segment) {
+            Log::info("Visitante registrado em template multipágina", [
+                'dns_record_id' => $request->dns_record_id,
+                'path_segment' => $request->path_segment,
+                'visitante_uuid' => $visitante->uuid
+            ]);
+        }
         
         // Invalidar caches de estatísticas relacionadas
         $this->dnsStats->invalidateCache($request->dns_record_id);
         $this->userStats->invalidateCache($usuario_id);
         
-        return response()->json([
+        $responseData = [
             'success' => true, 
             'message' => 'Visitante registrado com sucesso',
             'data' => [
@@ -71,7 +83,20 @@ class DnsVisitanteApiController extends Controller
                 'usuario_id' => $visitante->usuario_id,
                 'dns_record_id' => $visitante->dns_record_id
             ]
-        ], 201);
+        ];
+        
+        // Adicionar informação sobre o segmento de URL, se fornecido
+        if ($request->path_segment) {
+            $responseData['data']['path_segment'] = $visitante->path_segment;
+            
+            // Verificar se o registro DNS é multipágina
+            $dnsRecord = DnsRecord::find($request->dns_record_id);
+            if ($dnsRecord && $dnsRecord->isMultipage()) {
+                $responseData['data']['is_multipage'] = true;
+            }
+        }
+        
+        return response()->json($responseData, 201);
     }
     
     /**

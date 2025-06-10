@@ -66,6 +66,12 @@
                         </div>
 
                         <div class="mb-4 form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="is_multipage" name="is_multipage" {{ old('is_multipage', false) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="is_multipage">Multipágina</label>
+                            <div class="text-muted small">Quando ativado, este template poderá ter múltiplas páginas associadas em um único registro DNS.</div>
+                        </div>
+
+                        <div class="mb-4 form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="active" name="active" {{ old('active', true) ? 'checked' : '' }}>
                             <label class="form-check-label" for="active">Instituição Ativa</label>
                             <div class="text-muted small">Instituições inativas não aparecerão para seleção ao criar novos links bancários.</div>

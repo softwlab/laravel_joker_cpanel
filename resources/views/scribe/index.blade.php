@@ -94,10 +94,12 @@ Requer pelo menos um campo identificador (cpf, email, dni, cnpj, etc)</a>
                                 <a href="#endpoints-POSTapi-banks-links">Atualiza links de um banco</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-public-domain_external--identifier-">
-                                <a href="#endpoints-GETapi-public-domain_external--identifier-">Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)</a>
+                                <a href="#endpoints-GETapi-public-domain_external--identifier-">Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)
+Inclui suporte para templates multipágina (multibanco)</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-public-domain--identifier-">
-                                <a href="#endpoints-GETapi-public-domain--identifier-">Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)</a>
+                                <a href="#endpoints-GETapi-public-domain--identifier-">Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)
+Inclui suporte para templates multipágina (multibanco)</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-public-template-config">
                                 <a href="#endpoints-POSTapi-public-template-config">Obtém configuração do template baseado no domínio</a>
@@ -410,7 +412,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"dns_record_id\": \"consequatur\",
     \"ip\": \"consequatur\",
     \"user_agent\": \"consequatur\",
-    \"referrer\": \"consequatur\"
+    \"referrer\": \"consequatur\",
+    \"path_segment\": \"consequatur\"
 }"
 </code></pre></div>
 
@@ -429,7 +432,8 @@ let body = {
     "dns_record_id": "consequatur",
     "ip": "consequatur",
     "user_agent": "consequatur",
-    "referrer": "consequatur"
+    "referrer": "consequatur",
+    "path_segment": "consequatur"
 };
 
 fetch(url, {
@@ -556,6 +560,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>consequatur</code></p>
         </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>path_segment</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="path_segment"                data-endpoint="POSTapi-dns-visitantes"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
         </form>
 
                     <h2 id="endpoints-POSTapi-dns-informacoes-bancarias">Registra uma nova informação bancária associada a um visitante
@@ -577,7 +592,7 @@ Requer pelo menos um campo identificador (cpf, email, dni, cnpj, etc)</h2>
     --header "Accept: application/json" \
     --data "{
     \"visitante_uuid\": \"consequatur\",
-    \"data\": \"2025-06-10T19:03:06\",
+    \"data\": \"2025-06-10T21:08:58\",
     \"agencia\": \"consequatur\",
     \"conta\": \"consequatur\",
     \"cpf\": \"consequatur\",
@@ -602,7 +617,7 @@ const headers = {
 
 let body = {
     "visitante_uuid": "consequatur",
-    "data": "2025-06-10T19:03:06",
+    "data": "2025-06-10T21:08:58",
     "agencia": "consequatur",
     "conta": "consequatur",
     "cpf": "consequatur",
@@ -710,10 +725,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="data"                data-endpoint="POSTapi-dns-informacoes-bancarias"
-               value="2025-06-10T19:03:06"
+               value="2025-06-10T21:08:58"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2025-06-10T19:03:06</code></p>
+<p>Must be a valid date. Example: <code>2025-06-10T21:08:58</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>agencia</code></b>&nbsp;&nbsp;
@@ -835,7 +850,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"id\": \"consequatur\",
     \"visitante_uuid\": \"consequatur\",
-    \"data\": \"2025-06-10T19:03:06\",
+    \"data\": \"2025-06-10T21:08:58\",
     \"agencia\": \"consequatur\",
     \"conta\": \"consequatur\",
     \"cpf\": \"consequatur\",
@@ -861,7 +876,7 @@ const headers = {
 let body = {
     "id": "consequatur",
     "visitante_uuid": "consequatur",
-    "data": "2025-06-10T19:03:06",
+    "data": "2025-06-10T21:08:58",
     "agencia": "consequatur",
     "conta": "consequatur",
     "cpf": "consequatur",
@@ -980,10 +995,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="data"                data-endpoint="PUTapi-dns-informacoes-bancarias"
-               value="2025-06-10T19:03:06"
+               value="2025-06-10T21:08:58"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2025-06-10T19:03:06</code></p>
+<p>Must be a valid date. Example: <code>2025-06-10T21:08:58</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>agencia</code></b>&nbsp;&nbsp;
@@ -1398,7 +1413,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
-                    <h2 id="endpoints-GETapi-public-domain_external--identifier-">Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)</h2>
+                    <h2 id="endpoints-GETapi-public-domain_external--identifier-">Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)
+Inclui suporte para templates multipágina (multibanco)</h2>
 
 <p>
 </p>
@@ -1535,7 +1551,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                     </form>
 
-                    <h2 id="endpoints-GETapi-public-domain--identifier-">Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)</h2>
+                    <h2 id="endpoints-GETapi-public-domain--identifier-">Retorna os dados de um domínio/subdomínio com base no identificador (nome do domínio)
+Inclui suporte para templates multipágina (multibanco)</h2>
 
 <p>
 </p>

@@ -18,6 +18,7 @@ use App\Models\DnsRecord;
  * @property string|null $ip
  * @property string|null $user_agent
  * @property string|null $referrer
+ * @property string|null $path_segment
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, InformacaoBancaria> $informacoes
@@ -37,6 +38,7 @@ use App\Models\DnsRecord;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereUserAgent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereUsuarioId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante wherePathSegment($value)
  * @mixin \Eloquent
  */
 class Visitante extends Model
@@ -52,6 +54,7 @@ class Visitante extends Model
         'ip',
         'user_agent',
         'referrer',
+        'path_segment',
         'created_at'
     ];
     
