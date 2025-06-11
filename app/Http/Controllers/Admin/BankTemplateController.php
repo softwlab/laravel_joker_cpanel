@@ -8,6 +8,7 @@ use App\Models\BankField;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class BankTemplateController extends Controller
 {
@@ -40,35 +41,67 @@ class BankTemplateController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:bank_templates,slug',
-            'description' => 'nullable|string',
-            'template_url' => 'nullable|url|max:255',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'active' => 'boolean',
-            'is_multipage' => 'boolean',
-        ]);
+        try {
+            \Log::info('Iniciando criação de banco template', ['request' => $request->all()]);
+            
+            // Primeiro vamos validar os campos que não são booleanos
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'slug' => 'nullable|string|max:255|unique:bank_templates,slug',
+                'description' => 'nullable|string',
+                'template_url' => 'nullable|url|max:255',
+                'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+            
+            // Agora adicionamos os campos booleanos com conversão adequada
+            $validated['active'] = $request->has('active') ? true : false;
+            $validated['is_multipage'] = $request->has('is_multipage') ? true : false;
+            
+            \Log::info('Campos booleanos convertidos', [
+                'active' => $validated['active'],
+                'is_multipage' => $validated['is_multipage']
+            ]);
 
-        // Gerar slug se não for fornecido
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
+            \Log::info('Validação passou com sucesso', ['validated' => $validated]);
+
+            // Gerar slug se não for fornecido
+            if (empty($validated['slug'])) {
+                $validated['slug'] = Str::slug($validated['name']);
+                \Log::info('Slug gerado automaticamente', ['slug' => $validated['slug']]);
+            }
+
+            // Processar o upload do logo, se enviado
+            if ($request->hasFile('logo')) {
+                try {
+                    $logoPath = $request->file('logo')->store('logos', 'public');
+                    $validated['logo'] = $logoPath;
+                    \Log::info('Logo processado com sucesso', ['path' => $logoPath]);
+                } catch (\Exception $e) {
+                    \Log::error('Erro ao processar upload do logo', ['error' => $e->getMessage()]);
+                    return redirect()->back()->withInput()->withErrors(['logo' => 'Erro ao processar o upload: ' . $e->getMessage()]);
+                }
+            }
+
+            // Status ativo padrão e multipágina
+            $validated['active'] = $request->has('active') ? 1 : 0;
+            $validated['is_multipage'] = $request->has('is_multipage') ? 1 : 0;
+            
+            \Log::info('Criando registro na base de dados', $validated);
+            $bankTemplate = BankTemplate::create($validated);
+            \Log::info('Banco template criado com sucesso', ['id' => $bankTemplate->id]);
+
+            return redirect()->route('admin.templates.index')
+                ->with('success', 'Instituição bancária criada com sucesso!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Erro de validação', ['errors' => $e->errors()]);
+            throw $e;
+        } catch (\Exception $e) {
+            \Log::error('Erro ao criar banco template', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->withInput()->withErrors(['geral' => 'Erro ao salvar: ' . $e->getMessage()]);
         }
-
-        // Processar o upload do logo, se enviado
-        if ($request->hasFile('logo')) {
-            $logoPath = $request->file('logo')->store('logos', 'public');
-            $validated['logo'] = $logoPath;
-        }
-
-        // Status ativo padrão e multipágina
-        $validated['active'] = $request->has('active') ? 1 : 0;
-        $validated['is_multipage'] = $request->has('is_multipage') ? 1 : 0;
-
-        BankTemplate::create($validated);
-
-        return redirect()->route('admin.templates.index')
-            ->with('success', 'Instituição bancária criada com sucesso!');
     }
 
     /**

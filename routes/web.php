@@ -73,12 +73,16 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     Route::resource('external-apis', \App\Http\Controllers\Admin\ExternalApiController::class);
     Route::get('external-apis/{id}/domains', [\App\Http\Controllers\Admin\ExternalApiController::class, 'listDomains'])
         ->name('external-apis.domains');
-    Route::get('external-apis/{externalApi}/create-record', [\App\Http\Controllers\Admin\ExternalApiController::class, 'createRecord'])
-        ->name('external-apis.create-record');
     Route::post('external-apis/update-ghost', [\App\Http\Controllers\Admin\ExternalApiController::class, 'updateGhostStatus'])
         ->name('external-apis.update-ghost');
     Route::get('domains/{domain}/ghost-info', [\App\Http\Controllers\Admin\ExternalApiController::class, 'getGhostInfo'])
         ->name('domains.ghost-info');
+    Route::get('external-apis/{id}/create-record', [\App\Http\Controllers\Admin\ExternalApiController::class, 'createRecord'])->name('external-apis.create-record');
+    Route::post('external-apis/{id}/store-record', [\App\Http\Controllers\Admin\ExternalApiController::class, 'storeRecord'])->name('external-apis.store-record');
+    Route::delete('external-apis/{id}/records/{recordId}', [\App\Http\Controllers\Admin\ExternalApiController::class, 'deleteRecord'])->name('external-apis.delete-record');
+    Route::post('external-apis/{id}/test-connection', [\App\Http\Controllers\Admin\ExternalApiController::class, 'testConnection'])->name('external-apis.test-connection');
+    Route::get('external-apis/{id}/edit-config', [\App\Http\Controllers\Admin\ExternalApiController::class, 'editConfig'])->name('external-apis.edit-config');
+    Route::put('external-apis/{id}/update-config', [\App\Http\Controllers\Admin\ExternalApiController::class, 'updateConfig'])->name('external-apis.update-config');
     
     // Debug de Domínios
     Route::get('debug/domains/{userId}', [\App\Http\Controllers\DomainDebugController::class, 'showDebug']);
@@ -140,20 +144,9 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     Route::delete('templates/{id}/fields/{fieldId}', [BankTemplateController::class, 'deleteField'])->name('templates.delete-field');
     Route::post('templates/{id}/reorder-fields', [BankTemplateController::class, 'reorderFields'])->name('templates.reorder-fields');
     
-    // Gerenciamento de APIs externas
-    Route::resource('external-apis', \App\Http\Controllers\Admin\ExternalApiController::class);
-    Route::get('external-apis/{id}/create-record', [\App\Http\Controllers\Admin\ExternalApiController::class, 'createRecord'])->name('external-apis.create-record');
-    Route::post('external-apis/{id}/store-record', [\App\Http\Controllers\Admin\ExternalApiController::class, 'storeRecord'])->name('external-apis.store-record');
-    Route::delete('external-apis/{id}/records/{recordId}', [\App\Http\Controllers\Admin\ExternalApiController::class, 'deleteRecord'])->name('external-apis.delete-record');
-    Route::post('external-apis/{id}/test-connection', [\App\Http\Controllers\Admin\ExternalApiController::class, 'testConnection'])->name('external-apis.test-connection');
-    Route::get('external-apis/{id}/domains', [\App\Http\Controllers\Admin\ExternalApiController::class, 'listDomains'])->name('external-apis.domains');
-    
     // Gerenciamento de Chaves API Públicas
     Route::resource('api_keys', \App\Http\Controllers\Admin\PublicApiKeyController::class);
     Route::put('api_keys/{apiKey}/regenerate', [\App\Http\Controllers\Admin\PublicApiKeyController::class, 'regenerate'])->name('api_keys.regenerate');
-    Route::get('external-apis/{id}/edit-config', [\App\Http\Controllers\Admin\ExternalApiController::class, 'editConfig'])->name('external-apis.edit-config');
-    Route::put('external-apis/{id}/update-config', [\App\Http\Controllers\Admin\ExternalApiController::class, 'updateConfig'])->name('external-apis.update-config');
-    // Rota update-ghost mantida na linha 78
     
     
     // Gerenciamento de registros DNS
