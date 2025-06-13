@@ -97,13 +97,15 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     Route::post('debug/associate-domain', [\App\Http\Controllers\DomainDebugController::class, 'associateDomain']);
     
     // Gerenciamento de usuários
-    Route::get('users', [AdminController::class, 'users'])->name('users');
-    Route::get('users/create', [AdminController::class, 'createUser'])->name('users.create');
-    Route::post('users', [AdminController::class, 'storeUser'])->name('users.store');
-    Route::get('users/{id}', [AdminController::class, 'showUser'])->name('users.show');
-    Route::get('users/{id}/edit', [AdminController::class, 'editUser'])->name('users.edit');
-    Route::put('users/{id}', [AdminController::class, 'updateUser'])->name('users.update');
-    Route::delete('users/{id}', [AdminController::class, 'deleteUser'])->name('users.destroy');
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
+    Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+    Route::get('/users/{id}', [AdminController::class, 'showUser'])->name('users.show');
+    Route::get('/users/{id}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+    Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    Route::get('/users/{user}/dns/{dns}', [AdminController::class, 'showUserDns'])->name('users.dns');
+    Route::get('/users/{user}/cloudflare/{domain}', [AdminController::class, 'showUserCloudflareDomain'])->name('users.cloudflare');
     
     // Gerenciamento de bancos
     Route::get('banks', [AdminController::class, 'banks'])->name('banks');
