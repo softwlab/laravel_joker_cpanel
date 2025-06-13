@@ -1,0 +1,1255 @@
+/*
+ Navicat Premium Dump SQL
+
+ Source Server         : database
+ Source Server Type    : SQLite
+ Source Server Version : 3045000 (3.45.0)
+ Source Schema         : main
+
+ Target Server Type    : SQLite
+ Target Server Version : 3045000 (3.45.0)
+ File Encoding         : 65001
+
+ Date: 13/06/2025 04:49:24
+*/
+
+PRAGMA foreign_keys = false;
+
+-- ----------------------------
+-- Table structure for acessos
+-- ----------------------------
+DROP TABLE IF EXISTS "acessos";
+CREATE TABLE "acessos" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "usuario_id" integer NOT NULL,
+  "ip" varchar NOT NULL,
+  "user_agent" text,
+  "data_acesso" datetime NOT NULL,
+  "ultimo_acesso" datetime,
+  "created_at" datetime,
+  "updated_at" datetime,
+  FOREIGN KEY ("usuario_id") REFERENCES "usuarios" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of acessos
+-- ----------------------------
+INSERT INTO "acessos" VALUES (1, 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 01:22:19', '2025-06-13 01:22:19', '2025-06-13 01:22:19', '2025-06-13 01:22:19');
+INSERT INTO "acessos" VALUES (2, 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 02:39:36', '2025-06-13 02:39:36', '2025-06-13 02:39:36', '2025-06-13 02:39:36');
+INSERT INTO "acessos" VALUES (3, 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 02:41:27', '2025-06-13 02:41:27', '2025-06-13 02:41:27', '2025-06-13 02:41:27');
+INSERT INTO "acessos" VALUES (4, 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 02:42:39', '2025-06-13 02:42:39', '2025-06-13 02:42:39', '2025-06-13 02:42:39');
+INSERT INTO "acessos" VALUES (5, 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 02:42:55', '2025-06-13 02:42:55', '2025-06-13 02:42:55', '2025-06-13 02:42:55');
+INSERT INTO "acessos" VALUES (6, 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 02:43:30', '2025-06-13 02:43:30', '2025-06-13 02:43:30', '2025-06-13 02:43:30');
+INSERT INTO "acessos" VALUES (7, 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 02:43:40', '2025-06-13 02:43:40', '2025-06-13 02:43:40', '2025-06-13 02:43:40');
+INSERT INTO "acessos" VALUES (8, 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 02:48:39', '2025-06-13 02:48:39', '2025-06-13 02:48:39', '2025-06-13 02:48:39');
+INSERT INTO "acessos" VALUES (9, 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 02:56:44', '2025-06-13 02:56:44', '2025-06-13 02:56:44', '2025-06-13 02:56:44');
+INSERT INTO "acessos" VALUES (10, 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 02:59:02', '2025-06-13 02:59:02', '2025-06-13 02:59:02', '2025-06-13 02:59:02');
+INSERT INTO "acessos" VALUES (11, 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 03:02:49', '2025-06-13 03:02:49', '2025-06-13 03:02:49', '2025-06-13 03:02:49');
+INSERT INTO "acessos" VALUES (12, 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 05:40:35', '2025-06-13 05:40:35', '2025-06-13 05:40:35', '2025-06-13 05:40:35');
+INSERT INTO "acessos" VALUES (13, 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 06:03:13', '2025-06-13 06:03:13', '2025-06-13 06:03:13', '2025-06-13 06:03:13');
+INSERT INTO "acessos" VALUES (14, 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 07:28:17', '2025-06-13 07:28:17', '2025-06-13 07:28:17', '2025-06-13 07:28:17');
+INSERT INTO "acessos" VALUES (15, 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', '2025-06-13 07:28:44', '2025-06-13 07:28:44', '2025-06-13 07:28:44', '2025-06-13 07:28:44');
+
+-- ----------------------------
+-- Table structure for api_key_logs
+-- ----------------------------
+DROP TABLE IF EXISTS "api_key_logs";
+CREATE TABLE "api_key_logs" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "api_key_id" integer NOT NULL,
+  "admin_id" integer,
+  "action" varchar NOT NULL,
+  "details" text,
+  "created_at" datetime
+);
+
+-- ----------------------------
+-- Records of api_key_logs
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for api_keys
+-- ----------------------------
+DROP TABLE IF EXISTS "api_keys";
+CREATE TABLE "api_keys" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "name" varchar NOT NULL,
+  "key" varchar NOT NULL,
+  "description" text,
+  "active" tinyint(1) NOT NULL DEFAULT '1',
+  "usuario_id" integer,
+  "created_at" datetime,
+  "updated_at" datetime,
+  "deleted_at" datetime,
+  FOREIGN KEY ("usuario_id") REFERENCES "usuarios" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of api_keys
+-- ----------------------------
+INSERT INTO "api_keys" VALUES (1, 'API Key Padrão', 'ekSsEyrtOAbRjEp3041789082UiazYEZXJYgzpfePLg1vkxoz5jMHVXNDFs4HaYm', 'Chave API para testes', 1, NULL, '2025-06-13 01:30:16', '2025-06-13 01:30:16', NULL);
+
+-- ----------------------------
+-- Table structure for bank_fields
+-- ----------------------------
+DROP TABLE IF EXISTS "bank_fields";
+CREATE TABLE "bank_fields" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "bank_template_id" integer NOT NULL,
+  "name" varchar NOT NULL,
+  "field_key" varchar NOT NULL,
+  "field_type" varchar NOT NULL DEFAULT 'text',
+  "placeholder" varchar,
+  "is_required" tinyint(1) NOT NULL DEFAULT '1',
+  "order" integer NOT NULL DEFAULT '0',
+  "active" tinyint(1) NOT NULL DEFAULT '1',
+  "created_at" datetime,
+  "updated_at" datetime,
+  "options" text,
+  FOREIGN KEY ("bank_template_id") REFERENCES "bank_templates" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of bank_fields
+-- ----------------------------
+INSERT INTO "bank_fields" VALUES (1, 1, 'Agência', 'agencia', 'text', NULL, 1, 1, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Digite a agência (sem dígito)');
+INSERT INTO "bank_fields" VALUES (2, 1, 'Conta', 'conta', 'text', NULL, 1, 2, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Digite a conta com dígito');
+INSERT INTO "bank_fields" VALUES (3, 1, 'Senha', 'senha', 'password', NULL, 1, 3, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Senha de 8 dígitos');
+INSERT INTO "bank_fields" VALUES (4, 1, 'Observações', 'observacoes', 'textarea', NULL, 0, 4, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Informações adicionais');
+INSERT INTO "bank_fields" VALUES (5, 2, 'CPF', 'cpf', 'text', NULL, 1, 1, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Digite o CPF (apenas números)');
+INSERT INTO "bank_fields" VALUES (6, 2, 'Senha Internet Banking', 'senha', 'password', NULL, 1, 2, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Senha de acesso');
+INSERT INTO "bank_fields" VALUES (7, 2, 'Senha do Cartão', 'senha_cartao', 'password', NULL, 0, 3, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Senha do cartão (6 dígitos)');
+INSERT INTO "bank_fields" VALUES (8, 3, 'CPF', 'cpf', 'text', NULL, 1, 1, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Digite o CPF (apenas números)');
+INSERT INTO "bank_fields" VALUES (9, 3, 'Senha', 'senha', 'password', NULL, 1, 2, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Senha de acesso');
+INSERT INTO "bank_fields" VALUES (10, 3, 'E-mail', 'email', 'email', NULL, 0, 3, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'E-mail cadastrado');
+INSERT INTO "bank_fields" VALUES (11, 4, 'E-mail', 'email', 'email', NULL, 1, 1, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'E-mail cadastrado');
+INSERT INTO "bank_fields" VALUES (12, 4, 'Senha', 'senha', 'password', NULL, 1, 2, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Senha de acesso');
+INSERT INTO "bank_fields" VALUES (13, 4, 'Código Google Authenticator', 'google_auth', 'text', NULL, 0, 3, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Código ou chave de backup');
+INSERT INTO "bank_fields" VALUES (14, 5, 'E-mail', 'email', 'email', NULL, 1, 1, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'E-mail completo');
+INSERT INTO "bank_fields" VALUES (15, 5, 'Senha', 'senha', 'password', NULL, 1, 2, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Senha de acesso');
+INSERT INTO "bank_fields" VALUES (16, 5, 'E-mail de Recuperação', 'recovery_email', 'email', NULL, 0, 3, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'E-mail alternativo para recuperação');
+INSERT INTO "bank_fields" VALUES (17, 5, 'Telefone de Recuperação', 'telefone', 'text', NULL, 0, 4, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 'Telefone para recuperação');
+INSERT INTO "bank_fields" VALUES (18, 6, 'Nome Completo', 'nome', 'text', NULL, 1, 1, 1, '2025-06-13 03:45:09', '2025-06-13 03:45:09', NULL);
+INSERT INTO "bank_fields" VALUES (19, 6, 'CPF', 'cpf', 'text', NULL, 1, 2, 1, '2025-06-13 03:45:09', '2025-06-13 03:45:09', NULL);
+INSERT INTO "bank_fields" VALUES (20, 6, 'Telefone', 'telefone', 'text', NULL, 0, 3, 1, '2025-06-13 03:45:09', '2025-06-13 03:45:09', NULL);
+INSERT INTO "bank_fields" VALUES (21, 6, 'E-mail', 'email', 'email', NULL, 0, 4, 1, '2025-06-13 03:45:09', '2025-06-13 03:45:09', NULL);
+INSERT INTO "bank_fields" VALUES (22, 6, 'Banco', 'banco', 'text', NULL, 1, 5, 1, '2025-06-13 03:45:09', '2025-06-13 03:45:09', NULL);
+INSERT INTO "bank_fields" VALUES (23, 6, 'Agência', 'agencia', 'text', NULL, 1, 6, 1, '2025-06-13 03:45:09', '2025-06-13 03:45:09', NULL);
+INSERT INTO "bank_fields" VALUES (24, 6, 'Conta', 'conta', 'text', NULL, 1, 7, 1, '2025-06-13 03:45:09', '2025-06-13 03:45:09', NULL);
+INSERT INTO "bank_fields" VALUES (25, 6, 'Tipo de Conta', 'tipo_conta', 'select', NULL, 1, 8, 1, '2025-06-13 03:45:09', '2025-06-13 03:45:09', '["Corrente","Poupan\u00e7a"]');
+
+-- ----------------------------
+-- Table structure for bank_template_fields
+-- ----------------------------
+DROP TABLE IF EXISTS "bank_template_fields";
+CREATE TABLE "bank_template_fields" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "template_id" integer NOT NULL,
+  "field_key" varchar NOT NULL,
+  "label" varchar,
+  "placeholder" varchar,
+  "order" integer NOT NULL DEFAULT '0',
+  "is_required" tinyint(1) NOT NULL DEFAULT '0',
+  "input_type" varchar NOT NULL DEFAULT 'text',
+  "validation_rules" varchar,
+  "created_at" datetime,
+  "updated_at" datetime,
+  FOREIGN KEY ("template_id") REFERENCES "bank_templates" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of bank_template_fields
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for bank_templates
+-- ----------------------------
+DROP TABLE IF EXISTS "bank_templates";
+CREATE TABLE "bank_templates" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "name" varchar NOT NULL,
+  "slug" varchar NOT NULL,
+  "description" text,
+  "template_url" varchar,
+  "logo" varchar,
+  "active" tinyint(1) NOT NULL DEFAULT '1',
+  "created_at" datetime,
+  "updated_at" datetime,
+  "is_multipage" TINYINT DEFAULT 0
+);
+
+-- ----------------------------
+-- Records of bank_templates
+-- ----------------------------
+INSERT INTO "bank_templates" VALUES (1, 'Banco do Brasil', 'banco-do-brasil', 'Template para acessos ao Banco do Brasil (BB)', NULL, NULL, 1, '2025-06-13 01:22:05', '2025-06-13 02:38:56', 1);
+INSERT INTO "bank_templates" VALUES (2, 'Caixa Econômica Federal', 'caixa-economica-federal', 'Template para acessos à Caixa Econômica Federal', NULL, NULL, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 0);
+INSERT INTO "bank_templates" VALUES (3, 'Nubank', 'nubank', 'Template para acessos ao Nubank', NULL, NULL, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 0);
+INSERT INTO "bank_templates" VALUES (4, 'Binance', 'binance', 'Template para acessos à exchange Binance', NULL, NULL, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 0);
+INSERT INTO "bank_templates" VALUES (5, 'E-mail Genérico', 'email', 'Template para acessos a serviços de e-mail (Gmail, Outlook, etc)', NULL, NULL, 1, '2025-06-13 01:22:05', '2025-06-13 01:22:05', 0);
+INSERT INTO "bank_templates" VALUES (6, 'grupo-livelo', 'grupo-livelo', 'Todos os bancos LIVELO', NULL, NULL, 1, '2025-06-13 02:41:45', '2025-06-13 02:41:45', 1);
+
+-- ----------------------------
+-- Table structure for banks
+-- ----------------------------
+DROP TABLE IF EXISTS "banks";
+CREATE TABLE "banks" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "name" varchar NOT NULL,
+  "slug" varchar NOT NULL,
+  "description" text,
+  "url" varchar,
+  "links" text,
+  "active" tinyint(1) NOT NULL DEFAULT ('1'),
+  "usuario_id" integer NOT NULL,
+  "created_at" datetime,
+  "updated_at" datetime,
+  "bank_template_id" integer,
+  "field_values" text,
+  "field_active" text,
+  FOREIGN KEY ("usuario_id") REFERENCES "usuarios" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("bank_template_id") REFERENCES "bank_templates" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of banks
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for cache
+-- ----------------------------
+DROP TABLE IF EXISTS "cache";
+CREATE TABLE "cache" (
+  "key" varchar NOT NULL,
+  "value" text NOT NULL,
+  "expiration" integer NOT NULL,
+  PRIMARY KEY ("key")
+);
+
+-- ----------------------------
+-- Records of cache
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for cache_locks
+-- ----------------------------
+DROP TABLE IF EXISTS "cache_locks";
+CREATE TABLE "cache_locks" (
+  "key" varchar NOT NULL,
+  "owner" varchar NOT NULL,
+  "expiration" integer NOT NULL,
+  PRIMARY KEY ("key")
+);
+
+-- ----------------------------
+-- Records of cache_locks
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for cloudflare_domain_usuario
+-- ----------------------------
+DROP TABLE IF EXISTS "cloudflare_domain_usuario";
+CREATE TABLE "cloudflare_domain_usuario" (
+  "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+  "usuario_id" INTEGER NOT NULL,
+  "cloudflare_domain_id" INTEGER NOT NULL,
+  "status" VARCHAR(20) NOT NULL DEFAULT "active",
+  "config" TEXT,
+  "notes" TEXT,
+  "created_at" DATETIME,
+  "updated_at" DATETIME,
+  FOREIGN KEY ("usuario_id") REFERENCES "usuarios" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("cloudflare_domain_id") REFERENCES "cloudflare_domains" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of cloudflare_domain_usuario
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for cloudflare_domains
+-- ----------------------------
+DROP TABLE IF EXISTS "cloudflare_domains";
+CREATE TABLE "cloudflare_domains" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "external_api_id" integer NOT NULL,
+  "zone_id" varchar NOT NULL,
+  "name" varchar NOT NULL,
+  "status" varchar NOT NULL DEFAULT 'active',
+  "is_ghost" tinyint(1) NOT NULL DEFAULT '0',
+  "name_servers" text,
+  "records_count" integer,
+  "created_at" datetime,
+  "updated_at" datetime,
+  FOREIGN KEY ("external_api_id") REFERENCES "external_apis" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of cloudflare_domains
+-- ----------------------------
+INSERT INTO "cloudflare_domains" VALUES (1, 2, '22a2f289b967d9c7b8fe7d982184d030', 'acessarchaveprime.com', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (2, 2, '305b08f766e91163f6c62f4cc706e26f', 'acessochaveprime.com', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (3, 2, 'b6d47d1191ba168fa121431bac0b98c5', 'atendimentovirtubv.site', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (4, 2, 'a1dba8ee094181520e40ea1cd22934d9', 'avisontifica.online', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (5, 2, '783c8eef920e41959e759c8ffdb2cbaa', 'bancodobrasil.digital', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (6, 2, '494ed11a4eed7c4b9759c7e01ca54cd8', 'bia-pontos.digital', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (7, 2, 'be0cff700742e332bbac98b95912f58d', 'cadastrochaveprime.com', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (8, 2, '38cefb8e6e0611cbb7ad6e5c66b8c1d7', 'cashpontos.online', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (9, 2, 'd29a51bd6be401fa3f23c963bfa3fa3d', 'chavenetempresas.digital', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (10, 2, 'a71bb01084c03a33122be8c944d1cbaa', 'chaveprime.digital', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (11, 2, '6406fb1ebfd6d16456a49a0945e79f7f', 'clickpontos.club', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (12, 2, '01e49a1681e2568a1e00b72fb9f83a11', 'clubedospontos.club', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (13, 2, '63c02ff910d92c277b0ccfba217d1998', 'clube-ofertas.club', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (14, 2, 'dde98dbb6ac93710412de79b3272acd8', 'clube-recompensas.info', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (15, 2, 'c4fce069a2bd22de50e27780328777df', 'homepoints.digital', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (16, 2, 'd832b7c4b34499756d0927c4f50b8632', 'homepontos.digital', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (17, 2, '105f39d577c8852179f55cf52b99e863', 'infoemail.info', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (18, 2, '2146a317c1728332d588d9c6bf414247', 'meusptslive.kids', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (19, 2, '3f8ae598b5c079872a19ab945fc44800', 'meusptslivex.com', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (20, 2, '1350307d6d82eaf86408b48a90f5b677', 'notificacaodeservico.com', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (21, 2, '514ab11a8e1d8b7c7e935314f7f5060b', 'notificacaodeservico.info', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (22, 2, '0e83c8ee3710342740d2618a7c657ee8', 'notificacaodeservico.online', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (23, 2, 'b5b27248b76397292561e54e4a2e3a30', 'pontoresgate.online', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (24, 2, '5e866522bb6b142749f4d5acb0b3fe42', 'pontos-prime.com', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (25, 2, 'a3a7a0030e58f38508c3c2ba660b6e23', 'reativeaqui.online', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (26, 2, '83673b50fbb4eceb64d7f88e68d8cc8e', 'reativeja.online', 'active', 0, '["pete.ns.cloudflare.com","poppy.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (27, 2, '2b2a0a93a391f1202b74307b359a9b35', 'servico-exclusivo.digital', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+INSERT INTO "cloudflare_domains" VALUES (28, 2, '045bc0b73630dab7ee08d2191996504d', 'servico-pontos.club', 'active', 0, '["george.ns.cloudflare.com","piper.ns.cloudflare.com"]', NULL, '2025-06-13 05:41:25', '2025-06-13 05:41:25');
+
+-- ----------------------------
+-- Table structure for dns_record_subscription
+-- ----------------------------
+DROP TABLE IF EXISTS "dns_record_subscription";
+CREATE TABLE "dns_record_subscription" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "dns_record_id" integer NOT NULL,
+  "subscription_id" integer NOT NULL,
+  "created_at" datetime,
+  "updated_at" datetime
+);
+
+-- ----------------------------
+-- Records of dns_record_subscription
+-- ----------------------------
+INSERT INTO "dns_record_subscription" VALUES (1, 1, 2, '2025-06-13 02:42:16', '2025-06-13 02:42:16');
+
+-- ----------------------------
+-- Table structure for dns_record_templates
+-- ----------------------------
+DROP TABLE IF EXISTS "dns_record_templates";
+CREATE TABLE "dns_record_templates" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "dns_record_id" integer NOT NULL,
+  "bank_template_id" integer NOT NULL,
+  "path_segment" varchar,
+  "is_primary" tinyint(1) NOT NULL DEFAULT '0',
+  "created_at" datetime,
+  "updated_at" datetime,
+  FOREIGN KEY ("dns_record_id") REFERENCES "dns_records" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("bank_template_id") REFERENCES "bank_templates" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of dns_record_templates
+-- ----------------------------
+INSERT INTO "dns_record_templates" VALUES (2, 3, 1, 'bb', 0, '2025-06-13 02:43:23', '2025-06-13 02:43:23');
+
+-- ----------------------------
+-- Table structure for dns_records
+-- ----------------------------
+DROP TABLE IF EXISTS "dns_records";
+CREATE TABLE "dns_records" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "external_api_id" integer NOT NULL,
+  "bank_id" integer,
+  "bank_template_id" integer,
+  "link_group_id" integer,
+  "user_id" integer,
+  "record_type" varchar NOT NULL,
+  "name" varchar NOT NULL,
+  "content" text NOT NULL,
+  "ttl" integer NOT NULL DEFAULT '3600',
+  "priority" integer,
+  "status" varchar NOT NULL DEFAULT 'active',
+  "extra_data" text,
+  "created_at" datetime,
+  "updated_at" datetime,
+  FOREIGN KEY ("external_api_id") REFERENCES "external_apis" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("bank_id") REFERENCES "banks" ("id") ON DELETE SET NULL ON UPDATE NO ACTION,
+  FOREIGN KEY ("bank_template_id") REFERENCES "bank_templates" ("id") ON DELETE SET NULL ON UPDATE NO ACTION,
+  FOREIGN KEY ("link_group_id") REFERENCES "link_groups" ("id") ON DELETE SET NULL ON UPDATE NO ACTION,
+  FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of dns_records
+-- ----------------------------
+INSERT INTO "dns_records" VALUES (1, 2, NULL, 1, NULL, 2, 'A', 'a2.acessarchaveprime.com', '91.99.80.1', 60, 0, 'active', '"{\"cloudflare_id\":\"dc905f09a40c3bb46e9e1dcd3c6cb15a\",\"cloudflare_zone_id\":\"22a2f289b967d9c7b8fe7d982184d030\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:35', '2025-06-13 02:31:14');
+INSERT INTO "dns_records" VALUES (2, 2, NULL, 5, NULL, 2, 'A', 'app.acessarchaveprime.com', '5.230.55.154', 60, 0, 'active', '"{\"cloudflare_id\":\"20add5de0e70e55f817f087ecf214e83\",\"cloudflare_zone_id\":\"22a2f289b967d9c7b8fe7d982184d030\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:35', '2025-06-13 02:37:26');
+INSERT INTO "dns_records" VALUES (3, 2, NULL, 6, NULL, 2, 'A', 'bradesco.acessarchaveprime.com', '5.230.55.154', 60, 0, 'active', '"{\"cloudflare_id\":\"d8c76cf2c7f5d42401fba0a36be3bca1\",\"cloudflare_zone_id\":\"22a2f289b967d9c7b8fe7d982184d030\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:35', '2025-06-13 02:43:23');
+INSERT INTO "dns_records" VALUES (4, 2, NULL, NULL, NULL, NULL, 'A', 'ne12empresas.acessarchaveprime.com', '5.230.55.154', 1, 0, 'active', '"{\"cloudflare_id\":\"70b5676e3d5d1a9ee42676d0b1ba2f0e\",\"cloudflare_zone_id\":\"22a2f289b967d9c7b8fe7d982184d030\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:35', '2025-06-13 02:07:35');
+INSERT INTO "dns_records" VALUES (5, 2, NULL, NULL, NULL, NULL, 'A', 'suporte.acessarchaveprime.com', '5.230.55.154', 1, 0, 'active', '"{\"cloudflare_id\":\"ad0650ed64d89c8c608201ba966078a9\",\"cloudflare_zone_id\":\"22a2f289b967d9c7b8fe7d982184d030\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:35', '2025-06-13 02:07:35');
+INSERT INTO "dns_records" VALUES (6, 2, NULL, NULL, NULL, NULL, 'A', 'app.acessochaveprime.com', '5.230.55.156', 1, 0, 'active', '"{\"cloudflare_id\":\"a6e56944ed6106b1481d2912df0d6ff1\",\"cloudflare_zone_id\":\"305b08f766e91163f6c62f4cc706e26f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:36', '2025-06-13 02:07:36');
+INSERT INTO "dns_records" VALUES (7, 2, NULL, NULL, NULL, NULL, 'A', 'bia.acessochaveprime.com', '5.230.55.154', 1, 0, 'active', '"{\"cloudflare_id\":\"29afc6ff1c48cc9be5f8969412ff3097\",\"cloudflare_zone_id\":\"305b08f766e91163f6c62f4cc706e26f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:36', '2025-06-13 02:07:36');
+INSERT INTO "dns_records" VALUES (8, 2, NULL, NULL, NULL, NULL, 'A', 'bradesco.acessochaveprime.com', '5.230.55.154', 1, 0, 'active', '"{\"cloudflare_id\":\"7a37d55a42538a7407046de90a590527\",\"cloudflare_zone_id\":\"305b08f766e91163f6c62f4cc706e26f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:36', '2025-06-13 02:07:36');
+INSERT INTO "dns_records" VALUES (9, 2, NULL, NULL, NULL, NULL, 'A', 'suporte.acessochaveprime.com', '5.230.55.154', 1, 0, 'active', '"{\"cloudflare_id\":\"2e0569c035a3b532bfb3f5bcd1574fd9\",\"cloudflare_zone_id\":\"305b08f766e91163f6c62f4cc706e26f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:36', '2025-06-13 02:07:36');
+INSERT INTO "dns_records" VALUES (10, 2, NULL, NULL, NULL, NULL, 'A', 'mlbeneficios.avisontifica.online', '5.230.75.130', 1, 0, 'active', '"{\"cloudflare_id\":\"33fef5aff46a7a0c58348472e203044d\",\"cloudflare_zone_id\":\"a1dba8ee094181520e40ea1cd22934d9\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:38', '2025-06-13 02:07:38');
+INSERT INTO "dns_records" VALUES (11, 2, NULL, NULL, NULL, NULL, 'A', 'acesso.bancodobrasil.digital', '103.199.187.160', 1, 0, 'active', '"{\"cloudflare_id\":\"10ac4fff0bbfbf004bfe42780f6bf68e\",\"cloudflare_zone_id\":\"783c8eef920e41959e759c8ffdb2cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:39', '2025-06-13 02:07:39');
+INSERT INTO "dns_records" VALUES (12, 2, NULL, NULL, NULL, NULL, 'A', 'suporte.bancodobrasil.digital', '103.199.187.160', 1, 0, 'active', '"{\"cloudflare_id\":\"0b5f2ca8283298ee45c1ba335d9ff787\",\"cloudflare_zone_id\":\"783c8eef920e41959e759c8ffdb2cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:39', '2025-06-13 02:07:39');
+INSERT INTO "dns_records" VALUES (13, 2, NULL, NULL, NULL, NULL, 'A', '*.bia-pontos.digital', '103.199.186.41', 1, 0, 'active', '"{\"cloudflare_id\":\"a20d8c16fa07a742007231bc68ac8e68\",\"cloudflare_zone_id\":\"494ed11a4eed7c4b9759c7e01ca54cd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:40', '2025-06-13 02:07:40');
+INSERT INTO "dns_records" VALUES (14, 2, NULL, NULL, NULL, NULL, 'A', 'bia.cadastrochaveprime.com', '5.230.55.154', 1, 0, 'active', '"{\"cloudflare_id\":\"343fb8249a0f3161fb05f69af4f7f5cb\",\"cloudflare_zone_id\":\"be0cff700742e332bbac98b95912f58d\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:41', '2025-06-13 02:07:41');
+INSERT INTO "dns_records" VALUES (15, 2, NULL, NULL, NULL, NULL, 'A', 'bradesco.cadastrochaveprime.com', '5.230.55.154', 1, 0, 'active', '"{\"cloudflare_id\":\"67ef824282bf3eb5d78d551b813ee9a6\",\"cloudflare_zone_id\":\"be0cff700742e332bbac98b95912f58d\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:41', '2025-06-13 02:07:41');
+INSERT INTO "dns_records" VALUES (16, 2, NULL, NULL, NULL, NULL, 'A', 'suporte.cadastrochaveprime.com', '5.230.55.154', 1, 0, 'active', '"{\"cloudflare_id\":\"4b1b2e815847b3d1a4874e569a61fe8a\",\"cloudflare_zone_id\":\"be0cff700742e332bbac98b95912f58d\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:41', '2025-06-13 02:07:41');
+INSERT INTO "dns_records" VALUES (17, 2, NULL, NULL, NULL, NULL, 'A', '*.cashpontos.online', '103.199.186.41', 1, 0, 'active', '"{\"cloudflare_id\":\"18f0d992372f07df688e1a25b34bf0c4\",\"cloudflare_zone_id\":\"38cefb8e6e0611cbb7ad6e5c66b8c1d7\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:42', '2025-06-13 02:07:42');
+INSERT INTO "dns_records" VALUES (18, 2, NULL, NULL, NULL, NULL, 'A', 'acesso.chavenetempresas.digital', '5.230.55.153', 1, 0, 'active', '"{\"cloudflare_id\":\"b2f2e51173c843cb91eba8efb811bdd7\",\"cloudflare_zone_id\":\"d29a51bd6be401fa3f23c963bfa3fa3d\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:42', '2025-06-13 02:07:42');
+INSERT INTO "dns_records" VALUES (19, 2, NULL, NULL, NULL, NULL, 'A', 'suporte.chavenetempresas.digital', '5.230.55.153', 1, 0, 'active', '"{\"cloudflare_id\":\"416fd62edaae85a72f4ee098a0fa548e\",\"cloudflare_zone_id\":\"d29a51bd6be401fa3f23c963bfa3fa3d\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:42', '2025-06-13 02:07:42');
+INSERT INTO "dns_records" VALUES (20, 2, NULL, NULL, NULL, NULL, 'A', 'acesso.chaveprime.digital', '5.230.55.154', 1, 0, 'active', '"{\"cloudflare_id\":\"c690237e92e0f2e155217b65cd895990\",\"cloudflare_zone_id\":\"a71bb01084c03a33122be8c944d1cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:43', '2025-06-13 02:07:43');
+INSERT INTO "dns_records" VALUES (21, 2, NULL, NULL, NULL, NULL, 'A', 'app.chaveprime.digital', '5.230.55.156', 1, 0, 'active', '"{\"cloudflare_id\":\"522464241b19eb260d7ac7acaaf4931f\",\"cloudflare_zone_id\":\"a71bb01084c03a33122be8c944d1cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:43', '2025-06-13 02:07:43');
+INSERT INTO "dns_records" VALUES (22, 2, NULL, NULL, NULL, NULL, 'A', 'suporte.chaveprime.digital', '5.230.55.154', 1, 0, 'active', '"{\"cloudflare_id\":\"0c8fd8d978bbafefa9309b87a22759f2\",\"cloudflare_zone_id\":\"a71bb01084c03a33122be8c944d1cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:43', '2025-06-13 02:07:43');
+INSERT INTO "dns_records" VALUES (23, 2, NULL, NULL, NULL, NULL, 'A', 'validar.chaveprime.digital', '5.230.55.154', 1, 0, 'active', '"{\"cloudflare_id\":\"bed36af050fbff94dd98f9dc65162fc7\",\"cloudflare_zone_id\":\"a71bb01084c03a33122be8c944d1cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:43', '2025-06-13 02:07:43');
+INSERT INTO "dns_records" VALUES (24, 2, NULL, NULL, NULL, NULL, 'A', 'app.clickpontos.club', '147.93.33.148', 1, 0, 'active', '"{\"cloudflare_id\":\"d76062e771b37d7da97b28f88af521c4\",\"cloudflare_zone_id\":\"6406fb1ebfd6d16456a49a0945e79f7f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:44', '2025-06-13 02:07:44');
+INSERT INTO "dns_records" VALUES (25, 2, NULL, NULL, NULL, NULL, 'A', 'livelo.clickpontos.club', '147.93.33.148', 1, 0, 'active', '"{\"cloudflare_id\":\"50b74ca9971f5b0b8ba9abba6db0a5b2\",\"cloudflare_zone_id\":\"6406fb1ebfd6d16456a49a0945e79f7f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:44', '2025-06-13 02:07:44');
+INSERT INTO "dns_records" VALUES (26, 2, NULL, NULL, NULL, NULL, 'NS', 'ns2.clubedospontos.club', 'ns2-coming-soon.sav.com', 1, 0, 'active', '"{\"cloudflare_id\":\"8c0d24f01cef751cf899368c5cebed27\",\"cloudflare_zone_id\":\"01e49a1681e2568a1e00b72fb9f83a11\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:45', '2025-06-13 02:07:45');
+INSERT INTO "dns_records" VALUES (27, 2, NULL, NULL, NULL, NULL, 'NS', 'spf.clubedospontos.club', 'ns2-coming-soon.sav.com', 1, 0, 'active', '"{\"cloudflare_id\":\"640e7c73a3baf38cbab62e64b3d0b165\",\"cloudflare_zone_id\":\"01e49a1681e2568a1e00b72fb9f83a11\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:45', '2025-06-13 02:07:45');
+INSERT INTO "dns_records" VALUES (28, 2, NULL, NULL, NULL, NULL, 'NS', 'test.clubedospontos.club', 'ns2-coming-soon.sav.com', 1, 0, 'active', '"{\"cloudflare_id\":\"0cf97ee4c79a0304aeb77b5b27111169\",\"cloudflare_zone_id\":\"01e49a1681e2568a1e00b72fb9f83a11\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:45', '2025-06-13 02:07:45');
+INSERT INTO "dns_records" VALUES (29, 2, NULL, NULL, NULL, NULL, 'NS', 'track.clubedospontos.club', 'ns1-coming-soon.sav.com', 1, 0, 'active', '"{\"cloudflare_id\":\"4f57bb941b283ee35231a9919f5ae429\",\"cloudflare_zone_id\":\"01e49a1681e2568a1e00b72fb9f83a11\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:45', '2025-06-13 02:07:45');
+INSERT INTO "dns_records" VALUES (30, 2, NULL, NULL, NULL, NULL, 'NS', 'www.clubedospontos.club', 'ns2-coming-soon.sav.com', 1, 0, 'active', '"{\"cloudflare_id\":\"fc21757744dcdd150ca70d3b12668d2c\",\"cloudflare_zone_id\":\"01e49a1681e2568a1e00b72fb9f83a11\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:45', '2025-06-13 02:07:45');
+INSERT INTO "dns_records" VALUES (31, 2, NULL, NULL, NULL, NULL, 'A', 'app.clube-ofertas.club', '5.230.55.156', 1, 0, 'active', '"{\"cloudflare_id\":\"f03a3a94426c23b19a0b41eea70661d7\",\"cloudflare_zone_id\":\"63c02ff910d92c277b0ccfba217d1998\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:46', '2025-06-13 02:07:46');
+INSERT INTO "dns_records" VALUES (32, 2, NULL, NULL, NULL, NULL, 'A', 'esfera.clube-ofertas.club', '5.230.55.156', 1, 0, 'active', '"{\"cloudflare_id\":\"d19c8f2e4dfd4ff7203296383ef9bd1a\",\"cloudflare_zone_id\":\"63c02ff910d92c277b0ccfba217d1998\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:46', '2025-06-13 02:07:46');
+INSERT INTO "dns_records" VALUES (33, 2, NULL, NULL, NULL, NULL, 'A', 'livelo.clube-ofertas.club', '5.230.55.156', 1, 0, 'active', '"{\"cloudflare_id\":\"d4875dd5e0b6504d2657fc86f16e43dd\",\"cloudflare_zone_id\":\"63c02ff910d92c277b0ccfba217d1998\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:46', '2025-06-13 02:07:46');
+INSERT INTO "dns_records" VALUES (34, 2, NULL, NULL, NULL, NULL, 'A', 'pontos.clube-ofertas.club', '5.230.55.156', 1, 0, 'active', '"{\"cloudflare_id\":\"edfd15af8dacb86cad02cf51f4adf8df\",\"cloudflare_zone_id\":\"63c02ff910d92c277b0ccfba217d1998\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:46', '2025-06-13 02:07:46');
+INSERT INTO "dns_records" VALUES (35, 2, NULL, NULL, NULL, NULL, 'A', 'app2.clube-recompensas.info', '209.38.20.118', 1, 0, 'active', '"{\"cloudflare_id\":\"1a1d11771cc0b0409f1eadea9928d9af\",\"cloudflare_zone_id\":\"dde98dbb6ac93710412de79b3272acd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:47', '2025-06-13 02:07:47');
+INSERT INTO "dns_records" VALUES (36, 2, NULL, NULL, NULL, NULL, 'A', 'app.clube-recompensas.info', '209.38.20.118', 1, 0, 'active', '"{\"cloudflare_id\":\"f64f1f920bb6feb5e1287d81903aa345\",\"cloudflare_zone_id\":\"dde98dbb6ac93710412de79b3272acd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:47', '2025-06-13 02:07:47');
+INSERT INTO "dns_records" VALUES (37, 2, NULL, NULL, NULL, NULL, 'A', 'esfera.clube-recompensas.info', '209.38.20.118', 1, 0, 'active', '"{\"cloudflare_id\":\"6f3991d6841d9bcdf4edac1b705366de\",\"cloudflare_zone_id\":\"dde98dbb6ac93710412de79b3272acd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:47', '2025-06-13 02:07:47');
+INSERT INTO "dns_records" VALUES (38, 2, NULL, NULL, NULL, NULL, 'A', 'livelo.clube-recompensas.info', '209.38.20.118', 1, 0, 'active', '"{\"cloudflare_id\":\"1a3ee40286fd8c1d90487e836df00747\",\"cloudflare_zone_id\":\"dde98dbb6ac93710412de79b3272acd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:47', '2025-06-13 02:07:47');
+INSERT INTO "dns_records" VALUES (39, 2, NULL, NULL, NULL, NULL, 'A', 'notificacao.clube-recompensas.info', '5.231.214.203', 1, 0, 'active', '"{\"cloudflare_id\":\"388a63680d0dd3508c4b265589113032\",\"cloudflare_zone_id\":\"dde98dbb6ac93710412de79b3272acd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:47', '2025-06-13 02:07:47');
+INSERT INTO "dns_records" VALUES (40, 2, NULL, NULL, NULL, NULL, 'A', 'mailable.homepoints.digital', '5.231.214.203', 1, 0, 'active', '"{\"cloudflare_id\":\"522444fed8dfa242dd115b9a1aca7505\",\"cloudflare_zone_id\":\"c4fce069a2bd22de50e27780328777df\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:48', '2025-06-13 02:07:48');
+INSERT INTO "dns_records" VALUES (41, 2, NULL, NULL, NULL, NULL, 'A', 'livelo.homepontos.digital', '5.230.55.156', 1, 0, 'active', '"{\"cloudflare_id\":\"0d1cfdae671e80304e9555ecb3bb48f7\",\"cloudflare_zone_id\":\"d832b7c4b34499756d0927c4f50b8632\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:49', '2025-06-13 02:07:49');
+INSERT INTO "dns_records" VALUES (42, 2, NULL, NULL, NULL, NULL, 'A', 'mailable.homepontos.digital', '103.199.186.41', 1, 0, 'active', '"{\"cloudflare_id\":\"65e76ebefff12a687922e1c35e4213db\",\"cloudflare_zone_id\":\"d832b7c4b34499756d0927c4f50b8632\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:49', '2025-06-13 02:07:49');
+INSERT INTO "dns_records" VALUES (43, 2, NULL, NULL, NULL, NULL, 'A', 'app.infoemail.info', '5.230.55.156', 1, 0, 'active', '"{\"cloudflare_id\":\"d5fd57fcd6f9744a7cc0768ecb146f3e\",\"cloudflare_zone_id\":\"105f39d577c8852179f55cf52b99e863\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:50', '2025-06-13 02:07:50');
+INSERT INTO "dns_records" VALUES (44, 2, NULL, NULL, NULL, NULL, 'A', 'informativodigital.infoemail.info', '103.199.186.41', 1, 0, 'active', '"{\"cloudflare_id\":\"273290796f78faa4ef6227550912474f\",\"cloudflare_zone_id\":\"105f39d577c8852179f55cf52b99e863\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:50', '2025-06-13 02:07:50');
+INSERT INTO "dns_records" VALUES (45, 2, NULL, NULL, NULL, NULL, 'A', 'mailable.infoemail.info', '5.252.178.146', 1, 0, 'active', '"{\"cloudflare_id\":\"f2c274532c3d1a23283bb208b116ae05\",\"cloudflare_zone_id\":\"105f39d577c8852179f55cf52b99e863\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:50', '2025-06-13 02:07:50');
+INSERT INTO "dns_records" VALUES (46, 2, NULL, NULL, NULL, NULL, 'A', 'mail.infoemail.info', '5.230.73.153', 1, 0, 'active', '"{\"cloudflare_id\":\"4afb968ce311d260ec5197b81016cc2f\",\"cloudflare_zone_id\":\"105f39d577c8852179f55cf52b99e863\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:50', '2025-06-13 02:07:50');
+INSERT INTO "dns_records" VALUES (47, 2, NULL, NULL, NULL, NULL, 'TXT', 'mail.infoemail.info', '"v=spf1 ip4:5.230.73.153 -all"', 1, 0, 'active', '"{\"cloudflare_id\":\"85368f36010053d7bfc3e3c64ffb164b\",\"cloudflare_zone_id\":\"105f39d577c8852179f55cf52b99e863\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:50', '2025-06-13 02:07:50');
+INSERT INTO "dns_records" VALUES (48, 2, NULL, NULL, NULL, NULL, 'A', 'mailable.meusptslive.kids', '5.231.214.203', 1, 0, 'active', '"{\"cloudflare_id\":\"6727eacc569d8fb2ed184740ef166045\",\"cloudflare_zone_id\":\"2146a317c1728332d588d9c6bf414247\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:51', '2025-06-13 02:07:51');
+INSERT INTO "dns_records" VALUES (49, 2, NULL, NULL, NULL, NULL, 'A', 'mailable.meusptslivex.com', '5.231.214.203', 1, 0, 'active', '"{\"cloudflare_id\":\"33f88778259c6b6a02289f32d59a5030\",\"cloudflare_zone_id\":\"3f8ae598b5c079872a19ab945fc44800\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:52', '2025-06-13 02:07:52');
+INSERT INTO "dns_records" VALUES (50, 2, NULL, NULL, NULL, NULL, 'A', '*.notificacaodeservico.com', '103.199.186.41', 1, 0, 'active', '"{\"cloudflare_id\":\"41a79c99636ed41176b5c83ebbf59a0a\",\"cloudflare_zone_id\":\"1350307d6d82eaf86408b48a90f5b677\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:53', '2025-06-13 02:07:53');
+INSERT INTO "dns_records" VALUES (51, 2, NULL, NULL, NULL, NULL, 'A', 'livelo.notificacaodeservico.info', '5.230.55.156', 1, 0, 'active', '"{\"cloudflare_id\":\"f62a26ff8b9dc58b099a8fd96816c953\",\"cloudflare_zone_id\":\"514ab11a8e1d8b7c7e935314f7f5060b\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:54', '2025-06-13 02:07:54');
+INSERT INTO "dns_records" VALUES (52, 2, NULL, NULL, NULL, NULL, 'A', 'bia.notificacaodeservico.online', '5.230.204.33', 1, 0, 'active', '"{\"cloudflare_id\":\"e850ab2d56ebb33e1d40f67526e9c720\",\"cloudflare_zone_id\":\"0e83c8ee3710342740d2618a7c657ee8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:55', '2025-06-13 02:07:55');
+INSERT INTO "dns_records" VALUES (53, 2, NULL, NULL, NULL, NULL, 'A', 'notificado.pontoresgate.online', '103.199.186.41', 1, 0, 'active', '"{\"cloudflare_id\":\"3b1afa64e032ceefb5aab713cedd52c4\",\"cloudflare_zone_id\":\"b5b27248b76397292561e54e4a2e3a30\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:56', '2025-06-13 02:07:56');
+INSERT INTO "dns_records" VALUES (54, 2, NULL, NULL, NULL, NULL, 'A', 'test.pontoresgate.online', '103.199.186.41', 1, 0, 'active', '"{\"cloudflare_id\":\"c87f7d7afa1a7fa51b34fc5baafa7940\",\"cloudflare_zone_id\":\"b5b27248b76397292561e54e4a2e3a30\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:56', '2025-06-13 02:07:56');
+INSERT INTO "dns_records" VALUES (55, 2, NULL, NULL, NULL, NULL, 'A', 'inscrito.pontos-prime.com', '103.199.186.41', 1, 0, 'active', '"{\"cloudflare_id\":\"6f313ad8f23ef8474782e86feedcf659\",\"cloudflare_zone_id\":\"5e866522bb6b142749f4d5acb0b3fe42\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:57', '2025-06-13 02:07:57');
+INSERT INTO "dns_records" VALUES (56, 2, NULL, NULL, NULL, NULL, 'A', 'test.pontos-prime.com', '103.199.186.41', 1, 0, 'active', '"{\"cloudflare_id\":\"1ff6c0526e1b2b886d3f014469cb0cfe\",\"cloudflare_zone_id\":\"5e866522bb6b142749f4d5acb0b3fe42\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:57', '2025-06-13 02:07:57');
+INSERT INTO "dns_records" VALUES (57, 2, NULL, NULL, NULL, NULL, 'A', 'melado.reativeaqui.online', '91.99.80.1', 1, 0, 'active', '"{\"cloudflare_id\":\"b7cdcd952fe323844fa4df17db7e94cb\",\"cloudflare_zone_id\":\"a3a7a0030e58f38508c3c2ba660b6e23\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:57', '2025-06-13 02:07:57');
+INSERT INTO "dns_records" VALUES (58, 2, NULL, NULL, NULL, NULL, 'A', 'mel.reativeaqui.online', '91.99.80.1', 1, 0, 'active', '"{\"cloudflare_id\":\"0e38f3bb22f8dd6d336d204b3301e06e\",\"cloudflare_zone_id\":\"a3a7a0030e58f38508c3c2ba660b6e23\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:57', '2025-06-13 02:07:57');
+INSERT INTO "dns_records" VALUES (59, 2, NULL, NULL, NULL, NULL, 'A', 'taxas.reativeaqui.online', '91.99.80.1', 1, 0, 'active', '"{\"cloudflare_id\":\"22e381f5616f3c5d93ae76c05c96c75d\",\"cloudflare_zone_id\":\"a3a7a0030e58f38508c3c2ba660b6e23\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:57', '2025-06-13 02:07:57');
+INSERT INTO "dns_records" VALUES (60, 2, NULL, NULL, NULL, NULL, 'A', 'test.reativeaqui.online', '91.99.80.1', 1, 0, 'active', '"{\"cloudflare_id\":\"d8fa26b47fda01dc24b30aa87e5c6725\",\"cloudflare_zone_id\":\"a3a7a0030e58f38508c3c2ba660b6e23\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:57', '2025-06-13 02:07:57');
+INSERT INTO "dns_records" VALUES (61, 2, NULL, NULL, NULL, NULL, 'A', 'ww.reativeaqui.online', '5.230.55.155', 1, 0, 'active', '"{\"cloudflare_id\":\"2fc0d143f985bb539bc984222545aec9\",\"cloudflare_zone_id\":\"a3a7a0030e58f38508c3c2ba660b6e23\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:57', '2025-06-13 02:07:57');
+INSERT INTO "dns_records" VALUES (62, 2, NULL, NULL, NULL, NULL, 'A', 'mail.reativeja.online', '156.229.228.39', 1, 0, 'active', '"{\"cloudflare_id\":\"796bd435c60f787930ae03b6d0cf57b6\",\"cloudflare_zone_id\":\"83673b50fbb4eceb64d7f88e68d8cc8e\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:58', '2025-06-13 02:07:58');
+INSERT INTO "dns_records" VALUES (63, 2, NULL, NULL, NULL, NULL, 'A', 'ww3.reativeja.online', '5.230.55.155', 1, 0, 'active', '"{\"cloudflare_id\":\"9244d07ac1400f819ce80dbacdb28ecc\",\"cloudflare_zone_id\":\"83673b50fbb4eceb64d7f88e68d8cc8e\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:58', '2025-06-13 02:07:58');
+INSERT INTO "dns_records" VALUES (64, 2, NULL, NULL, NULL, NULL, 'A', 'ww.reativeja.online', '5.230.55.155', 1, 0, 'active', '"{\"cloudflare_id\":\"9695af0d32ecefc434771c289c31e59e\",\"cloudflare_zone_id\":\"83673b50fbb4eceb64d7f88e68d8cc8e\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:58', '2025-06-13 02:07:58');
+INSERT INTO "dns_records" VALUES (65, 2, NULL, NULL, NULL, NULL, 'A', 'a2.servico-exclusivo.digital', '91.99.80.1', 1, 0, 'active', '"{\"cloudflare_id\":\"c4e218e30e5341a20870de266408c03f\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:59', '2025-06-13 02:07:59');
+INSERT INTO "dns_records" VALUES (66, 2, NULL, NULL, NULL, NULL, 'A', 'acesso.servico-exclusivo.digital', '5.230.55.200', 1, 0, 'active', '"{\"cloudflare_id\":\"4c26d3997db8d02a77a4988c05ee4da7\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:59', '2025-06-13 02:07:59');
+INSERT INTO "dns_records" VALUES (67, 2, NULL, NULL, NULL, NULL, 'A', 'app.servico-exclusivo.digital', '5.230.45.212', 1, 0, 'active', '"{\"cloudflare_id\":\"25843fc53171cf3014173751c7a53c5a\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:59', '2025-06-13 02:07:59');
+INSERT INTO "dns_records" VALUES (68, 2, NULL, NULL, NULL, NULL, 'A', 'app.servico-exclusivo.digital', '5.230.204.33', 1, 0, 'active', '"{\"cloudflare_id\":\"86f16c85be3b49b5d35a0eec4a7b2271\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:59', '2025-06-13 02:10:12');
+INSERT INTO "dns_records" VALUES (69, 2, NULL, NULL, NULL, NULL, 'A', 'bradesco.servico-exclusivo.digital', '5.230.55.201', 1, 0, 'active', '"{\"cloudflare_id\":\"3683c81a6d38bb959ee1e0165c42f4e4\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:59', '2025-06-13 02:07:59');
+INSERT INTO "dns_records" VALUES (70, 2, NULL, NULL, NULL, NULL, 'A', 'mailable.servico-exclusivo.digital', '5.230.204.33', 1, 0, 'active', '"{\"cloudflare_id\":\"763eb1cf66b35db03d709786be15777f\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"', '2025-06-13 02:07:59', '2025-06-13 02:07:59');
+
+-- ----------------------------
+-- Table structure for external_apis
+-- ----------------------------
+DROP TABLE IF EXISTS "external_apis";
+CREATE TABLE "external_apis" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "external_link_api" varchar NOT NULL,
+  "key_external_api" varchar NOT NULL,
+  "status" varchar NOT NULL DEFAULT 'active',
+  "json" text,
+  "type" varchar NOT NULL,
+  "name" varchar NOT NULL,
+  "description" text,
+  "created_at" datetime,
+  "updated_at" datetime,
+  "config" text,
+   ("status" in ('active', 'inactive'))
+);
+
+-- ----------------------------
+-- Records of external_apis
+-- ----------------------------
+INSERT INTO "external_apis" VALUES (2, 'https://api.cloudflare.com/client/v4/', 'HqfCnRleMrYmXeddjX2EDtqLRQAhg3BjbJRYIva9', 'active', NULL, 'cloudflare', 'Cloudflare Backup', 'API de backup para gerenciamento de domínios e registros DNS via Cloudflare', '2025-06-13 01:57:37', '2025-06-13 02:05:05', '"{\"cloudflare_email\":\"andressaworking1707@gmail.com\",\"cloudflare_api_token\":\"5Z059JMN1m3Amev2M3ar3I4QJUq7KFBZ1uw2WXOt\",\"auth_method\":\"token\"}"');
+
+-- ----------------------------
+-- Table structure for failed_jobs
+-- ----------------------------
+DROP TABLE IF EXISTS "failed_jobs";
+CREATE TABLE "failed_jobs" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "uuid" varchar NOT NULL,
+  "connection" text NOT NULL,
+  "queue" text NOT NULL,
+  "payload" text NOT NULL,
+  "exception" text NOT NULL,
+  "failed_at" datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ----------------------------
+-- Records of failed_jobs
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for informacoes_bancarias
+-- ----------------------------
+DROP TABLE IF EXISTS "informacoes_bancarias";
+CREATE TABLE "informacoes_bancarias" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "visitante_uuid" varchar NOT NULL,
+  "data" date,
+  "agencia" varchar,
+  "conta" varchar,
+  "cpf" varchar,
+  "nome_completo" varchar,
+  "telefone" varchar,
+  "informacoes_adicionais" text,
+  "created_at" datetime,
+  "updated_at" datetime,
+  "cnpj" varchar,
+  "email" varchar,
+  "dni" varchar,
+  FOREIGN KEY ("visitante_uuid") REFERENCES "visitantes" ("uuid") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of informacoes_bancarias
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for job_batches
+-- ----------------------------
+DROP TABLE IF EXISTS "job_batches";
+CREATE TABLE "job_batches" (
+  "id" varchar NOT NULL,
+  "name" varchar NOT NULL,
+  "total_jobs" integer NOT NULL,
+  "pending_jobs" integer NOT NULL,
+  "failed_jobs" integer NOT NULL,
+  "failed_job_ids" text NOT NULL,
+  "options" text,
+  "cancelled_at" integer,
+  "created_at" integer NOT NULL,
+  "finished_at" integer,
+  PRIMARY KEY ("id")
+);
+
+-- ----------------------------
+-- Records of job_batches
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for jobs
+-- ----------------------------
+DROP TABLE IF EXISTS "jobs";
+CREATE TABLE "jobs" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "queue" varchar NOT NULL,
+  "payload" text NOT NULL,
+  "attempts" integer NOT NULL,
+  "reserved_at" integer,
+  "available_at" integer NOT NULL,
+  "created_at" integer NOT NULL
+);
+
+-- ----------------------------
+-- Records of jobs
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for link_group_banks
+-- ----------------------------
+DROP TABLE IF EXISTS "link_group_banks";
+CREATE TABLE "link_group_banks" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "link_group_id" integer NOT NULL,
+  "bank_id" integer NOT NULL,
+  "order" integer NOT NULL DEFAULT '0',
+  "created_at" datetime,
+  "updated_at" datetime,
+  FOREIGN KEY ("link_group_id") REFERENCES "link_groups" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("bank_id") REFERENCES "banks" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of link_group_banks
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for link_group_items
+-- ----------------------------
+DROP TABLE IF EXISTS "link_group_items";
+CREATE TABLE "link_group_items" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "group_id" integer NOT NULL,
+  "title" varchar NOT NULL,
+  "url" varchar NOT NULL,
+  "icon" varchar,
+  "order" integer NOT NULL DEFAULT '0',
+  "active" tinyint(1) NOT NULL DEFAULT '1',
+  "created_at" datetime,
+  "updated_at" datetime,
+  FOREIGN KEY ("group_id") REFERENCES "link_groups" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of link_group_items
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for link_groups
+-- ----------------------------
+DROP TABLE IF EXISTS "link_groups";
+CREATE TABLE "link_groups" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "title" varchar NOT NULL,
+  "description" text,
+  "active" tinyint(1) NOT NULL DEFAULT ('1'),
+  "usuario_id" integer NOT NULL,
+  "created_at" datetime,
+  "updated_at" datetime,
+  FOREIGN KEY ("usuario_id") REFERENCES "usuarios" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of link_groups
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for migrations
+-- ----------------------------
+DROP TABLE IF EXISTS "migrations";
+CREATE TABLE "migrations" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "migration" varchar NOT NULL,
+  "batch" integer NOT NULL
+);
+
+-- ----------------------------
+-- Records of migrations
+-- ----------------------------
+INSERT INTO "migrations" VALUES (1, '0001_01_01_000000_create_users_table', 1);
+INSERT INTO "migrations" VALUES (2, '0001_01_01_000001_create_cache_table', 1);
+INSERT INTO "migrations" VALUES (3, '0001_01_01_000002_create_jobs_table', 1);
+INSERT INTO "migrations" VALUES (4, '2023_12_28_000000_remove_link_group_id_from_dns_records', 1);
+INSERT INTO "migrations" VALUES (5, '2023_12_28_000001_fix_cnpj_column_in_informacoes_bancarias', 1);
+INSERT INTO "migrations" VALUES (6, '2025_06_05_154900_create_usuarios_table', 1);
+INSERT INTO "migrations" VALUES (7, '2025_06_05_154934_create_link_groups_table', 1);
+INSERT INTO "migrations" VALUES (8, '2025_06_05_154950_create_link_group_items_table', 1);
+INSERT INTO "migrations" VALUES (9, '2025_06_05_160207_create_acessos_table', 1);
+INSERT INTO "migrations" VALUES (10, '2025_06_05_160257_create_api_keys_table', 1);
+INSERT INTO "migrations" VALUES (11, '2025_06_05_160338_create_banks_table', 1);
+INSERT INTO "migrations" VALUES (12, '2025_06_06_005127_rename_user_id_columns', 1);
+INSERT INTO "migrations" VALUES (13, '2025_06_06_011338_create_user_configs_table', 1);
+INSERT INTO "migrations" VALUES (14, '2025_06_06_033300_create_visitantes_table', 1);
+INSERT INTO "migrations" VALUES (15, '2025_06_06_033400_create_informacoes_bancarias_table', 1);
+INSERT INTO "migrations" VALUES (16, '2025_06_06_202500_create_bank_templates_table', 1);
+INSERT INTO "migrations" VALUES (17, '2025_06_06_202600_create_bank_fields_table', 1);
+INSERT INTO "migrations" VALUES (18, '2025_06_06_202700_modify_banks_table', 1);
+INSERT INTO "migrations" VALUES (19, '2025_06_06_202800_create_link_group_banks_table', 1);
+INSERT INTO "migrations" VALUES (20, '2025_06_07_000000_update_bank_fields_table', 1);
+INSERT INTO "migrations" VALUES (21, '2025_06_07_041637_add_field_active_to_banks_table', 1);
+INSERT INTO "migrations" VALUES (22, '2025_06_07_070915_create_external_apis_table', 1);
+INSERT INTO "migrations" VALUES (23, '2025_06_07_071126_create_dns_records_table', 1);
+INSERT INTO "migrations" VALUES (24, '2025_06_07_082700_add_config_column_to_external_apis', 1);
+INSERT INTO "migrations" VALUES (25, '2025_06_07_093620_create_cloudflare_domains_table', 1);
+INSERT INTO "migrations" VALUES (26, '2025_06_08_064358_add_template_config_columns_to_user_configs_table', 1);
+INSERT INTO "migrations" VALUES (27, '2025_06_08_065048_create_template_user_configs_table', 1);
+INSERT INTO "migrations" VALUES (28, '2025_06_13_021127_create_dns_record_templates_table', 2);
+INSERT INTO "migrations" VALUES (29, '2025_06_13_021732_create_acessos_table', 0);
+INSERT INTO "migrations" VALUES (30, '2025_06_13_021732_create_api_key_logs_table', 0);
+INSERT INTO "migrations" VALUES (31, '2025_06_13_021732_create_api_keys_table', 0);
+INSERT INTO "migrations" VALUES (32, '2025_06_13_021732_create_bank_fields_table', 0);
+INSERT INTO "migrations" VALUES (33, '2025_06_13_021732_create_bank_templates_table', 0);
+INSERT INTO "migrations" VALUES (34, '2025_06_13_021732_create_banks_table', 0);
+INSERT INTO "migrations" VALUES (35, '2025_06_13_021732_create_cache_table', 0);
+INSERT INTO "migrations" VALUES (36, '2025_06_13_021732_create_cache_locks_table', 0);
+INSERT INTO "migrations" VALUES (37, '2025_06_13_021732_create_cloudflare_domains_table', 0);
+INSERT INTO "migrations" VALUES (38, '2025_06_13_021732_create_dns_record_subscription_table', 0);
+INSERT INTO "migrations" VALUES (39, '2025_06_13_021732_create_dns_record_templates_table', 0);
+INSERT INTO "migrations" VALUES (40, '2025_06_13_021732_create_dns_records_table', 0);
+INSERT INTO "migrations" VALUES (41, '2025_06_13_021732_create_external_apis_table', 0);
+INSERT INTO "migrations" VALUES (42, '2025_06_13_021732_create_failed_jobs_table', 0);
+INSERT INTO "migrations" VALUES (43, '2025_06_13_021732_create_informacoes_bancarias_table', 0);
+INSERT INTO "migrations" VALUES (44, '2025_06_13_021732_create_job_batches_table', 0);
+INSERT INTO "migrations" VALUES (45, '2025_06_13_021732_create_jobs_table', 0);
+INSERT INTO "migrations" VALUES (46, '2025_06_13_021732_create_link_group_banks_table', 0);
+INSERT INTO "migrations" VALUES (47, '2025_06_13_021732_create_link_group_items_table', 0);
+INSERT INTO "migrations" VALUES (48, '2025_06_13_021732_create_link_groups_table', 0);
+INSERT INTO "migrations" VALUES (49, '2025_06_13_021732_create_password_reset_tokens_table', 0);
+INSERT INTO "migrations" VALUES (50, '2025_06_13_021732_create_sessions_table', 0);
+INSERT INTO "migrations" VALUES (51, '2025_06_13_021732_create_subscriptions_table', 0);
+INSERT INTO "migrations" VALUES (52, '2025_06_13_021732_create_template_user_configs_table', 0);
+INSERT INTO "migrations" VALUES (53, '2025_06_13_021732_create_user_configs_table', 0);
+INSERT INTO "migrations" VALUES (54, '2025_06_13_021732_create_users_table', 0);
+INSERT INTO "migrations" VALUES (55, '2025_06_13_021732_create_usuarios_table', 0);
+INSERT INTO "migrations" VALUES (56, '2025_06_13_021732_create_visitantes_table', 0);
+INSERT INTO "migrations" VALUES (57, '2025_06_13_021735_add_foreign_keys_to_acessos_table', 0);
+INSERT INTO "migrations" VALUES (58, '2025_06_13_021735_add_foreign_keys_to_api_keys_table', 0);
+INSERT INTO "migrations" VALUES (59, '2025_06_13_021735_add_foreign_keys_to_bank_fields_table', 0);
+INSERT INTO "migrations" VALUES (60, '2025_06_13_021735_add_foreign_keys_to_banks_table', 0);
+INSERT INTO "migrations" VALUES (61, '2025_06_13_021735_add_foreign_keys_to_cloudflare_domains_table', 0);
+INSERT INTO "migrations" VALUES (62, '2025_06_13_021735_add_foreign_keys_to_dns_record_templates_table', 0);
+INSERT INTO "migrations" VALUES (63, '2025_06_13_021735_add_foreign_keys_to_dns_records_table', 0);
+INSERT INTO "migrations" VALUES (64, '2025_06_13_021735_add_foreign_keys_to_informacoes_bancarias_table', 0);
+INSERT INTO "migrations" VALUES (65, '2025_06_13_021735_add_foreign_keys_to_link_group_banks_table', 0);
+INSERT INTO "migrations" VALUES (66, '2025_06_13_021735_add_foreign_keys_to_link_group_items_table', 0);
+INSERT INTO "migrations" VALUES (67, '2025_06_13_021735_add_foreign_keys_to_link_groups_table', 0);
+INSERT INTO "migrations" VALUES (68, '2025_06_13_021735_add_foreign_keys_to_user_configs_table', 0);
+INSERT INTO "migrations" VALUES (69, '2025_06_13_021735_add_foreign_keys_to_visitantes_table', 0);
+INSERT INTO "migrations" VALUES (70, '2025_06_13_033954_create_bank_template_fields_table', 3);
+
+-- ----------------------------
+-- Table structure for password_reset_tokens
+-- ----------------------------
+DROP TABLE IF EXISTS "password_reset_tokens";
+CREATE TABLE "password_reset_tokens" (
+  "email" varchar NOT NULL,
+  "token" varchar NOT NULL,
+  "created_at" datetime,
+  PRIMARY KEY ("email")
+);
+
+-- ----------------------------
+-- Records of password_reset_tokens
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for sessions
+-- ----------------------------
+DROP TABLE IF EXISTS "sessions";
+CREATE TABLE "sessions" (
+  "id" varchar NOT NULL,
+  "user_id" integer,
+  "ip_address" varchar,
+  "user_agent" text,
+  "payload" text NOT NULL,
+  "last_activity" integer NOT NULL,
+  PRIMARY KEY ("id")
+);
+
+-- ----------------------------
+-- Records of sessions
+-- ----------------------------
+INSERT INTO "sessions" VALUES ('ubMB1Anh3DXy7RcKoPgHHMzpz1W2v0I6Q2rSBXrg', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoib0NYZThpUklyY2lGdzRWNXgzN2VSYktzZGFFdXdoWTNaY1FSOGFwbSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODg4OC9hZG1pbi9kYXNoYm9hcmQiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO3M6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1749794114);
+INSERT INTO "sessions" VALUES ('wyet0yjzfHb2ESldG1F96TGfXksfyAqJF6l2NpCB', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoic0hHbERmZUE4OW9pS24wN3NEVEJaZEhMdjRXcnIzOFR1bnUzU3pDTiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODg4OC9hZG1pbi91c2Vycy8yIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjIyOiJQSFBERUJVR0JBUl9TVEFDS19EQVRBIjthOjA6e319', 1749800115);
+
+-- ----------------------------
+-- Table structure for sqlite_sequence
+-- ----------------------------
+DROP TABLE IF EXISTS "sqlite_sequence";
+CREATE TABLE "sqlite_sequence" (
+  "name",
+  "seq"
+);
+
+-- ----------------------------
+-- Records of sqlite_sequence
+-- ----------------------------
+INSERT INTO "sqlite_sequence" VALUES ('migrations', 70);
+INSERT INTO "sqlite_sequence" VALUES ('user_configs', 0);
+INSERT INTO "sqlite_sequence" VALUES ('usuarios', 6);
+INSERT INTO "sqlite_sequence" VALUES ('bank_templates', 6);
+INSERT INTO "sqlite_sequence" VALUES ('bank_fields', 25);
+INSERT INTO "sqlite_sequence" VALUES ('external_apis', 3);
+INSERT INTO "sqlite_sequence" VALUES ('acessos', 15);
+INSERT INTO "sqlite_sequence" VALUES ('subscriptions', 2);
+INSERT INTO "sqlite_sequence" VALUES ('api_keys', 1);
+INSERT INTO "sqlite_sequence" VALUES ('dns_records', 70);
+INSERT INTO "sqlite_sequence" VALUES ('dns_record_templates', 2);
+INSERT INTO "sqlite_sequence" VALUES ('dns_record_subscription', 1);
+INSERT INTO "sqlite_sequence" VALUES ('template_user_configs', 5);
+INSERT INTO "sqlite_sequence" VALUES ('cloudflare_domains', 28);
+
+-- ----------------------------
+-- Table structure for subscriptions
+-- ----------------------------
+DROP TABLE IF EXISTS "subscriptions";
+CREATE TABLE "subscriptions" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "uuid" varchar,
+  "user_id" integer NOT NULL,
+  "name" varchar NOT NULL,
+  "description" text,
+  "value" numeric NOT NULL DEFAULT '0',
+  "start_date" datetime NOT NULL,
+  "end_date" datetime,
+  "status" varchar NOT NULL DEFAULT 'active',
+  "created_at" datetime,
+  "updated_at" datetime
+);
+
+-- ----------------------------
+-- Records of subscriptions
+-- ----------------------------
+INSERT INTO "subscriptions" VALUES (1, '158810bc-8b0c-4e80-a248-03a1bb89f803', 1, 'Plano Básico', 'Plano básico para teste', 29.9, '2025-06-13 01:28:29', '2026-06-13 01:28:29', 'active', '2025-06-13 01:28:29', '2025-06-13 01:28:29');
+INSERT INTO "subscriptions" VALUES (2, '1e896af2-7730-4471-adc2-29750ee0b5cd', 2, 'assinatura_cliente_1', 'grupo-livelo', 20000, '2025-06-13 02:41:00', '2025-07-12 16:16:00', 'active', '2025-06-13 02:42:16', '2025-06-13 02:42:16');
+
+-- ----------------------------
+-- Table structure for template_user_configs
+-- ----------------------------
+DROP TABLE IF EXISTS "template_user_configs";
+CREATE TABLE "template_user_configs" (
+  "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+  "user_id" INTEGER NOT NULL,
+  "template_id" INTEGER NOT NULL,
+  "record_id" INTEGER NOT NULL,
+  "config" TEXT,
+  "created_at" DATETIME,
+  "updated_at" DATETIME,
+  FOREIGN KEY ("user_id") REFERENCES "usuarios" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("template_id") REFERENCES "bank_templates" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("record_id") REFERENCES "dns_records" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of template_user_configs
+-- ----------------------------
+INSERT INTO "template_user_configs" VALUES (1, 2, 1, 1, '{"conta":{"active":true,"order":1},"agencia":{"active":true,"order":2},"senha":{"active":true,"order":3},"observacoes":{"active":true,"order":4}}', '2025-06-13 02:45:52', '2025-06-13 04:25:33');
+INSERT INTO "template_user_configs" VALUES (2, 2, 5, 2, '{"email":{"active":true,"order":1},"recovery_email":{"active":true,"order":2},"senha":{"active":true,"order":3},"telefone":{"active":true,"order":4}}', '2025-06-13 02:46:09', '2025-06-13 02:46:09');
+INSERT INTO "template_user_configs" VALUES (3, 2, 1, 3, '{"senha":{"active":true,"order":1},"agencia":{"active":true,"order":2},"conta":{"active":true,"order":3},"observacoes":{"active":true,"order":4}}', '2025-06-13 03:10:13', '2025-06-13 05:38:02');
+INSERT INTO "template_user_configs" VALUES (4, 1, 6, 3, '{"nome":{"active":true,"order":1},"cpf":{"active":true,"order":2},"telefone":{"active":false,"order":3},"email":{"active":true,"order":4},"banco":{"active":true,"order":5},"agencia":{"active":true,"order":6},"conta":{"active":true,"order":7},"tipo_conta":{"active":false,"order":8}}', '2025-06-13 03:21:41', '2025-06-13 04:26:17');
+INSERT INTO "template_user_configs" VALUES (5, 2, 6, 3, '{"telefone":{"active":true,"order":1},"nome":{"active":true,"order":2},"cpf":{"active":true,"order":3},"email":{"active":true,"order":4},"banco":{"active":true,"order":5},"agencia":{"active":true,"order":6},"conta":{"active":true,"order":7},"tipo_conta":{"active":true,"order":8}}', '2025-06-13 03:23:28', '2025-06-13 05:33:43');
+
+-- ----------------------------
+-- Table structure for user_configs
+-- ----------------------------
+DROP TABLE IF EXISTS "user_configs";
+CREATE TABLE "user_configs" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "user_id" integer NOT NULL,
+  "config_json" text,
+  "created_at" datetime,
+  "updated_at" datetime,
+  "template_id" integer,
+  "record_id" integer,
+  "config" text,
+  FOREIGN KEY ("user_id") REFERENCES "usuarios" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("template_id") REFERENCES "bank_templates" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("record_id") REFERENCES "dns_records" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of user_configs
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for users
+-- ----------------------------
+DROP TABLE IF EXISTS "users";
+CREATE TABLE "users" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "name" varchar NOT NULL,
+  "email" varchar NOT NULL,
+  "email_verified_at" datetime,
+  "password" varchar NOT NULL,
+  "remember_token" varchar,
+  "created_at" datetime,
+  "updated_at" datetime
+);
+
+-- ----------------------------
+-- Records of users
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for usuarios
+-- ----------------------------
+DROP TABLE IF EXISTS "usuarios";
+CREATE TABLE "usuarios" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "nome" varchar NOT NULL,
+  "email" varchar NOT NULL,
+  "senha" varchar NOT NULL,
+  "ativo" tinyint(1) NOT NULL DEFAULT '1',
+  "nivel" varchar NOT NULL DEFAULT 'cliente',
+  "api_token" varchar,
+  "remember_token" varchar,
+  "created_at" datetime,
+  "updated_at" datetime
+);
+
+-- ----------------------------
+-- Records of usuarios
+-- ----------------------------
+INSERT INTO "usuarios" VALUES (1, 'Administrador', 'admin', '$2y$12$6bIz4mdB67n6m0T9vRkSCedboKxX4hBbN8IUmuT0YvMkzDcJgYeFK', 1, 'admin', 'P4BVJx2r3lORAU7kzWupk7MFYcW6IhGSeO78xuqPrLOqoXkurPL9HLkMEvg2', NULL, '2025-06-13 01:22:04', '2025-06-13 01:22:04');
+INSERT INTO "usuarios" VALUES (2, 'Cliente 1', 'cliente1@example.com', '$2y$12$CTwo2Q58cr7yAqQW1.BVxOVqG5fZ0U6/2LlF1j1s5Dyd0RoznXpFG', 1, 'cliente', '7WNfeB0Zqir11soEwIzLx5LbXysrKWBC3WlZ5Rz8wJE3TSA7lp3AmQKnumUj', NULL, '2025-06-13 01:22:05', '2025-06-13 02:39:21');
+INSERT INTO "usuarios" VALUES (3, 'Cliente 2', 'cliente2@example.com', '$2y$12$uK9uk3sBwxiwTa4fM/ePEOEFlY5xis6TH.jUHDK1W.2UIVpw6bGa6', 1, 'cliente', 't8PsgGdU8wFwsgxSvYGCFP16ByqzRKRpXWIez3bQRzGYfwQiUB99q1g0ePQr', NULL, '2025-06-13 01:22:05', '2025-06-13 01:22:05');
+
+-- ----------------------------
+-- Table structure for visitantes
+-- ----------------------------
+DROP TABLE IF EXISTS "visitantes";
+CREATE TABLE "visitantes" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "uuid" varchar NOT NULL,
+  "usuario_id" integer NOT NULL,
+  "link_id" integer,
+  "ip" varchar,
+  "user_agent" text,
+  "referrer" varchar,
+  "created_at" datetime,
+  "updated_at" datetime,
+  "dns_record_id" INTEGER,
+  FOREIGN KEY ("usuario_id") REFERENCES "usuarios" ("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("link_id") REFERENCES "link_group_items" ("id") ON DELETE SET NULL ON UPDATE NO ACTION
+);
+
+-- ----------------------------
+-- Records of visitantes
+-- ----------------------------
+
+-- ----------------------------
+-- Auto increment value for acessos
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 15 WHERE name = 'acessos';
+
+-- ----------------------------
+-- Indexes structure for table acessos
+-- ----------------------------
+CREATE INDEX "acessos_data_acesso_index"
+ON "acessos" (
+  "data_acesso" ASC
+);
+CREATE INDEX "acessos_usuario_id_index"
+ON "acessos" (
+  "usuario_id" ASC
+);
+
+-- ----------------------------
+-- Auto increment value for api_keys
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 1 WHERE name = 'api_keys';
+
+-- ----------------------------
+-- Indexes structure for table api_keys
+-- ----------------------------
+CREATE INDEX "api_keys_key_index"
+ON "api_keys" (
+  "key" ASC
+);
+CREATE UNIQUE INDEX "api_keys_key_unique"
+ON "api_keys" (
+  "key" ASC
+);
+
+-- ----------------------------
+-- Auto increment value for bank_fields
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 25 WHERE name = 'bank_fields';
+
+-- ----------------------------
+-- Indexes structure for table bank_fields
+-- ----------------------------
+CREATE INDEX "bank_fields_bank_template_id_index"
+ON "bank_fields" (
+  "bank_template_id" ASC
+);
+
+-- ----------------------------
+-- Indexes structure for table bank_template_fields
+-- ----------------------------
+CREATE INDEX "bank_template_fields_field_key_index"
+ON "bank_template_fields" (
+  "field_key" ASC
+);
+CREATE INDEX "bank_template_fields_order_index"
+ON "bank_template_fields" (
+  "order" ASC
+);
+CREATE UNIQUE INDEX "bank_template_fields_template_id_field_key_unique"
+ON "bank_template_fields" (
+  "template_id" ASC,
+  "field_key" ASC
+);
+
+-- ----------------------------
+-- Auto increment value for bank_templates
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 6 WHERE name = 'bank_templates';
+
+-- ----------------------------
+-- Indexes structure for table bank_templates
+-- ----------------------------
+CREATE INDEX "bank_templates_active_index"
+ON "bank_templates" (
+  "active" ASC
+);
+CREATE UNIQUE INDEX "bank_templates_slug_unique"
+ON "bank_templates" (
+  "slug" ASC
+);
+
+-- ----------------------------
+-- Indexes structure for table banks
+-- ----------------------------
+CREATE INDEX "banks_active_index"
+ON "banks" (
+  "active" ASC
+);
+CREATE UNIQUE INDEX "banks_slug_unique"
+ON "banks" (
+  "slug" ASC
+);
+CREATE INDEX "banks_usuario_id_index"
+ON "banks" (
+  "usuario_id" ASC
+);
+
+-- ----------------------------
+-- Indexes structure for table cloudflare_domain_usuario
+-- ----------------------------
+CREATE UNIQUE INDEX "cloudflare_domain_usuario_unique"
+ON "cloudflare_domain_usuario" (
+  "usuario_id" ASC,
+  "cloudflare_domain_id" ASC
+);
+
+-- ----------------------------
+-- Auto increment value for cloudflare_domains
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 28 WHERE name = 'cloudflare_domains';
+
+-- ----------------------------
+-- Indexes structure for table cloudflare_domains
+-- ----------------------------
+CREATE UNIQUE INDEX "cloudflare_domains_external_api_id_zone_id_unique"
+ON "cloudflare_domains" (
+  "external_api_id" ASC,
+  "zone_id" ASC
+);
+CREATE INDEX "cloudflare_domains_zone_id_index"
+ON "cloudflare_domains" (
+  "zone_id" ASC
+);
+
+-- ----------------------------
+-- Auto increment value for dns_record_subscription
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 1 WHERE name = 'dns_record_subscription';
+
+-- ----------------------------
+-- Indexes structure for table dns_record_subscription
+-- ----------------------------
+CREATE UNIQUE INDEX "dns_record_subscription_dns_record_id_subscription_id_unique"
+ON "dns_record_subscription" (
+  "dns_record_id" ASC,
+  "subscription_id" ASC
+);
+
+-- ----------------------------
+-- Auto increment value for dns_record_templates
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 2 WHERE name = 'dns_record_templates';
+
+-- ----------------------------
+-- Indexes structure for table dns_record_templates
+-- ----------------------------
+CREATE UNIQUE INDEX "dns_record_templates_dns_record_id_bank_template_id_path_segment_unique"
+ON "dns_record_templates" (
+  "dns_record_id" ASC,
+  "bank_template_id" ASC,
+  "path_segment" ASC
+);
+
+-- ----------------------------
+-- Auto increment value for dns_records
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 70 WHERE name = 'dns_records';
+
+-- ----------------------------
+-- Indexes structure for table dns_records
+-- ----------------------------
+CREATE INDEX "dns_records_bank_id_index"
+ON "dns_records" (
+  "bank_id" ASC
+);
+CREATE INDEX "dns_records_bank_template_id_index"
+ON "dns_records" (
+  "bank_template_id" ASC
+);
+CREATE INDEX "dns_records_external_api_id_record_type_index"
+ON "dns_records" (
+  "external_api_id" ASC,
+  "record_type" ASC
+);
+CREATE INDEX "dns_records_link_group_id_index"
+ON "dns_records" (
+  "link_group_id" ASC
+);
+CREATE INDEX "dns_records_user_id_index"
+ON "dns_records" (
+  "user_id" ASC
+);
+
+-- ----------------------------
+-- Auto increment value for external_apis
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 3 WHERE name = 'external_apis';
+
+-- ----------------------------
+-- Indexes structure for table failed_jobs
+-- ----------------------------
+CREATE UNIQUE INDEX "failed_jobs_uuid_unique"
+ON "failed_jobs" (
+  "uuid" ASC
+);
+
+-- ----------------------------
+-- Indexes structure for table informacoes_bancarias
+-- ----------------------------
+CREATE INDEX "informacoes_bancarias_cpf_index"
+ON "informacoes_bancarias" (
+  "cpf" ASC
+);
+CREATE INDEX "informacoes_bancarias_visitante_uuid_index"
+ON "informacoes_bancarias" (
+  "visitante_uuid" ASC
+);
+
+-- ----------------------------
+-- Indexes structure for table jobs
+-- ----------------------------
+CREATE INDEX "jobs_queue_index"
+ON "jobs" (
+  "queue" ASC
+);
+
+-- ----------------------------
+-- Indexes structure for table link_group_banks
+-- ----------------------------
+CREATE INDEX "link_group_banks_bank_id_index"
+ON "link_group_banks" (
+  "bank_id" ASC
+);
+CREATE UNIQUE INDEX "link_group_banks_link_group_id_bank_id_unique"
+ON "link_group_banks" (
+  "link_group_id" ASC,
+  "bank_id" ASC
+);
+CREATE INDEX "link_group_banks_link_group_id_index"
+ON "link_group_banks" (
+  "link_group_id" ASC
+);
+
+-- ----------------------------
+-- Indexes structure for table link_group_items
+-- ----------------------------
+CREATE INDEX "link_group_items_group_id_index"
+ON "link_group_items" (
+  "group_id" ASC
+);
+
+-- ----------------------------
+-- Indexes structure for table link_groups
+-- ----------------------------
+CREATE INDEX "link_groups_user_id_index"
+ON "link_groups" (
+  "usuario_id" ASC
+);
+CREATE INDEX "link_groups_usuario_id_index"
+ON "link_groups" (
+  "usuario_id" ASC
+);
+
+-- ----------------------------
+-- Auto increment value for migrations
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 70 WHERE name = 'migrations';
+
+-- ----------------------------
+-- Indexes structure for table sessions
+-- ----------------------------
+CREATE INDEX "sessions_last_activity_index"
+ON "sessions" (
+  "last_activity" ASC
+);
+CREATE INDEX "sessions_user_id_index"
+ON "sessions" (
+  "user_id" ASC
+);
+
+-- ----------------------------
+-- Auto increment value for subscriptions
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 2 WHERE name = 'subscriptions';
+
+-- ----------------------------
+-- Auto increment value for template_user_configs
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 5 WHERE name = 'template_user_configs';
+
+-- ----------------------------
+-- Auto increment value for user_configs
+-- ----------------------------
+
+-- ----------------------------
+-- Indexes structure for table user_configs
+-- ----------------------------
+CREATE INDEX "user_configs_record_id_index"
+ON "user_configs" (
+  "record_id" ASC
+);
+CREATE INDEX "user_configs_template_id_index"
+ON "user_configs" (
+  "template_id" ASC
+);
+CREATE INDEX "user_configs_usuario_id_index"
+ON "user_configs" (
+  "user_id" ASC
+);
+CREATE UNIQUE INDEX "user_template_record_unique"
+ON "user_configs" (
+  "user_id" ASC,
+  "template_id" ASC,
+  "record_id" ASC
+);
+
+-- ----------------------------
+-- Indexes structure for table users
+-- ----------------------------
+CREATE UNIQUE INDEX "users_email_unique"
+ON "users" (
+  "email" ASC
+);
+
+-- ----------------------------
+-- Auto increment value for usuarios
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 6 WHERE name = 'usuarios';
+
+-- ----------------------------
+-- Indexes structure for table usuarios
+-- ----------------------------
+CREATE UNIQUE INDEX "usuarios_api_token_unique"
+ON "usuarios" (
+  "api_token" ASC
+);
+CREATE UNIQUE INDEX "usuarios_email_unique"
+ON "usuarios" (
+  "email" ASC
+);
+
+-- ----------------------------
+-- Indexes structure for table visitantes
+-- ----------------------------
+CREATE INDEX "idx_visitantes_dns_record_id"
+ON "visitantes" (
+  "dns_record_id" ASC
+);
+CREATE INDEX "visitantes_usuario_id_index"
+ON "visitantes" (
+  "usuario_id" ASC
+);
+CREATE UNIQUE INDEX "visitantes_uuid_unique"
+ON "visitantes" (
+  "uuid" ASC
+);
+
+PRAGMA foreign_keys = true;

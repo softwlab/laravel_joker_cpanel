@@ -8,6 +8,40 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string|null $uuid
+ * @property int $user_id
+ * @property string $name
+ * @property string|null $description
+ * @property numeric $value
+ * @property Carbon $start_date
+ * @property Carbon|null $end_date
+ * @property string $status
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DnsRecord> $dnsRecords
+ * @property-read int|null $dns_records_count
+ * @property-read \App\Models\Usuario|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereEndDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereValue($value)
+ * @mixin \Eloquent
+ */
 class Subscription extends Model
 {
     use HasFactory;

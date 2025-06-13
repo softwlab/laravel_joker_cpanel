@@ -48,6 +48,10 @@ use App\Models\Usuario;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereUserId($value)
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BankTemplate> $templates
  * @property-read int|null $templates_count
+ * @property int|null $link_group_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Subscription> $subscriptions
+ * @property-read int|null $subscriptions_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereLinkGroupId($value)
  * @mixin \Eloquent
  */
 class DnsRecord extends Model

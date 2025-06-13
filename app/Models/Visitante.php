@@ -39,6 +39,8 @@ use App\Models\DnsRecord;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereUsuarioId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante wherePathSegment($value)
+ * @property int|null $link_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereLinkId($value)
  * @mixin \Eloquent
  */
 class Visitante extends Model

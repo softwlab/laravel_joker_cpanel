@@ -193,6 +193,41 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int $template_id
+ * @property string $field_key
+ * @property string|null $label
+ * @property string|null $placeholder
+ * @property int $order
+ * @property bool $is_required
+ * @property string $input_type
+ * @property string|null $validation_rules
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\BankTemplate $template
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField whereFieldKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField whereInputType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField whereIsRequired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField whereLabel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField wherePlaceholder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField whereTemplateId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplateField whereValidationRules($value)
+ * @mixin \Eloquent
+ */
+	class BankTemplateField extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property int $external_api_id
  * @property string $zone_id
  * @property string $name
@@ -268,11 +303,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereUserId($value)
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BankTemplate> $templates
  * @property-read int|null $templates_count
- * @mixin \Eloquent
  * @property int|null $link_group_id
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Subscription> $subscriptions
  * @property-read int|null $subscriptions_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereLinkGroupId($value)
+ * @mixin \Eloquent
  */
 	class DnsRecord extends \Eloquent {}
 }
@@ -425,19 +460,19 @@ namespace App\Models{
  * 
  *
  * @property int $id
- * @property string $uuid
+ * @property string|null $uuid
  * @property int $user_id
  * @property string $name
  * @property string|null $description
  * @property numeric $value
- * @property \Illuminate\Support\Carbon $start_date
- * @property \Illuminate\Support\Carbon $end_date
+ * @property Carbon $start_date
+ * @property Carbon|null $end_date
  * @property string $status
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DnsRecord> $dnsRecords
  * @property-read int|null $dns_records_count
- * @property-read \App\Models\Usuario $user
+ * @property-read \App\Models\Usuario|null $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription active()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription newQuery()
@@ -453,6 +488,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereValue($value)
+ * @mixin \Eloquent
  */
 	class Subscription extends \Eloquent {}
 }
@@ -512,11 +548,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
- * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Subscription> $activeSubscriptions
  * @property-read int|null $active_subscriptions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Subscription> $subscriptions
  * @property-read int|null $subscriptions_count
+ * @mixin \Eloquent
  */
 	class User extends \Eloquent {}
 }
@@ -628,9 +664,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereUsuarioId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante wherePathSegment($value)
- * @mixin \Eloquent
  * @property int|null $link_id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereLinkId($value)
+ * @mixin \Eloquent
  */
 	class Visitante extends \Eloquent {}
 }
