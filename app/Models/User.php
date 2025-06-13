@@ -72,4 +72,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+    /**
+     * Obtém as assinaturas do usuário.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+    
+    /**
+     * Obtém as assinaturas ativas do usuário.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function activeSubscriptions()
+    {
+        return $this->subscriptions()->active();
+    }
 }

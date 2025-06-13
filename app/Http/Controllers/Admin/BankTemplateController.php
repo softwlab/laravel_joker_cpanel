@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class BankTemplateController extends Controller
-{
+{ 
     /**
      * Display a listing of the bank templates
      *
@@ -41,10 +41,21 @@ class BankTemplateController extends Controller
      */
     public function store(Request $request)
     {
+        // Log SUPER detalhado para diagnóstico
+        file_put_contents(
+            storage_path('logs/debug_bank_template.log'), 
+            date('[Y-m-d H:i:s] ') . 'MÉTODO STORE CHAMADO: ' . json_encode($request->all(), JSON_PRETTY_PRINT) . "\n",
+            FILE_APPEND
+        );
+        
         try {
             \Log::info('Iniciando criação de banco template', ['request' => $request->all()]);
             
+            // Verificar se o método está sendo chamado
+            \Log::debug('BankTemplateController@store: Método chamado');
+            
             // Primeiro vamos validar os campos que não são booleanos
+            \Log::debug('BankTemplateController@store: Iniciando validação');
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'slug' => 'nullable|string|max:255|unique:bank_templates,slug',
@@ -53,17 +64,6 @@ class BankTemplateController extends Controller
                 'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
             
-            // Agora adicionamos os campos booleanos com conversão adequada
-            $validated['active'] = $request->has('active') ? true : false;
-            $validated['is_multipage'] = $request->has('is_multipage') ? true : false;
-            
-            \Log::info('Campos booleanos convertidos', [
-                'active' => $validated['active'],
-                'is_multipage' => $validated['is_multipage']
-            ]);
-
-            \Log::info('Validação passou com sucesso', ['validated' => $validated]);
-
             // Gerar slug se não for fornecido
             if (empty($validated['slug'])) {
                 $validated['slug'] = Str::slug($validated['name']);
@@ -82,15 +82,51 @@ class BankTemplateController extends Controller
                 }
             }
 
-            // Status ativo padrão e multipágina
-            $validated['active'] = $request->has('active') ? 1 : 0;
-            $validated['is_multipage'] = $request->has('is_multipage') ? 1 : 0;
+            // Status ativo padrão e multipágina (como booleanos)
+            $validated['active'] = $request->has('active');
+            $validated['is_multipage'] = $request->has('is_multipage');
+            
+            \Log::info('Campos booleanos convertidos', [
+                'active' => $validated['active'],
+                'is_multipage' => $validated['is_multipage']
+            ]);
+
+            \Log::info('Validação passou com sucesso', ['validated' => $validated]);
+            
+            file_put_contents(
+                storage_path('logs/debug_bank_template.log'),
+                date('[Y-m-d H:i:s] ') . 'ANTES DE CRIAR: ' . json_encode($validated) . "\n", 
+                FILE_APPEND
+            );
             
             \Log::info('Criando registro na base de dados', $validated);
-            $bankTemplate = BankTemplate::create($validated);
-            \Log::info('Banco template criado com sucesso', ['id' => $bankTemplate->id]);
+            // Adicionando try-catch específico para a criação do registro
+            try {
+                $bankTemplate = BankTemplate::create($validated);
+                file_put_contents(
+                    storage_path('logs/debug_bank_template.log'),
+                    date('[Y-m-d H:i:s] ') . 'REGISTRO CRIADO COM SUCESSO: ID=' . $bankTemplate->id . "\n", 
+                    FILE_APPEND
+                );
+                \Log::info('Banco template criado com sucesso', ['id' => $bankTemplate->id]);
+            } catch (\Exception $e) {
+                file_put_contents(
+                    storage_path('logs/debug_bank_template.log'),
+                    date('[Y-m-d H:i:s] ') . 'ERRO AO CRIAR REGISTRO: ' . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n", 
+                    FILE_APPEND
+                );
+                throw $e;
+            }
 
-            return redirect()->route('admin.templates.index')
+            // Log após criação
+            file_put_contents(
+                storage_path('logs/debug_bank_template.log'),
+                date('[Y-m-d H:i:s] ') . 'APÓS CRIAR: ID=' . $bankTemplate->id . "\n", 
+                FILE_APPEND
+            );
+
+            // Usar caminho absoluto para evitar problemas com nomes de rotas
+            return redirect('/admin/templates')
                 ->with('success', 'Instituição bancária criada com sucesso!');
         } catch (\Illuminate\Validation\ValidationException $e) {
             \Log::error('Erro de validação', ['errors' => $e->errors()]);

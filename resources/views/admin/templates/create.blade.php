@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Nova Instituição Bancária</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="{{ route('admin.templates.index') }}" class="btn btn-sm btn-outline-secondary">
+            <a href="/admin/templates" class="btn btn-sm btn-outline-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar
             </a>
         </div>
@@ -17,7 +17,7 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('admin.templates.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="/admin/templates" method="POST" enctype="multipart/form-data" id="templateForm">
                         @csrf
 
                         <div class="mb-3">
@@ -79,11 +79,80 @@
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <button type="reset" class="btn btn-outline-secondary">Limpar</button>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" onclick="enviarFormulario(event)">
                                 <i class="fas fa-save me-1"></i> Salvar Instituição Bancária
                             </button>
                         </div>
                     </form>
+                    
+                    <script>
+                    function enviarFormulario(event) {
+                        // Evitar que o formulário seja enviado normalmente
+                        event.preventDefault();
+                        
+                        console.log('Tentando enviar o formulário...');
+                        
+                        // Remover eventuais alertas anteriores
+                        const alertasAntigos = document.querySelectorAll('.alert-danger');
+                        alertasAntigos.forEach(alerta => alerta.remove());
+                        
+                        // Capturar os dados do formulário
+                        const form = document.getElementById('templateForm');
+                        const formData = new FormData(form);
+                        
+                        // Log dos dados que serão enviados
+                        for (let pair of formData.entries()) {
+                            console.log(pair[0] + ': ' + pair[1]);
+                        }
+                        
+                        // Enviar os dados diretamente via JavaScript
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', '/admin/templates', true);
+                        xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('input[name="_token"]').value);
+                        
+                        xhr.onreadystatechange = function() {
+                            if (xhr.readyState === 4) {
+                                if (xhr.status === 200 || xhr.status === 302) {
+                                    console.log('Sucesso! Status:', xhr.status);
+                                    // Forçar o redirecionamento independentemente da resposta
+                                    // Primeiro salvamos em localStorage
+                                    localStorage.setItem('banco_template_criado', 'true');
+                                    window.location.href = '/admin/templates';
+                                } else {
+                                    console.error('Erro no servidor:', xhr.status);
+                                    try {
+                                        const response = JSON.parse(xhr.responseText);
+                                        if (response.errors) {
+                                            // Mostrar erros de validação
+                                            const alertDiv = document.createElement('div');
+                                            alertDiv.className = 'alert alert-danger';
+                                            let errorHtml = '<strong>Erro ao salvar:</strong><ul>';
+                                            for (const field in response.errors) {
+                                                errorHtml += `<li>${response.errors[field]}</li>`;
+                                            }
+                                            errorHtml += '</ul>';
+                                            alertDiv.innerHTML = errorHtml;
+                                            form.prepend(alertDiv);
+                                        }
+                                    } catch(e) {
+                                        console.error('Erro ao processar resposta:', e);
+                                        alert('Erro ao salvar a instituição bancária. Veja o console para detalhes.');
+                                    }
+                                }
+                            }
+                        };
+                        
+                        xhr.send(formData);
+                    }
+                    
+                    // Ao carregar a página, verificar se há mensagem de sucesso
+                    window.onload = function() {
+                        if (localStorage.getItem('banco_template_criado')) {
+                            alert('Instituição bancária criada com sucesso!');
+                            localStorage.removeItem('banco_template_criado');
+                        }
+                    };
+                    </script>
                 </div>
             </div>
         </div>

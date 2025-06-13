@@ -20,8 +20,9 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
             
-            // Garante que um domínio não esteja associado mais de uma vez ao mesmo usuário
-            $table->unique(['cloudflare_domain_id', 'usuario_id']);
+            // Índices
+            $table->index(['cloudflare_domain_id', 'usuario_id']);
+            $table->index('status');
         });
     }
 

@@ -33,6 +33,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.subscriptions*') ? 'active' : '' }}" 
+                   href="{{ route('admin.subscriptions.index') }}">
+                    <i class="fas fa-credit-card"></i> Assinaturas
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.logs*') ? 'active' : '' }}" 
                    href="{{ route('admin.logs') }}">
                     <i class="fas fa-list-alt"></i> Logs

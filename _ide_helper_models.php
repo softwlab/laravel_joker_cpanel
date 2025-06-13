@@ -179,6 +179,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplate whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplate whereTemplateUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplate whereUpdatedAt($value)
+ * @property bool $is_multipage
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DnsRecord> $dnsRecords
+ * @property-read int|null $dns_records_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BankTemplate whereIsMultipage($value)
  * @mixin \Eloquent
  */
 	class BankTemplate extends \Eloquent {}
@@ -262,7 +266,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereTtl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereUserId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BankTemplate> $templates
+ * @property-read int|null $templates_count
  * @mixin \Eloquent
+ * @property int|null $link_group_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Subscription> $subscriptions
+ * @property-read int|null $subscriptions_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DnsRecord whereLinkGroupId($value)
  */
 	class DnsRecord extends \Eloquent {}
 }
@@ -336,13 +346,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereTelefone($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereVisitanteUuid($value)
- * @mixin \Eloquent
  * @property string|null $cnpj
  * @property string|null $email
  * @property string|null $dni
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereCnpj($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereDni($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformacaoBancaria whereEmail($value)
+ * @mixin \Eloquent
  */
 	class InformacaoBancaria extends \Eloquent {}
 }
@@ -415,6 +425,43 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string $uuid
+ * @property int $user_id
+ * @property string $name
+ * @property string|null $description
+ * @property numeric $value
+ * @property \Illuminate\Support\Carbon $start_date
+ * @property \Illuminate\Support\Carbon $end_date
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DnsRecord> $dnsRecords
+ * @property-read int|null $dns_records_count
+ * @property-read \App\Models\Usuario $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereEndDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscription whereValue($value)
+ */
+	class Subscription extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property int $user_id
  * @property int $template_id
  * @property int|null $record_id
@@ -466,6 +513,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Subscription> $activeSubscriptions
+ * @property-read int|null $active_subscriptions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Subscription> $subscriptions
+ * @property-read int|null $subscriptions_count
  */
 	class User extends \Eloquent {}
 }
@@ -490,13 +541,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereUserId($value)
- * @mixin \Eloquent
  * @property int|null $template_id
  * @property int|null $record_id
  * @property array<array-key, mixed>|null $config
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereConfig($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereRecordId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserConfig whereTemplateId($value)
+ * @mixin \Eloquent
  */
 	class UserConfig extends \Eloquent {}
 }
@@ -556,6 +607,7 @@ namespace App\Models{
  * @property string|null $ip
  * @property string|null $user_agent
  * @property string|null $referrer
+ * @property string|null $path_segment
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, InformacaoBancaria> $informacoes
@@ -575,7 +627,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereUserAgent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereUsuarioId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante wherePathSegment($value)
  * @mixin \Eloquent
+ * @property int|null $link_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visitante whereLinkId($value)
  */
 	class Visitante extends \Eloquent {}
 }

@@ -193,6 +193,17 @@ class DnsRecord extends Model
     }
     
     /**
+     * Obtém as assinaturas associadas a este registro DNS.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function subscriptions()
+    {
+        return $this->belongsToMany(Subscription::class, 'dns_record_subscription')
+                    ->withTimestamps();
+    }
+    
+    /**
      * Escopo para filtrar registros ativos.
      */
     public function scopeActive($query)

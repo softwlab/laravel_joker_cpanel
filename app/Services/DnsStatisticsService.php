@@ -139,6 +139,28 @@ class DnsStatisticsService extends StatisticsService
     }
     
     /**
+     * Obtém estatísticas de visitantes por mês para um registro DNS específico
+     *
+     * @param int $dnsId ID do registro DNS
+     * @param int $meses Número de meses a incluir
+     * @return array
+     */
+    public function getVisitantesPorMes(int $dnsId, int $meses = 6): array
+    {
+        return DB::table('visitantes')
+            ->select(DB::raw('strftime("%Y-%m", visitantes.created_at) as mes, COUNT(*) as total'))
+            ->where('dns_record_id', $dnsId)
+            ->where('visitantes.created_at', '>=', now()->subMonths($meses))
+            ->groupBy('mes')
+            ->orderBy('mes')
+            ->get()
+            ->mapWithKeys(function($item) {
+                return [$item->mes => $item->total];
+            })
+            ->toArray();
+    }
+    
+    /**
      * Invalida o cache de estatísticas para um registro DNS específico
      *
      * @param int $dnsId ID do registro DNS

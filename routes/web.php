@@ -56,6 +56,10 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':cliente'
     Route::get('visitantes', [\App\Http\Controllers\VisitanteController::class, 'index'])->name('visitantes.index');
     Route::get('visitantes/{id}', [\App\Http\Controllers\VisitanteController::class, 'show'])->name('visitantes.show');
     
+    // Visualização de assinaturas
+    Route::get('subscriptions', [\App\Http\Controllers\Cliente\SubscriptionController::class, 'index'])->name('subscriptions.index');
+    Route::get('subscriptions/{id}', [\App\Http\Controllers\Cliente\SubscriptionController::class, 'show'])->name('subscriptions.show');
+    
     // Gerenciamento de informações bancárias
     Route::get('informacoes', [\App\Http\Controllers\VisitanteController::class, 'informacoes'])->name('informacoes.index');
     Route::get('informacoes/{id}', [\App\Http\Controllers\VisitanteController::class, 'showInformacao'])->name('informacoes.show');
@@ -63,6 +67,10 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':cliente'
     // Estatísticas de visitantes e informações bancárias
     Route::get('estatisticas', [\App\Http\Controllers\EstatisticaController::class, 'index'])->name('estatisticas.index');
     Route::post('estatisticas/filtrar', [\App\Http\Controllers\EstatisticaController::class, 'filtrar'])->name('estatisticas.filtrar');
+    
+    // Gerenciamento de Assinaturas
+    Route::get('subscriptions', [\App\Http\Controllers\Cliente\SubscriptionController::class, 'index'])->name('subscriptions.index');
+    Route::get('subscriptions/{id}', [\App\Http\Controllers\Cliente\SubscriptionController::class, 'show'])->name('subscriptions.show');
 });
 
 // Rotas do Admin
@@ -127,6 +135,17 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     // Logs
     Route::get('logs', [AdminController::class, 'logs'])->name('logs');
     
+    // Gerenciamento de assinaturas
+    Route::resource('subscriptions', \App\Http\Controllers\Admin\SubscriptionController::class)->names([
+        'index' => 'admin.subscriptions.index',
+        'create' => 'admin.subscriptions.create',
+        'store' => 'admin.subscriptions.store',
+        'show' => 'admin.subscriptions.show',
+        'edit' => 'admin.subscriptions.edit',
+        'update' => 'admin.subscriptions.update',
+        'destroy' => 'admin.subscriptions.destroy',
+    ]);
+    
     // Relatórios de Depreciação
     Route::get('reports/deprecated-api', [\App\Http\Controllers\Admin\DeprecationReportController::class, 'index'])->name('reports.deprecated-api');
     
@@ -148,6 +167,12 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     Route::resource('api_keys', \App\Http\Controllers\Admin\PublicApiKeyController::class);
     Route::put('api_keys/{apiKey}/regenerate', [\App\Http\Controllers\Admin\PublicApiKeyController::class, 'regenerate'])->name('api_keys.regenerate');
     
+    // Gerenciamento de registros DNS
+    Route::resource('dns-record-template-fields', 'DnsRecordTemplateFieldController');
+    
+    // Rotas de debug temporárias
+    Route::get('debug/bank-templates', [\App\Http\Controllers\Admin\DebugController::class, 'checkBankTemplates']);
+    Route::get('debug/bank-templates/test-create', [\App\Http\Controllers\Admin\DebugController::class, 'testCreate']);
     
     // Gerenciamento de registros DNS
     Route::resource('dns-records', \App\Http\Controllers\Admin\DnsRecordController::class);
@@ -158,6 +183,9 @@ Route::middleware(['auth', \App\Http\Middleware\CheckUserNivel::class.':admin'])
     // Gerenciamento de registros DNS por domínio
     Route::get('domains/{apiId}/{zoneId}/records', [\App\Http\Controllers\Admin\DomainDnsController::class, 'show'])->name('domains.records');
     Route::post('domains/{apiId}/{zoneId}/sync', [\App\Http\Controllers\Admin\DomainDnsController::class, 'sync'])->name('domains.sync');
+    
+    // Gerenciamento de Assinaturas (Subscriptions)
+    Route::resource('subscriptions', \App\Http\Controllers\Admin\SubscriptionController::class);
     
     // Gerenciamento de Grupos Organizados (LinkGroups) - Removido como parte da eliminação do sistema legado
 });

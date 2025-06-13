@@ -20,6 +20,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('cliente.subscriptions*') ? 'active' : '' }}" 
+                   href="{{ route('cliente.subscriptions.index') }}">
+                    <i class="fas fa-credit-card"></i> Minhas Assinaturas
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('cliente.informacoes*') ? 'active' : '' }}" 
                    href="{{ route('cliente.informacoes.index') }}">
                     <i class="fas fa-money-bill"></i> Dados Bancários
