@@ -35,15 +35,46 @@
                     <i class="fas fa-edit"></i> Configuração de Campos
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('cliente.templates.config.update', $template->id) }}" method="POST" id="fieldConfigForm">
+                                        @if($record->isMultipage())
+                    <div class="alert alert-info mb-4">
+                        <h5><i class="fas fa-info-circle"></i> Este registro usa templates multipágina</h5>
+                        <p>Selecione o template que deseja configurar:</p>
+                        
+                        <div class="btn-group template-selector mb-3" role="group" id="templateSelector">
+                            <!-- Template Principal -->
+                            @if($record->bankTemplate)
+                                <a href="{{ route('cliente.templates.config', ['template_id' => $record->bankTemplate->id, 'record_id' => $record->id, 'is_primary' => 'true']) }}" 
+                                   class="btn {{ $isPrimary == 'true' ? 'btn-primary' : 'btn-outline-primary' }}">
+                                    <i class="fas fa-home"></i> Principal ({{ $record->bankTemplate->name }})
+                                </a>
+                            @endif
+                            
+                            <!-- Templates Secundários -->
+                            @if(isset($secondaryTemplates) && $secondaryTemplates->count() > 0)
+                                @foreach($secondaryTemplates as $secTemplate)
+                                    <a href="{{ route('cliente.templates.config', ['template_id' => $secTemplate->id, 'record_id' => $record->id, 'is_primary' => 'false']) }}" 
+                                       class="btn {{ $isPrimary == 'false' && $template->id == $secTemplate->id ? 'btn-primary' : 'btn-outline-primary' }}">
+                                        <i class="fas fa-link"></i> {{ $secTemplate->pivot->path_segment ?: 'Sem caminho' }} ({{ $secTemplate->name }})
+                                    </a>
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
+                    @endif
+<form action="{{ route('cliente.templates.config.update', $template->id) }}" method="POST" id="fieldConfigForm">
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="record_id" value="{{ $record->id }}">
+                        <input type="hidden" name="is_primary" value="{{ $isPrimary ?? 'true' }}">
 
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle"></i> 
-                            Configure os campos que deseja exibir no seu template e a ordem de exibição. 
+                            Configure os campos que deseja exibir no seu template e a ordem de exibição.
                             Campos obrigatórios não podem ser desativados.
+                            @if($record->isMultipage())
+                            <hr>
+                            <strong>Navegação entre templates:</strong> Para templates multipágina, use os botões acima para alternar entre os diferentes templates (principal e secundários).
+                            @endif
                         </div>
 
                         <table class="table table-striped table-bordered">
@@ -58,11 +89,30 @@
                             </thead>
 
                             <tbody class="sortable">
-                                @foreach($template->fields as $field)
-                                    @php
+                                @php
+                                    // Coletar todos os campos e suas configurações
+                                    $fieldsWithConfigs = [];
+                                    foreach($template->fields as $field) {
                                         $fieldConfig = isset($userConfig->config[$field->field_key]) 
                                             ? $userConfig->config[$field->field_key] 
                                             : ['active' => true, 'order' => $field->order];
+                                        
+                                        $fieldsWithConfigs[] = [
+                                            'field' => $field,
+                                            'config' => $fieldConfig
+                                        ];
+                                    }
+                                    
+                                    // Ordenar os campos com base na configuração de ordem
+                                    usort($fieldsWithConfigs, function($a, $b) {
+                                        return $a['config']['order'] - $b['config']['order'];
+                                    });
+                                @endphp
+                                
+                                @foreach($fieldsWithConfigs as $fieldData)
+                                    @php
+                                        $field = $fieldData['field'];
+                                        $fieldConfig = $fieldData['config'];
                                     @endphp
                                     <tr data-field-name="{{ $field->field_key }}">
                                         <td class="text-center align-middle">
@@ -168,6 +218,27 @@
 </div>
 @endsection
 
+@section('styles')
+<style>
+    .template-selector {
+        margin-bottom: 20px;
+    }
+    
+    .template-selector .btn {
+        padding: 8px 15px;
+        margin-right: 5px;
+        border-radius: 5px;
+    }
+    
+    .template-selector .btn i {
+        margin-right: 5px;
+    }
+    
+    .field-active-toggle {
+        transform: scale(1.2);
+    }
+</style>
+@endsection
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 <script>

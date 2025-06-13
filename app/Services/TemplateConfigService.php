@@ -233,12 +233,23 @@ class TemplateConfigService extends BaseService
      */
     public function updateUserTemplateConfig($userId, $templateId, $recordId, $fieldActive, $fieldOrder)
     {
+        // Log dos dados recebidos para debug
+        \Illuminate\Support\Facades\Log::debug('updateUserTemplateConfig - dados recebidos', [
+            'userId' => $userId, 
+            'templateId' => $templateId, 
+            'recordId' => $recordId,
+            'fieldActive' => $fieldActive, 
+            'fieldOrder' => $fieldOrder
+        ]);
+        
+        // Buscar configuração existente ou criar nova
         $userConfig = TemplateUserConfig::firstOrNew([
             'user_id' => $userId,
             'template_id' => $templateId,
             'record_id' => $recordId
         ]);
         
+        // Estruturar os dados para salvar
         $fieldConfig = [];
         foreach ($fieldActive as $fieldName => $isActive) {
             $fieldConfig[$fieldName] = [
@@ -247,8 +258,62 @@ class TemplateConfigService extends BaseService
             ];
         }
         
-        $userConfig->config = $fieldConfig;
-        $userConfig->save();
+        // Verificar se há campos no fieldOrder que não estão no fieldActive
+        foreach ($fieldOrder as $fieldName => $order) {
+            if (!isset($fieldConfig[$fieldName])) {
+                $fieldConfig[$fieldName] = [
+                    'active' => false,  // Se está na ordem mas não em active, consideramos inativo
+                    'order' => (int) $order
+                ];
+            }
+        }
+        
+        // Verificar campos do template que não foram enviados
+        $template = BankTemplate::with('fields')->findOrFail($templateId);
+        foreach ($template->fields as $field) {
+            $fieldKey = $field->field_key;
+            if (!isset($fieldConfig[$fieldKey])) {
+                // Manter configuração existente ou definir padrão para campos não enviados
+                if (isset($userConfig->config[$fieldKey])) {
+                    $fieldConfig[$fieldKey] = $userConfig->config[$fieldKey];
+                } else {
+                    $fieldConfig[$fieldKey] = [
+                        'active' => $field->is_required ? true : false,
+                        'order' => $field->order
+                    ];
+                }
+            }
+        }
+        
+        // Log da configuração montada
+        \Illuminate\Support\Facades\Log::debug('updateUserTemplateConfig - configuração a ser salva', [
+            'configId' => $userConfig->id ?? 'novo',
+            'fieldConfig' => $fieldConfig
+        ]);
+        
+        // Salvar diretamente no banco usando DB::table para garantir que seja gravado corretamente
+        if ($userConfig->exists) {
+            // Atualiza o registro existente
+            \Illuminate\Support\Facades\DB::table('template_user_configs')
+                ->where('id', $userConfig->id)
+                ->update([
+                    'config' => json_encode($fieldConfig),
+                    'updated_at' => now()
+                ]);
+                
+            // Recarregar do banco para confirmar alterações
+            $userConfig->refresh();
+        } else {
+            // Criar novo registro
+            $userConfig->config = $fieldConfig;
+            $userConfig->save();
+        }
+        
+        // Verificar se salvou corretamente
+        \Illuminate\Support\Facades\Log::info('Configuração atualizada', [
+            'configId' => $userConfig->id,
+            'saved' => !empty($userConfig->config)
+        ]);
         
         return $userConfig;
     }
@@ -402,5 +467,45 @@ class TemplateConfigService extends BaseService
     {
         $field = BankField::where('bank_template_id', $templateId)->findOrFail($fieldId);
         return $field->delete();
+    }
+    
+    /**
+     * Obtém a configuração de um template para um usuário específico
+     * 
+     * @param int $userId ID do usuário
+     * @param int $templateId ID do template
+     * @param int $recordId ID do registro DNS
+     * @return TemplateUserConfig Configuração do usuário para o template
+     */
+    public function getUserTemplateConfig($userId, $templateId, $recordId)
+    {
+        // Carregar o template com seus campos
+        $template = BankTemplate::findOrFail($templateId);
+        
+        // Carregar ou criar configuração do usuário para este template
+        $userConfig = TemplateUserConfig::firstOrNew([
+            'user_id' => $userId,
+            'template_id' => $templateId,
+            'record_id' => $recordId
+        ]);
+        
+        // Se não existir configuração, criar uma padrão
+        if (!$userConfig->exists) {
+            $template->load(['fields' => function($query) {
+                $query->orderBy('order');
+            }]);
+            
+            $fieldConfig = [];
+            foreach ($template->fields as $field) {
+                $fieldConfig[$field->field_key] = [
+                    'active' => $field->is_required ? true : true, // Campos obrigatórios sempre ativos
+                    'order' => $field->order
+                ];
+            }
+            
+            $userConfig->config = $fieldConfig;
+        }
+        
+        return $userConfig;
     }
 }

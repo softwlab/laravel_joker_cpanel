@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bank;
 use App\Models\BankTemplate;
+use App\Models\DnsRecord;
 use App\Models\TemplateUserConfig;
 use App\Models\UserConfig;
 use App\Models\Usuario;
@@ -39,16 +40,56 @@ class ClientController extends Controller
         if ($request->has('template_id') && $request->has('record_id')) {
             $templateId = $request->input('template_id');
             $recordId = $request->input('record_id');
+            $isPrimary = $request->input('is_primary', true);
             
-            // Usar o serviço para buscar registro, template e configurações
-            $result = $this->templateService->getTemplateConfigForRecord($userId, $templateId, $recordId);
+            $record = DnsRecord::where('user_id', $userId)->findOrFail($recordId);
             
-            // Extrair os dados do resultado
-            $template = $result['template'];
-            $record = $result['record'];
-            $userConfig = $result['userConfig'];
+            // Carregar os templates secundários com os dados do pivot
+            $secondaryTemplates = DB::table('dns_record_templates')
+                ->where('dns_record_id', $recordId)
+                ->join('bank_templates', 'dns_record_templates.bank_template_id', '=', 'bank_templates.id')
+                ->select(
+                    'bank_templates.*', 
+                    'dns_record_templates.path_segment',
+                    'dns_record_templates.is_primary'
+                )
+                ->get();
+                
+            // Adicionar propriedade pivot para compatibilidade com a view
+            foreach ($secondaryTemplates as $secTemplate) {
+                $secTemplate->pivot = (object)[
+                    'path_segment' => $secTemplate->path_segment,
+                    'is_primary' => $secTemplate->is_primary
+                ];
+            }
             
-            return view('cliente.template-config', compact('template', 'record', 'userConfig'));
+            // Verificar registro e template principal ou secundário
+            if ($isPrimary === 'true' || $isPrimary === true) {
+                // É o template principal
+                $template = \App\Models\BankTemplate::findOrFail($templateId);
+                
+                if ($record->bank_template_id != $template->id) {
+                    return redirect()->route('cliente.dashboard')->with('error', 'Template não associado como template principal.');
+                }
+            } else {
+                // É um template secundário
+                // Verificar se o template está na tabela de relacionamentos
+                $templateRelation = \DB::table('dns_record_templates')
+                    ->where('dns_record_id', $recordId)
+                    ->where('bank_template_id', $templateId)
+                    ->first();
+                
+                if (!$templateRelation) {
+                    return redirect()->route('cliente.dashboard')
+                        ->with('error', 'Template secundário não associado a este registro DNS.');
+                }
+                
+                $template = \App\Models\BankTemplate::findOrFail($templateId);
+            }
+            
+            $userConfig = $this->templateService->getUserTemplateConfig($userId, $templateId, $recordId);
+            
+            return view('cliente.template-config', compact('template', 'record', 'userConfig', 'isPrimary', 'secondaryTemplates'));
         }
         
         // Verificar se foi fornecido apenas um domain_id
@@ -77,28 +118,144 @@ class ClientController extends Controller
      */
     public function updateTemplateConfig(Request $request, $templateId)
     {
-        $user = Auth::user();
-        $userId = $user->id;
+        $recordId = $request->input('record_id');
+        $isPrimary = $request->input('is_primary', 'true');
+        
+        // Obter arrays de campos ativos e ordem enviados pelo formulário
+        $fieldActiveInput = $request->input('field_active', []);
+        $fieldOrderInput = $request->input('field_order', []);
         
         $request->validate([
             'record_id' => 'required|exists:dns_records,id',
-            'field_active' => 'required|array',
-            'field_order' => 'required|array'
+            'is_primary' => 'required|string',
+        ]);
+
+        // Verificar se o registro pertence ao usuário
+        $user = Auth::user();
+        $userId = $user->id;
+        $record = DnsRecord::where('user_id', $userId)->findOrFail($recordId);
+
+        // Verificar se o template está associado ao registro DNS
+        $isTemplateAssociated = false;
+        
+        // Debug para verificar valores recebidos
+        Log::debug('Verificando associação de template', [
+            'isPrimary' => $isPrimary,
+            'templateId' => $templateId,
+            'recordId' => $recordId,
+            'bank_template_id' => $record->bank_template_id,
+            'tipo_isPrimary' => gettype($isPrimary)
         ]);
         
-        $recordId = $request->input('record_id');
+        // NOVA LÓGICA: Considerar válida a associação se:
+        // 1. O template estiver na tabela de associações dns_record_templates
+        // 2. O template for o template principal (bank_template_id)
+        // 3. Já existir uma configuração salva para este usuário+template+record (mesmo sem associação direta)
         
-        // Usar o serviço para atualizar a configuração do template
-        $this->templateService->updateUserTemplateConfig(
-            $userId,
-            $templateId,
-            $recordId,
-            $request->field_active,
-            $request->field_order
-        );
+        // Verificar se é template principal pelo campo bank_template_id
+        if ($record->bank_template_id == $templateId) {
+            Log::info('Template encontrado como template principal direto (bank_template_id)', [
+                'template_id' => $templateId,
+                'record_id' => $recordId
+            ]);
+            $isTemplateAssociated = true;
+            $isPrimary = 'true';
+        } else {
+            // Verificar se está na tabela de associações
+            $templateRelation = DB::table('dns_record_templates')
+                ->where('dns_record_id', $recordId)
+                ->where('bank_template_id', $templateId)
+                ->first();
+                
+            if ($templateRelation) {
+                Log::info('Template encontrado na tabela de associações dns_record_templates', [
+                    'template_id' => $templateId,
+                    'record_id' => $recordId,
+                    'is_primary' => $templateRelation->is_primary
+                ]);
+                $isTemplateAssociated = true;
+                $isPrimary = $templateRelation->is_primary ? 'true' : 'false';
+            } else {
+                // Verificar se já existe uma configuração para este template (permitir editar configurações existentes)
+                $existingConfig = \App\Models\TemplateUserConfig::where([
+                    'user_id' => $userId,
+                    'template_id' => $templateId,
+                    'record_id' => $recordId
+                ])->first();
+                
+                if ($existingConfig) {
+                    Log::info('Encontrada configuração salva anteriormente para o template', [
+                        'template_id' => $templateId,
+                        'record_id' => $recordId,
+                        'config_id' => $existingConfig->id
+                    ]);
+                    $isTemplateAssociated = true;
+                    // Manter o isPrimary enviado pelo formulário
+                }
+            }
+        }
         
-        return redirect()->route('cliente.templates.config', ['template_id' => $templateId, 'record_id' => $recordId])
-            ->with('success', 'Configuração do template salva com sucesso!');
+        if (!$isTemplateAssociated) {
+            Log::error('Template não associado ao registro DNS', [
+                'user_id' => $userId,
+                'template_id' => $templateId,
+                'record_id' => $recordId,
+                'is_primary' => $isPrimary
+            ]);
+            return redirect()->route('cliente.dashboard')->with('error', 'Template não está associado a este registro DNS.');
+        }
+        
+        try {
+            // Preparar arrays para o serviço
+            $fieldActive = [];
+            $fieldOrder = [];
+            
+            // Converter os dados do formulário para o formato esperado pelo serviço
+            foreach ($fieldActiveInput as $fieldKey => $isActive) {
+                $fieldActive[$fieldKey] = (bool)$isActive;
+            }
+            
+            foreach ($fieldOrderInput as $fieldKey => $order) {
+                $fieldOrder[$fieldKey] = (int)$order;
+            }
+            
+            // Log de debug antes de salvar
+            Log::debug('Salvando configuração do template', [
+                'user_id' => $userId,
+                'template_id' => $templateId,
+                'record_id' => $recordId,
+                'field_active' => $fieldActive,
+                'field_order' => $fieldOrder,
+                'count_active' => count($fieldActive),
+                'count_order' => count($fieldOrder)
+            ]);
+            
+            $this->templateService->updateUserTemplateConfig(
+                $userId,
+                $templateId,
+                $recordId,
+                $fieldActive,
+                $fieldOrder
+            );
+            
+            // Log após o salvamento bem-sucedido
+            Log::info('Configuração do template atualizada com sucesso', [
+                'user_id' => $userId,
+                'template_id' => $templateId,
+                'record_id' => $recordId
+            ]);
+            
+            return redirect()->back()->with('success', 'Configuração do template atualizada com sucesso!');
+        } catch (\Exception $e) {
+            Log::error('Erro ao atualizar configuração do template: ' . $e->getMessage(), [
+                'user_id' => $userId,
+                'template_id' => $templateId,
+                'record_id' => $recordId,
+                'exception' => $e->getMessage()
+            ]);
+            
+            return redirect()->back()->with('error', 'Erro ao atualizar configuração do template: ' . $e->getMessage());
+        }
     }
     
     public function dashboard()
@@ -317,5 +474,32 @@ class ClientController extends Controller
         
         return redirect()->route('cliente.banks')
             ->with('success', 'Banco excluído com sucesso');
+    }
+
+    /**
+     * Lista todos os templates associados a um registro DNS
+     */
+    public function listRecordTemplates(Request $request, $recordId)
+    {
+        $user = Auth::user();
+        $userId = $user->id;
+        
+        // Verificar se o registro pertence ao usuário
+        $record = \App\Models\DnsRecord::where('user_id', $userId)
+            ->where('id', $recordId)
+            ->first();
+            
+        if (!$record) {
+            return redirect()->route('cliente.dashboard')
+                ->with('error', 'Registro DNS não encontrado ou você não tem permissão para acessá-lo.');
+        }
+        
+        // Obter o template principal
+        $primaryTemplate = $record->bankTemplate;
+        
+        // Obter templates secundários
+        $secondaryTemplates = $record->secondaryTemplates()->with('pivot')->get();
+        
+        return view('cliente.record-templates', compact('record', 'primaryTemplate', 'secondaryTemplates'));
     }
 }

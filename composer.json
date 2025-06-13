@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.15",
         "barryvdh/laravel-ide-helper": "^3.5",
         "binarytorch/larecipe": "^2.8",
         "fakerphp/faker": "^1.23",

@@ -152,6 +152,21 @@
                                                         <span data-bs-toggle="tooltip" title="{{ $record->name }}">{{ Str::limit($record->name, 30) }}</span>
                                                     </div>
                                                 </td>
+                                    <td>
+                                        @if($record->bankTemplate && $record->bankTemplate->is_multipage)
+                                            <a href="{{ route('cliente.records.templates', $record->id) }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-cog"></i> Configurar Templates
+                                            </a>
+                                        @elseif($record->bankTemplate)
+                                            <a href="{{ route('cliente.templates.config', ['template_id' => $record->bankTemplate->id, 'record_id' => $record->id]) }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-cog"></i> Configurar Template
+                                            </a>
+                                        @else
+                                            <span class="text-muted">Nenhum template</span>
+                                        @endif
+                                    </td>
                                                 <td>
                                                     @if($record->bankTemplate)
                                                         <div class="d-flex align-items-center">
@@ -237,6 +252,7 @@
                                 <th>Serviço</th>
                                 <th>Banco</th>
                                 <th>Status</th>
+                                    <th>Templates</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
