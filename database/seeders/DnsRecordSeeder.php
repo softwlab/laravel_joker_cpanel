@@ -2,152 +2,1218 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\CloudflareDomain;
-use App\Models\DnsRecord;
-use App\Models\Usuario;
-use App\Models\ExternalApi;
-use App\Models\BankTemplate;
-use Faker\Factory as Faker;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class DnsRecordSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * Gerado automaticamente a partir dos dados existentes.
      */
     public function run(): void
     {
-        $faker = Faker::create('pt_BR');
+        // Desativa as verificações de chaves estrangeiras temporariamente
+        DB::statement('PRAGMA foreign_keys = OFF;');
 
-        // Obter a API do Cloudflare
-        $cloudflareApi = ExternalApi::where('type', 'cloudflare')->first();
+        $rows = [
+            [
+                'id' => 1,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'a2.acessarchaveprime.com',
+                'content' => '91.99.80.1',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"dc905f09a40c3bb46e9e1dcd3c6cb15a\",\"cloudflare_zone_id\":\"22a2f289b967d9c7b8fe7d982184d030\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:35',
+                'updated_at' => '2025-06-13 02:07:35'
+            ],
+            [
+                'id' => 2,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'app.acessarchaveprime.com',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"20add5de0e70e55f817f087ecf214e83\",\"cloudflare_zone_id\":\"22a2f289b967d9c7b8fe7d982184d030\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:35',
+                'updated_at' => '2025-06-13 02:07:35'
+            ],
+            [
+                'id' => 3,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'bradesco.acessarchaveprime.com',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"d8c76cf2c7f5d42401fba0a36be3bca1\",\"cloudflare_zone_id\":\"22a2f289b967d9c7b8fe7d982184d030\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:35',
+                'updated_at' => '2025-06-13 02:07:35'
+            ],
+            [
+                'id' => 4,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'ne12empresas.acessarchaveprime.com',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"70b5676e3d5d1a9ee42676d0b1ba2f0e\",\"cloudflare_zone_id\":\"22a2f289b967d9c7b8fe7d982184d030\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:35',
+                'updated_at' => '2025-06-13 02:07:35'
+            ],
+            [
+                'id' => 5,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'suporte.acessarchaveprime.com',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"ad0650ed64d89c8c608201ba966078a9\",\"cloudflare_zone_id\":\"22a2f289b967d9c7b8fe7d982184d030\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:35',
+                'updated_at' => '2025-06-13 02:07:35'
+            ],
+            [
+                'id' => 6,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'app.acessochaveprime.com',
+                'content' => '5.230.55.156',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"a6e56944ed6106b1481d2912df0d6ff1\",\"cloudflare_zone_id\":\"305b08f766e91163f6c62f4cc706e26f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:36',
+                'updated_at' => '2025-06-13 02:07:36'
+            ],
+            [
+                'id' => 7,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'bia.acessochaveprime.com',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"29afc6ff1c48cc9be5f8969412ff3097\",\"cloudflare_zone_id\":\"305b08f766e91163f6c62f4cc706e26f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:36',
+                'updated_at' => '2025-06-13 02:07:36'
+            ],
+            [
+                'id' => 8,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'bradesco.acessochaveprime.com',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"7a37d55a42538a7407046de90a590527\",\"cloudflare_zone_id\":\"305b08f766e91163f6c62f4cc706e26f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:36',
+                'updated_at' => '2025-06-13 02:07:36'
+            ],
+            [
+                'id' => 9,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'suporte.acessochaveprime.com',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"2e0569c035a3b532bfb3f5bcd1574fd9\",\"cloudflare_zone_id\":\"305b08f766e91163f6c62f4cc706e26f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:36',
+                'updated_at' => '2025-06-13 02:07:36'
+            ],
+            [
+                'id' => 10,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'mlbeneficios.avisontifica.online',
+                'content' => '5.230.75.130',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"33fef5aff46a7a0c58348472e203044d\",\"cloudflare_zone_id\":\"a1dba8ee094181520e40ea1cd22934d9\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:38',
+                'updated_at' => '2025-06-13 02:07:38'
+            ],
+            [
+                'id' => 11,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'acesso.bancodobrasil.digital',
+                'content' => '103.199.187.160',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"10ac4fff0bbfbf004bfe42780f6bf68e\",\"cloudflare_zone_id\":\"783c8eef920e41959e759c8ffdb2cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:39',
+                'updated_at' => '2025-06-13 02:07:39'
+            ],
+            [
+                'id' => 12,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'suporte.bancodobrasil.digital',
+                'content' => '103.199.187.160',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"0b5f2ca8283298ee45c1ba335d9ff787\",\"cloudflare_zone_id\":\"783c8eef920e41959e759c8ffdb2cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:39',
+                'updated_at' => '2025-06-13 02:07:39'
+            ],
+            [
+                'id' => 13,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => '*.bia-pontos.digital',
+                'content' => '103.199.186.41',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"a20d8c16fa07a742007231bc68ac8e68\",\"cloudflare_zone_id\":\"494ed11a4eed7c4b9759c7e01ca54cd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:40',
+                'updated_at' => '2025-06-13 02:07:40'
+            ],
+            [
+                'id' => 14,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'bia.cadastrochaveprime.com',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"343fb8249a0f3161fb05f69af4f7f5cb\",\"cloudflare_zone_id\":\"be0cff700742e332bbac98b95912f58d\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:41',
+                'updated_at' => '2025-06-13 02:07:41'
+            ],
+            [
+                'id' => 15,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'bradesco.cadastrochaveprime.com',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"67ef824282bf3eb5d78d551b813ee9a6\",\"cloudflare_zone_id\":\"be0cff700742e332bbac98b95912f58d\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:41',
+                'updated_at' => '2025-06-13 02:07:41'
+            ],
+            [
+                'id' => 16,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'suporte.cadastrochaveprime.com',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"4b1b2e815847b3d1a4874e569a61fe8a\",\"cloudflare_zone_id\":\"be0cff700742e332bbac98b95912f58d\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:41',
+                'updated_at' => '2025-06-13 02:07:41'
+            ],
+            [
+                'id' => 17,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => '*.cashpontos.online',
+                'content' => '103.199.186.41',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"18f0d992372f07df688e1a25b34bf0c4\",\"cloudflare_zone_id\":\"38cefb8e6e0611cbb7ad6e5c66b8c1d7\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:42',
+                'updated_at' => '2025-06-13 02:07:42'
+            ],
+            [
+                'id' => 18,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'acesso.chavenetempresas.digital',
+                'content' => '5.230.55.153',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"b2f2e51173c843cb91eba8efb811bdd7\",\"cloudflare_zone_id\":\"d29a51bd6be401fa3f23c963bfa3fa3d\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:42',
+                'updated_at' => '2025-06-13 02:07:42'
+            ],
+            [
+                'id' => 19,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'suporte.chavenetempresas.digital',
+                'content' => '5.230.55.153',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"416fd62edaae85a72f4ee098a0fa548e\",\"cloudflare_zone_id\":\"d29a51bd6be401fa3f23c963bfa3fa3d\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:42',
+                'updated_at' => '2025-06-13 02:07:42'
+            ],
+            [
+                'id' => 20,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'acesso.chaveprime.digital',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"c690237e92e0f2e155217b65cd895990\",\"cloudflare_zone_id\":\"a71bb01084c03a33122be8c944d1cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:43',
+                'updated_at' => '2025-06-13 02:07:43'
+            ],
+            [
+                'id' => 21,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'app.chaveprime.digital',
+                'content' => '5.230.55.156',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"522464241b19eb260d7ac7acaaf4931f\",\"cloudflare_zone_id\":\"a71bb01084c03a33122be8c944d1cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:43',
+                'updated_at' => '2025-06-13 02:07:43'
+            ],
+            [
+                'id' => 22,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'suporte.chaveprime.digital',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"0c8fd8d978bbafefa9309b87a22759f2\",\"cloudflare_zone_id\":\"a71bb01084c03a33122be8c944d1cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:43',
+                'updated_at' => '2025-06-13 02:07:43'
+            ],
+            [
+                'id' => 23,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'validar.chaveprime.digital',
+                'content' => '5.230.55.154',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"bed36af050fbff94dd98f9dc65162fc7\",\"cloudflare_zone_id\":\"a71bb01084c03a33122be8c944d1cbaa\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:43',
+                'updated_at' => '2025-06-13 02:07:43'
+            ],
+            [
+                'id' => 24,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'app.clickpontos.club',
+                'content' => '147.93.33.148',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"d76062e771b37d7da97b28f88af521c4\",\"cloudflare_zone_id\":\"6406fb1ebfd6d16456a49a0945e79f7f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:44',
+                'updated_at' => '2025-06-13 02:07:44'
+            ],
+            [
+                'id' => 25,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'livelo.clickpontos.club',
+                'content' => '147.93.33.148',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"50b74ca9971f5b0b8ba9abba6db0a5b2\",\"cloudflare_zone_id\":\"6406fb1ebfd6d16456a49a0945e79f7f\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:44',
+                'updated_at' => '2025-06-13 02:07:44'
+            ],
+            [
+                'id' => 26,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'NS',
+                'name' => 'ns2.clubedospontos.club',
+                'content' => 'ns2-coming-soon.sav.com',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"8c0d24f01cef751cf899368c5cebed27\",\"cloudflare_zone_id\":\"01e49a1681e2568a1e00b72fb9f83a11\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:45',
+                'updated_at' => '2025-06-13 02:07:45'
+            ],
+            [
+                'id' => 27,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'NS',
+                'name' => 'spf.clubedospontos.club',
+                'content' => 'ns2-coming-soon.sav.com',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"640e7c73a3baf38cbab62e64b3d0b165\",\"cloudflare_zone_id\":\"01e49a1681e2568a1e00b72fb9f83a11\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:45',
+                'updated_at' => '2025-06-13 02:07:45'
+            ],
+            [
+                'id' => 28,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'NS',
+                'name' => 'test.clubedospontos.club',
+                'content' => 'ns2-coming-soon.sav.com',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"0cf97ee4c79a0304aeb77b5b27111169\",\"cloudflare_zone_id\":\"01e49a1681e2568a1e00b72fb9f83a11\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:45',
+                'updated_at' => '2025-06-13 02:07:45'
+            ],
+            [
+                'id' => 29,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'NS',
+                'name' => 'track.clubedospontos.club',
+                'content' => 'ns1-coming-soon.sav.com',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"4f57bb941b283ee35231a9919f5ae429\",\"cloudflare_zone_id\":\"01e49a1681e2568a1e00b72fb9f83a11\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:45',
+                'updated_at' => '2025-06-13 02:07:45'
+            ],
+            [
+                'id' => 30,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'NS',
+                'name' => 'www.clubedospontos.club',
+                'content' => 'ns2-coming-soon.sav.com',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"fc21757744dcdd150ca70d3b12668d2c\",\"cloudflare_zone_id\":\"01e49a1681e2568a1e00b72fb9f83a11\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:45',
+                'updated_at' => '2025-06-13 02:07:45'
+            ],
+            [
+                'id' => 31,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'app.clube-ofertas.club',
+                'content' => '5.230.55.156',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"f03a3a94426c23b19a0b41eea70661d7\",\"cloudflare_zone_id\":\"63c02ff910d92c277b0ccfba217d1998\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:46',
+                'updated_at' => '2025-06-13 02:07:46'
+            ],
+            [
+                'id' => 32,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'esfera.clube-ofertas.club',
+                'content' => '5.230.55.156',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"d19c8f2e4dfd4ff7203296383ef9bd1a\",\"cloudflare_zone_id\":\"63c02ff910d92c277b0ccfba217d1998\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:46',
+                'updated_at' => '2025-06-13 02:07:46'
+            ],
+            [
+                'id' => 33,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'livelo.clube-ofertas.club',
+                'content' => '5.230.55.156',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"d4875dd5e0b6504d2657fc86f16e43dd\",\"cloudflare_zone_id\":\"63c02ff910d92c277b0ccfba217d1998\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:46',
+                'updated_at' => '2025-06-13 02:07:46'
+            ],
+            [
+                'id' => 34,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'pontos.clube-ofertas.club',
+                'content' => '5.230.55.156',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"edfd15af8dacb86cad02cf51f4adf8df\",\"cloudflare_zone_id\":\"63c02ff910d92c277b0ccfba217d1998\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:46',
+                'updated_at' => '2025-06-13 02:07:46'
+            ],
+            [
+                'id' => 35,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'app2.clube-recompensas.info',
+                'content' => '209.38.20.118',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"1a1d11771cc0b0409f1eadea9928d9af\",\"cloudflare_zone_id\":\"dde98dbb6ac93710412de79b3272acd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:47',
+                'updated_at' => '2025-06-13 02:07:47'
+            ],
+            [
+                'id' => 36,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'app.clube-recompensas.info',
+                'content' => '209.38.20.118',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"f64f1f920bb6feb5e1287d81903aa345\",\"cloudflare_zone_id\":\"dde98dbb6ac93710412de79b3272acd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:47',
+                'updated_at' => '2025-06-13 02:07:47'
+            ],
+            [
+                'id' => 37,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'esfera.clube-recompensas.info',
+                'content' => '209.38.20.118',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"6f3991d6841d9bcdf4edac1b705366de\",\"cloudflare_zone_id\":\"dde98dbb6ac93710412de79b3272acd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:47',
+                'updated_at' => '2025-06-13 02:07:47'
+            ],
+            [
+                'id' => 38,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'livelo.clube-recompensas.info',
+                'content' => '209.38.20.118',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"1a3ee40286fd8c1d90487e836df00747\",\"cloudflare_zone_id\":\"dde98dbb6ac93710412de79b3272acd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:47',
+                'updated_at' => '2025-06-13 02:07:47'
+            ],
+            [
+                'id' => 39,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'notificacao.clube-recompensas.info',
+                'content' => '5.231.214.203',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"388a63680d0dd3508c4b265589113032\",\"cloudflare_zone_id\":\"dde98dbb6ac93710412de79b3272acd8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:47',
+                'updated_at' => '2025-06-13 02:07:47'
+            ],
+            [
+                'id' => 40,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'mailable.homepoints.digital',
+                'content' => '5.231.214.203',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"522444fed8dfa242dd115b9a1aca7505\",\"cloudflare_zone_id\":\"c4fce069a2bd22de50e27780328777df\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:48',
+                'updated_at' => '2025-06-13 02:07:48'
+            ],
+            [
+                'id' => 41,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'livelo.homepontos.digital',
+                'content' => '5.230.55.156',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"0d1cfdae671e80304e9555ecb3bb48f7\",\"cloudflare_zone_id\":\"d832b7c4b34499756d0927c4f50b8632\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:49',
+                'updated_at' => '2025-06-13 02:07:49'
+            ],
+            [
+                'id' => 42,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'mailable.homepontos.digital',
+                'content' => '103.199.186.41',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"65e76ebefff12a687922e1c35e4213db\",\"cloudflare_zone_id\":\"d832b7c4b34499756d0927c4f50b8632\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:49',
+                'updated_at' => '2025-06-13 02:07:49'
+            ],
+            [
+                'id' => 43,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'app.infoemail.info',
+                'content' => '5.230.55.156',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"d5fd57fcd6f9744a7cc0768ecb146f3e\",\"cloudflare_zone_id\":\"105f39d577c8852179f55cf52b99e863\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:50',
+                'updated_at' => '2025-06-13 02:07:50'
+            ],
+            [
+                'id' => 44,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'informativodigital.infoemail.info',
+                'content' => '103.199.186.41',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"273290796f78faa4ef6227550912474f\",\"cloudflare_zone_id\":\"105f39d577c8852179f55cf52b99e863\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:50',
+                'updated_at' => '2025-06-13 02:07:50'
+            ],
+            [
+                'id' => 45,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'mailable.infoemail.info',
+                'content' => '5.252.178.146',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"f2c274532c3d1a23283bb208b116ae05\",\"cloudflare_zone_id\":\"105f39d577c8852179f55cf52b99e863\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:50',
+                'updated_at' => '2025-06-13 02:07:50'
+            ],
+            [
+                'id' => 46,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'mail.infoemail.info',
+                'content' => '5.230.73.153',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"4afb968ce311d260ec5197b81016cc2f\",\"cloudflare_zone_id\":\"105f39d577c8852179f55cf52b99e863\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:50',
+                'updated_at' => '2025-06-13 02:07:50'
+            ],
+            [
+                'id' => 47,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'TXT',
+                'name' => 'mail.infoemail.info',
+                'content' => '"v=spf1 ip4:5.230.73.153 -all"',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"85368f36010053d7bfc3e3c64ffb164b\",\"cloudflare_zone_id\":\"105f39d577c8852179f55cf52b99e863\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:50',
+                'updated_at' => '2025-06-13 02:07:50'
+            ],
+            [
+                'id' => 48,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'mailable.meusptslive.kids',
+                'content' => '5.231.214.203',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"6727eacc569d8fb2ed184740ef166045\",\"cloudflare_zone_id\":\"2146a317c1728332d588d9c6bf414247\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:51',
+                'updated_at' => '2025-06-13 02:07:51'
+            ],
+            [
+                'id' => 49,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'mailable.meusptslivex.com',
+                'content' => '5.231.214.203',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"33f88778259c6b6a02289f32d59a5030\",\"cloudflare_zone_id\":\"3f8ae598b5c079872a19ab945fc44800\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:52',
+                'updated_at' => '2025-06-13 02:07:52'
+            ],
+            [
+                'id' => 50,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => '*.notificacaodeservico.com',
+                'content' => '103.199.186.41',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"41a79c99636ed41176b5c83ebbf59a0a\",\"cloudflare_zone_id\":\"1350307d6d82eaf86408b48a90f5b677\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:53',
+                'updated_at' => '2025-06-13 02:07:53'
+            ],
+            [
+                'id' => 51,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'livelo.notificacaodeservico.info',
+                'content' => '5.230.55.156',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"f62a26ff8b9dc58b099a8fd96816c953\",\"cloudflare_zone_id\":\"514ab11a8e1d8b7c7e935314f7f5060b\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:54',
+                'updated_at' => '2025-06-13 02:07:54'
+            ],
+            [
+                'id' => 52,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'bia.notificacaodeservico.online',
+                'content' => '5.230.204.33',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"e850ab2d56ebb33e1d40f67526e9c720\",\"cloudflare_zone_id\":\"0e83c8ee3710342740d2618a7c657ee8\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:55',
+                'updated_at' => '2025-06-13 02:07:55'
+            ],
+            [
+                'id' => 53,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'notificado.pontoresgate.online',
+                'content' => '103.199.186.41',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"3b1afa64e032ceefb5aab713cedd52c4\",\"cloudflare_zone_id\":\"b5b27248b76397292561e54e4a2e3a30\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:56',
+                'updated_at' => '2025-06-13 02:07:56'
+            ],
+            [
+                'id' => 54,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'test.pontoresgate.online',
+                'content' => '103.199.186.41',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"c87f7d7afa1a7fa51b34fc5baafa7940\",\"cloudflare_zone_id\":\"b5b27248b76397292561e54e4a2e3a30\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:56',
+                'updated_at' => '2025-06-13 02:07:56'
+            ],
+            [
+                'id' => 55,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'inscrito.pontos-prime.com',
+                'content' => '103.199.186.41',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"6f313ad8f23ef8474782e86feedcf659\",\"cloudflare_zone_id\":\"5e866522bb6b142749f4d5acb0b3fe42\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:57',
+                'updated_at' => '2025-06-13 02:07:57'
+            ],
+            [
+                'id' => 56,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'test.pontos-prime.com',
+                'content' => '103.199.186.41',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"1ff6c0526e1b2b886d3f014469cb0cfe\",\"cloudflare_zone_id\":\"5e866522bb6b142749f4d5acb0b3fe42\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:57',
+                'updated_at' => '2025-06-13 02:07:57'
+            ],
+            [
+                'id' => 57,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'melado.reativeaqui.online',
+                'content' => '91.99.80.1',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"b7cdcd952fe323844fa4df17db7e94cb\",\"cloudflare_zone_id\":\"a3a7a0030e58f38508c3c2ba660b6e23\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:57',
+                'updated_at' => '2025-06-13 02:07:57'
+            ],
+            [
+                'id' => 58,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'mel.reativeaqui.online',
+                'content' => '91.99.80.1',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"0e38f3bb22f8dd6d336d204b3301e06e\",\"cloudflare_zone_id\":\"a3a7a0030e58f38508c3c2ba660b6e23\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:57',
+                'updated_at' => '2025-06-13 02:07:57'
+            ],
+            [
+                'id' => 59,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'taxas.reativeaqui.online',
+                'content' => '91.99.80.1',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"22e381f5616f3c5d93ae76c05c96c75d\",\"cloudflare_zone_id\":\"a3a7a0030e58f38508c3c2ba660b6e23\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:57',
+                'updated_at' => '2025-06-13 02:07:57'
+            ],
+            [
+                'id' => 60,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'test.reativeaqui.online',
+                'content' => '91.99.80.1',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"d8fa26b47fda01dc24b30aa87e5c6725\",\"cloudflare_zone_id\":\"a3a7a0030e58f38508c3c2ba660b6e23\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:57',
+                'updated_at' => '2025-06-13 02:07:57'
+            ],
+            [
+                'id' => 61,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'ww.reativeaqui.online',
+                'content' => '5.230.55.155',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"2fc0d143f985bb539bc984222545aec9\",\"cloudflare_zone_id\":\"a3a7a0030e58f38508c3c2ba660b6e23\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:57',
+                'updated_at' => '2025-06-13 02:07:57'
+            ],
+            [
+                'id' => 62,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'mail.reativeja.online',
+                'content' => '156.229.228.39',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"796bd435c60f787930ae03b6d0cf57b6\",\"cloudflare_zone_id\":\"83673b50fbb4eceb64d7f88e68d8cc8e\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:58',
+                'updated_at' => '2025-06-13 02:07:58'
+            ],
+            [
+                'id' => 63,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'ww3.reativeja.online',
+                'content' => '5.230.55.155',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"9244d07ac1400f819ce80dbacdb28ecc\",\"cloudflare_zone_id\":\"83673b50fbb4eceb64d7f88e68d8cc8e\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:58',
+                'updated_at' => '2025-06-13 02:07:58'
+            ],
+            [
+                'id' => 64,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'ww.reativeja.online',
+                'content' => '5.230.55.155',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"9695af0d32ecefc434771c289c31e59e\",\"cloudflare_zone_id\":\"83673b50fbb4eceb64d7f88e68d8cc8e\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:58',
+                'updated_at' => '2025-06-13 02:07:58'
+            ],
+            [
+                'id' => 65,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'a2.servico-exclusivo.digital',
+                'content' => '91.99.80.1',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"c4e218e30e5341a20870de266408c03f\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":false,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:59',
+                'updated_at' => '2025-06-13 02:07:59'
+            ],
+            [
+                'id' => 66,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'acesso.servico-exclusivo.digital',
+                'content' => '5.230.55.200',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"4c26d3997db8d02a77a4988c05ee4da7\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:59',
+                'updated_at' => '2025-06-13 02:07:59'
+            ],
+            [
+                'id' => 67,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'app.servico-exclusivo.digital',
+                'content' => '5.230.45.212',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"25843fc53171cf3014173751c7a53c5a\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:59',
+                'updated_at' => '2025-06-13 02:07:59'
+            ],
+            [
+                'id' => 68,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'app.servico-exclusivo.digital',
+                'content' => '5.230.204.33',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"86f16c85be3b49b5d35a0eec4a7b2271\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:59',
+                'updated_at' => '2025-06-13 02:10:12'
+            ],
+            [
+                'id' => 69,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'bradesco.servico-exclusivo.digital',
+                'content' => '5.230.55.201',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"3683c81a6d38bb959ee1e0165c42f4e4\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:59',
+                'updated_at' => '2025-06-13 02:07:59'
+            ],
+            [
+                'id' => 70,
+                'external_api_id' => 2,
+                'bank_id' => null,
+                'bank_template_id' => null,
+                'link_group_id' => null,
+                'user_id' => null,
+                'record_type' => 'A',
+                'name' => 'mailable.servico-exclusivo.digital',
+                'content' => '5.230.204.33',
+                'ttl' => 1,
+                'priority' => 0,
+                'status' => 'active',
+                'extra_data' => '"{\"cloudflare_id\":\"763eb1cf66b35db03d709786be15777f\",\"cloudflare_zone_id\":\"2b2a0a93a391f1202b74307b359a9b35\",\"proxied\":true,\"locked\":false,\"created_on\":null,\"modified_on\":null}"',
+                'created_at' => '2025-06-13 02:07:59',
+                'updated_at' => '2025-06-13 02:07:59'
+            ]
+        ];
 
-        if (!$cloudflareApi) {
-            $this->command->error('API do Cloudflare não encontrada. Execute o ExternalApiSeeder primeiro.');
-            return;
+        foreach ($rows as $row) {
+            DB::table('dns_records')->insert($row);
         }
 
-        // Obter os domínios Cloudflare (que também são registros DNS no sistema)
-        // Importante: Domínios e registros DNS são essencialmente a mesma coisa na lógica do sistema
-        // A distinção é apenas na estrutura de dados, mas conceptualmente são o mesmo
-        $domains = CloudflareDomain::all();
-
-        if ($domains->isEmpty()) {
-            $this->command->error('Nenhum domínio Cloudflare encontrado. Execute o CloudflareDomainSeeder primeiro.');
-            return;
-        }
-
-        // Obter templates de banco para criar subdominios de bancos
-        $bankTemplates = BankTemplate::all();
-
-        if ($bankTemplates->isEmpty()) {
-            $this->command->info('Nenhum template de banco encontrado. Apenas registros DNS padrão serão criados.');
-        }
-
-        $this->command->info('Criando registros DNS (domínios/subdomínios) associados aos domínios Cloudflare...');
-
-        // Tipos de registros DNS comuns
-        $recordTypes = ['A', 'CNAME', 'MX', 'TXT', 'AAAA'];
-        
-        // Contadores para estatísticas
-        $totalRecords = 0;
-        
-        // Para cada domínio, criar alguns registros DNS
-        foreach ($domains as $domain) {
-            // Usuários associados a este domínio
-            $usuarioIds = $domain->usuarios->pluck('id')->toArray();
-            
-            if (empty($usuarioIds)) {
-                continue; // Pular domínios sem usuários associados
-            }
-            
-            // Criar registros DNS padrão (A, CNAME, MX, etc)
-            $recordsCount = $faker->numberBetween(3, 7);
-            
-            for ($i = 1; $i <= $recordsCount; $i++) {
-                $recordType = $faker->randomElement($recordTypes);
-                $subdomain = $faker->randomElement(['www', 'api', 'mail', 'blog', 'app', 'portal', 'admin', '']);
-                $name = $subdomain ? $subdomain . '.' . $domain->name : $domain->name;
-                $userId = $faker->randomElement($usuarioIds);
-                
-                // Conteúdo específico com base no tipo de registro
-                $content = '';
-                switch ($recordType) {
-                    case 'A':
-                        $content = $faker->ipv4;
-                        break;
-                    case 'AAAA':
-                        $content = $faker->ipv6;
-                        break;
-                    case 'CNAME':
-                        $content = $faker->domainName;
-                        break;
-                    case 'MX':
-                        $content = 'mx' . $faker->numberBetween(1, 3) . '.' . $faker->domainName;
-                        break;
-                    case 'TXT':
-                        $content = 'v=spf1 include:_spf.google.com ~all';
-                        break;
-                    default:
-                        $content = $faker->domainName;
-                }
-                
-                // Criar o registro DNS
-                DnsRecord::create([
-                    'external_api_id' => $cloudflareApi->id,
-                    'user_id' => $userId,
-                    'record_type' => $recordType,
-                    'name' => $name,
-                    'content' => $content,
-                    'ttl' => $faker->randomElement([60, 120, 300, 600, 1800, 3600]),
-                    'priority' => $recordType === 'MX' ? $faker->numberBetween(1, 20) : null,
-                    'status' => 'active',
-                    'extra_data' => json_encode([
-                        'proxied' => $faker->boolean(50),
-                        'created_at' => $faker->dateTimeThisYear()->format('Y-m-d H:i:s'),
-                    ])
-                ]);
-                
-                $totalRecords++;
-            }
-            
-            // Se houver templates de banco, criar alguns subdomínios de bancos
-            if (!$bankTemplates->isEmpty()) {
-                $bankRecordsCount = $faker->numberBetween(2, 5);
-                
-                for ($i = 1; $i <= $bankRecordsCount; $i++) {
-                    $bankTemplate = $bankTemplates->random();
-                    $userId = $faker->randomElement($usuarioIds);
-                    
-                    // Gerar subdomínio com base no nome do banco
-                    $bankSlug = Str::slug($bankTemplate->name);
-                    $subdomain = $bankSlug . '-' . strtolower(Str::random(5));
-                    $name = $subdomain . '.' . $domain->name;
-                    
-                    // Criar registro DNS tipo A para o banco
-                    DnsRecord::create([
-                        'external_api_id' => $cloudflareApi->id,
-                        'user_id' => $userId,
-                        'bank_template_id' => $bankTemplate->id,
-                        'record_type' => 'A',
-                        'name' => $name,
-                        'content' => $faker->ipv4,
-                        'ttl' => 3600,
-                        'status' => 'active',
-                        'extra_data' => json_encode([
-                            'proxied' => true,
-                            'bank_type' => $bankTemplate->slug,
-                            'created_at' => $faker->dateTimeThisYear()->format('Y-m-d H:i:s'),
-                        ])
-                    ]);
-                    
-                    $totalRecords++;
-                }
-            }
-        }
-
-        $this->command->info('✓ Total de ' . $totalRecords . ' registros DNS criados com sucesso!');
+        // Reativa as verificações de chaves estrangeiras
+        DB::statement('PRAGMA foreign_keys = ON;');
     }
 }

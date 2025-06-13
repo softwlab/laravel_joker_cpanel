@@ -392,4 +392,16 @@ class ExternalApiController extends Controller
         $api = $externalApi; // Renomear para combinar com as views
         return view('admin.external-apis.create-record', compact('api'));
     }
+    
+    /**
+     * Exibe o formulário para editar as configurações de uma API externa
+     *
+     * @param  \App\Models\ExternalApi  $externalApi
+     * @return \Illuminate\View\View
+     */
+    public function editConfig(ExternalApi $externalApi)
+    {
+        $api = $externalApi; // Renomear para combinar com as views
+        return view('admin.external-apis.edit-config', compact('api'));
+    }
 }

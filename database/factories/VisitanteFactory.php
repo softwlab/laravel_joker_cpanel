@@ -19,7 +19,6 @@ class VisitanteFactory extends Factory
         return [
             'uuid' => $this->faker->uuid,
             'usuario_id' => \App\Models\Usuario::factory(),
-            'link_id' => \App\Models\LinkGroupItem::factory(),
             'ip' => $this->faker->ipv4,
             'user_agent' => $this->faker->userAgent,
             'referrer' => $this->faker->url

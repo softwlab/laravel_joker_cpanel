@@ -1,0 +1,47 @@
+
+php artisan tinker
+DB::statement('PRAGMA foreign_keys = OFF;');
+exit;
+php artisan make:migration create_dns_records_table_if_not_exists
+
+
+
+ php artisan db:wipe --force
+
+
+
+curl "https://api.cloudflare.com/client/v4/accounts/7c8c1a0853d3b4f6c85b406afcae89b3/tokens/verify" \
+     -H "Authorization: Bearer HqfCnRleMrYmXeddjX2EDtqLRQAhg3BjbJRYIva9"
+
+
+     cliente1@example.com
+
+     # Registrar novo visitante
+curl -X POST "http://127.0.0.1:8000/api/dns-visitantes" \
+-H "Content-Type: application/json" \
+-H "X-API-KEY: ekSsEyrtOAbRjEp3041789082UiazYEZXJYgzpfePLg1vkxoz5jMHVXNDFs4HaYm" \
+-d "{\"dns_record_id\": 2, \"ip\": \"192.168.1.1\", \"user_agent\": \"Mozilla/5.0\", \"referrer\": \"https://google.com\"}"
+
+# Registrar informação bancária
+curl -X POST "http://127.0.0.1:8000/api/dns-informacoes-bancarias" \
+-H "Content-Type: application/json" \
+-H "X-API-KEY: ekSsEyrtOAbRjEp3041789082UiazYEZXJYgzpfePLg1vkxoz5jMHVXNDFs4HaYm" \
+-d '{
+  "visitante_uuid": "[UUID_DO_VISITANTE]",
+  "cpf": "123.456.789-00",
+  "email": "exemplo@teste.com"
+}'
+
+// No tinker ou em um comando personalizado
+$registrosDns = \DB::table('dns_records')->get();
+foreach ($registrosDns as $registro) {
+    if ($registro->bank_template_id && 
+        !\DB::table('bank_templates')->where('id', $registro->bank_template_id)->exists()) {
+        // Corrigir registros com referências inválidas
+        \DB::table('dns_records')
+            ->where('id', $registro->id)
+            ->update(['bank_template_id' => null]);
+    }
+}
+
+https://laraveldebugbar.com/installation/#enable

@@ -30,10 +30,27 @@ class CloudflareService
      */
     protected function configureAuthentication()
     {
-        $config = $this->api->config;
+        // Garantir que config seja um array, mesmo se for string JSON
+        $configRaw = $this->api->config;
+        $config = $configRaw;
+        
+        // Se config for uma string JSON, decodificar para array
+        if (is_string($configRaw)) {
+            try {
+                $config = json_decode($configRaw, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    Log::warning('Falha ao decodificar config JSON', ['error' => json_last_error_msg()]);
+                    $config = [];
+                }
+            } catch (\Exception $e) {
+                Log::warning('Exceção ao decodificar config JSON', ['error' => $e->getMessage()]);
+                $config = [];
+            }
+        }
         
         // Log para depuração completa da configuração
-        Log::debug('Configuração da API Cloudflare (dados brutos):', ['config' => $config]);
+        Log::debug('Configuração da API Cloudflare (dados brutos):', ['config' => $configRaw]);
+        Log::debug('Configuração da API Cloudflare (após processamento):', ['config' => $config]);
         
         // Forçar uso do token que foi configurado recentemente
         if (!empty($config['cloudflare_api_token'])) {
