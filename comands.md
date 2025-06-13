@@ -11,4 +11,4 @@ lembrando que ao ser inserido um visitante deve ser gerado com uuidv4 ou superio
 
  taskkill /F /IM php.exe
 ÊXITO: o processo "php.exe" com PID 9332 foi finalizado.
-ÊXITO: o processo "php.exe" com PID 20024 foi finalizad
+ÊXITO: o processo "php.exe" com PID 20024 foi finalizad  
